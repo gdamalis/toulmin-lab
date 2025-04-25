@@ -1,9 +1,9 @@
 'use client';
 
 interface ExportButtonGroupProps {
-  onExportPNG: () => void;
-  onExportJPG: () => void;
-  onExportPDF: () => void;
+  readonly onExportPNG: () => void;
+  readonly onExportJPG: () => void;
+  readonly onExportPDF: () => void;
 }
 
 export function ExportButtonGroup({

@@ -15,7 +15,7 @@ import { useToulminGraph } from '@/hooks/useToulminGraph';
 import { ExportButtonGroup } from '@/components/diagram/ExportButtonGroup';
 
 interface ToulminDiagramProps {
-  data: ToulminArgument;
+  readonly data: ToulminArgument;
 }
 
 export function ToulminDiagram({ data }: ToulminDiagramProps) {

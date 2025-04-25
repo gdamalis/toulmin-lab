@@ -4,8 +4,8 @@ import { useState } from 'react';
 import type { ToulminArgument } from '@/types/toulmin';
 
 interface ToulminFormProps {
-  onSubmit: (data: ToulminArgument) => void;
-  initialData?: ToulminArgument;
+  readonly onSubmit: (data: ToulminArgument) => void;
+  readonly initialData?: ToulminArgument;
 }
 
 const emptyArgument: ToulminArgument = {
