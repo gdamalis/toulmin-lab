@@ -1,15 +1,39 @@
 'use client';
 
 import Link from 'next/link';
-import { forwardRef } from 'react';
+import { forwardRef, ButtonHTMLAttributes, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'link';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
+  {
+    variants: {
+      variant: {
+        primary: "bg-indigo-600 text-white hover:bg-indigo-500 focus:ring-indigo-500",
+        secondary: "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 focus:ring-indigo-500",
+        blue: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
+        green: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500",
+        purple: "bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500",
+        danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
+      },
+      size: {
+        sm: "px-3 py-1.5 text-xs",
+        md: "px-4 py-2 text-sm",
+        lg: "px-5 py-2.5 text-base",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+      size: "md",
+    },
+  }
+);
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
+export interface ButtonProps 
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  children: ReactNode;
   href?: string;
   isExternal?: boolean;
   isLoading?: boolean;
@@ -20,8 +44,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     {
       className,
       children,
-      variant = 'primary',
-      size = 'md',
+      variant,
+      size,
       disabled,
       href,
       isExternal = false,
@@ -30,28 +54,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const variantStyles = {
-      primary: 'bg-blue-600 text-white hover:bg-blue-500 shadow-sm',
-      secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
-      outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
-      ghost: 'text-gray-700 hover:bg-gray-100',
-      link: 'text-blue-600 hover:underline p-0 h-auto'
-    };
-
-    const sizeStyles = {
-      sm: 'px-2.5 py-1.5 text-xs',
-      md: 'px-3.5 py-2.5 text-sm',
-      lg: 'px-4 py-3 text-base'
-    };
-
-    const baseStyles = 'font-semibold rounded-md inline-flex items-center justify-center transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50 disabled:pointer-events-none';
-    
     const buttonClasses = cn(
-      baseStyles,
-      variant !== 'link' && sizeStyles[size],
-      variantStyles[variant],
+      buttonVariants({ variant, size, className }),
       isLoading && 'opacity-70 cursor-wait',
-      className
     );
 
     if (href) {

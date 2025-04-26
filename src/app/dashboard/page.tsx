@@ -6,6 +6,10 @@ import {
   UsersIcon, 
   DocumentTextIcon 
 } from '@heroicons/react/24/outline';
+import { Card, CardContent, CardFooter } from "@/components/ui/Card";
+import { Typography } from "@/components/ui/Typography";
+import { Button } from "@/components/ui/Button";
+import Link from "next/link";
 
 // Mock data for the dashboard
 const mockStats = {
@@ -25,124 +29,107 @@ export default function Dashboard() {
       <div className="-mt-32">
         <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
           <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-6">Analytics Overview</h2>
+            <Typography variant="h3" className="mb-6">Analytics Overview</Typography>
             
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {/* Total Diagrams Card */}
-              <div className="bg-white overflow-hidden shadow rounded-lg border border-gray-200">
-                <div className="p-5">
+              <Card>
+                <CardContent>
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <ChartBarIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
                     </div>
                     <div className="ml-5 w-0 flex-1">
-                      <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">
-                          Total Diagrams
-                        </dt>
-                        <dd>
-                          <div className="text-lg font-medium text-gray-900">
-                            {mockStats.totalDiagrams}
-                          </div>
-                        </dd>
-                      </dl>
+                      <Typography variant="body2" textColor="muted" className="truncate">
+                        Total Diagrams
+                      </Typography>
+                      <Typography variant="h3">
+                        {mockStats.totalDiagrams}
+                      </Typography>
                     </div>
                   </div>
-                </div>
-                <div className="bg-gray-50 px-5 py-3">
-                  <div className="text-sm">
-                    <a
-                      href="/dashboard/diagrams"
-                      className="font-medium text-indigo-600 hover:text-indigo-500"
-                    >
-                      View all
-                    </a>
-                  </div>
-                </div>
-              </div>
+                </CardContent>
+                <CardFooter>
+                  <Link
+                    href="/dashboard/diagrams"
+                    className="font-medium text-indigo-600 hover:text-indigo-500 text-sm"
+                  >
+                    View all
+                  </Link>
+                </CardFooter>
+              </Card>
 
               {/* Total Users Card */}
-              <div className="bg-white overflow-hidden shadow rounded-lg border border-gray-200">
-                <div className="p-5">
+              <Card>
+                <CardContent>
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <UsersIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
                     </div>
                     <div className="ml-5 w-0 flex-1">
-                      <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">
-                          Active Users
-                        </dt>
-                        <dd>
-                          <div className="text-lg font-medium text-gray-900">
-                            {mockStats.totalUsers}
-                          </div>
-                        </dd>
-                      </dl>
+                      <Typography variant="body2" textColor="muted" className="truncate">
+                        Active Users
+                      </Typography>
+                      <Typography variant="h3">
+                        {mockStats.totalUsers}
+                      </Typography>
                     </div>
                   </div>
-                </div>
-                <div className="bg-gray-50 px-5 py-3">
-                  <div className="text-sm">
-                    <a
-                      href="/dashboard/users"
-                      className="font-medium text-indigo-600 hover:text-indigo-500"
-                    >
-                      View details
-                    </a>
-                  </div>
-                </div>
-              </div>
+                </CardContent>
+                <CardFooter>
+                  <Link
+                    href="/dashboard/users"
+                    className="font-medium text-indigo-600 hover:text-indigo-500 text-sm"
+                  >
+                    View details
+                  </Link>
+                </CardFooter>
+              </Card>
 
               {/* Highest Word Count Card */}
-              <div className="bg-white overflow-hidden shadow rounded-lg border border-gray-200">
-                <div className="p-5">
+              <Card>
+                <CardContent>
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <DocumentTextIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
                     </div>
                     <div className="ml-5 w-0 flex-1">
-                      <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">
-                          Largest Diagram
-                        </dt>
-                        <dd>
-                          <div className="text-lg font-medium text-gray-900">
-                            {mockStats.highestWordCountDiagram.wordCount} words
-                          </div>
-                          <div className="text-sm text-gray-500 mt-1">
-                            {mockStats.highestWordCountDiagram.title}
-                          </div>
-                        </dd>
-                      </dl>
+                      <Typography variant="body2" textColor="muted" className="truncate">
+                        Largest Diagram
+                      </Typography>
+                      <Typography variant="h3">
+                        {mockStats.highestWordCountDiagram.wordCount} words
+                      </Typography>
+                      <Typography variant="body2" textColor="muted" className="mt-1">
+                        {mockStats.highestWordCountDiagram.title}
+                      </Typography>
                     </div>
                   </div>
-                </div>
-                <div className="bg-gray-50 px-5 py-3">
-                  <div className="text-sm">
-                    <a
-                      href={`/dashboard/diagrams/${encodeURIComponent(mockStats.highestWordCountDiagram.title)}`}
-                      className="font-medium text-indigo-600 hover:text-indigo-500"
-                    >
-                      View diagram
-                    </a>
-                  </div>
-                </div>
-              </div>
+                </CardContent>
+                <CardFooter>
+                  <Link
+                    href={`/dashboard/diagrams/${encodeURIComponent(mockStats.highestWordCountDiagram.title)}`}
+                    className="font-medium text-indigo-600 hover:text-indigo-500 text-sm"
+                  >
+                    View diagram
+                  </Link>
+                </CardFooter>
+              </Card>
             </div>
 
             <div className="mt-8">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium text-gray-900">Recent Activity</h3>
-                <a 
-                  href="/dashboard/argument-builder" 
-                  className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                <Typography variant="h3">Recent Activity</Typography>
+                <Button 
+                  href="/argument-builder"
                 >
                   Create New Diagram
-                </a>
+                </Button>
               </div>
               <div className="mt-4 bg-gray-50 p-6 rounded-lg text-center text-gray-500">
-                No recent activity to display. Create your first diagram to get started.
+                <Typography textColor="muted">
+                  No recent activity to display. Create your first diagram to get started.
+                </Typography>
               </div>
             </div>
           </div>

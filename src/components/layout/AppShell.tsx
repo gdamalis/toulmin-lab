@@ -15,6 +15,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
+import { Typography } from "@/components/ui/Typography";
+import { Button } from "@/components/ui/Button";
 
 interface AppShellProps {
   readonly children: ReactNode;
@@ -96,7 +98,7 @@ export default function AppShell({ children, title }: AppShellProps) {
                         {/* Profile dropdown */}
                         <Menu as="div" className="relative ml-3">
                           <div>
-                            <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
+                            <MenuButton className="relative flex max-w-xs cursor-pointer items-center rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                               <span className="absolute -inset-1.5" />
                               <span className="sr-only">Open user menu</span>
                               {user?.photoURL ? (
@@ -119,15 +121,16 @@ export default function AppShell({ children, title }: AppShellProps) {
                           <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden">
                             <MenuItem>
                               {({ active }) => (
-                                <button
+                                <Button
                                   onClick={handleSignOut}
                                   className={classNames(
                                     active ? "bg-gray-100" : "",
                                     "block w-full text-left px-4 py-2 text-sm text-gray-700"
                                   )}
+                                  variant="secondary"
                                 >
                                   Sign out
-                                </button>
+                                </Button>
                               )}
                             </MenuItem>
                           </MenuItems>
@@ -205,9 +208,10 @@ export default function AppShell({ children, title }: AppShellProps) {
                   </div>
                   <div className="mt-3 space-y-1 px-2">
                     <DisclosureButton
-                      as="button"
+                      as={Button}
                       onClick={handleSignOut}
                       className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                      variant="secondary"
                     >
                       Sign out
                     </DisclosureButton>
@@ -219,9 +223,9 @@ export default function AppShell({ children, title }: AppShellProps) {
         </Disclosure>
         <header className="py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold tracking-tight text-white">
+            <Typography variant="h1" textColor="white">
               {title}
-            </h1>
+            </Typography>
           </div>
         </header>
       </div>
