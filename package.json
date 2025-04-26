@@ -10,6 +10,7 @@
     "emulators": "firebase emulators:start --project toulmin-lab --import ./emulator-data --export-on-exit"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@xyflow/react": "^12.6.0",
     "firebase": "^11.6.1",
     "html-to-image": "^1.11.13",
