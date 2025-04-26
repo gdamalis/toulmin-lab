@@ -49,8 +49,7 @@ export default function AppShell({ children, title }: AppShellProps) {
     ...item,
     current:
       item.href === pathname ||
-      (item.href !== "/dashboard" &&
-        pathname.startsWith(item.href)),
+      (item.href !== "/dashboard" && pathname.startsWith(item.href)),
   }));
 
   return (
@@ -100,9 +99,21 @@ export default function AppShell({ children, title }: AppShellProps) {
                             <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                               <span className="absolute -inset-1.5" />
                               <span className="sr-only">Open user menu</span>
-                              <div className="size-8 rounded-full bg-gray-500 flex items-center justify-center text-white">
-                                {user?.email?.charAt(0).toUpperCase() ?? "U"}
-                              </div>
+                              {user?.photoURL ? (
+                                <Image
+                                  src={user.photoURL}
+                                  alt="Profile picture"
+                                  width={32}
+                                  height={32}
+                                  className="size-8 rounded-full"
+                                />
+                              ) : (
+                                <div className="size-8 rounded-full bg-gray-500 flex items-center justify-center text-white">
+                                  {user?.displayName?.charAt(0).toUpperCase() ??
+                                    user?.email?.charAt(0).toUpperCase() ??
+                                    "U"}
+                                </div>
+                              )}
                             </MenuButton>
                           </div>
                           <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden">
@@ -167,9 +178,21 @@ export default function AppShell({ children, title }: AppShellProps) {
                 <div className="border-t border-gray-700 pt-4 pb-3">
                   <div className="flex items-center px-5">
                     <div className="shrink-0">
-                      <div className="size-10 rounded-full bg-gray-500 flex items-center justify-center text-white">
-                        {user?.email?.charAt(0).toUpperCase() ?? "U"}
-                      </div>
+                      {user?.photoURL ? (
+                        <Image
+                          src={user.photoURL}
+                          alt="Profile picture"
+                          width={40}
+                          height={40}
+                          className="size-10 rounded-full"
+                        />
+                      ) : (
+                        <div className="size-10 rounded-full bg-gray-500 flex items-center justify-center text-white">
+                          {user?.displayName?.charAt(0).toUpperCase() ??
+                            user?.email?.charAt(0).toUpperCase() ??
+                            "U"}
+                        </div>
+                      )}
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium text-white">

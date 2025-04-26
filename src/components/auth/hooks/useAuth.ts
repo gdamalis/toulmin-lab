@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react';
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
-  signInWithRedirect, 
-  signInWithPopup,
   getRedirectResult,
+  signInWithPopup,
   GoogleAuthProvider,
   updateProfile
 } from 'firebase/auth';
@@ -48,16 +47,10 @@ export function useAuth(redirectPath = '/dashboard') {
     try {
       const provider = new GoogleAuthProvider();
       
-      // When using emulator, popups work better than redirects
-      if (process.env.NODE_ENV === 'development') {
-        // Using signInWithPopup in development with emulator
-        const result = await signInWithPopup(auth, provider);
-        if (result.user) {
-          router.push(redirectPath);
-        }
-      } else {
-        // In production, use redirect as before
-        await signInWithRedirect(auth, provider);
+      // Use signInWithPopup for all environments
+      const result = await signInWithPopup(auth, provider);
+      if (result.user) {
+        router.push(redirectPath);
       }
     } catch (err) {
       setIsGoogleLoading(false);
