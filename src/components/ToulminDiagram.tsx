@@ -1,51 +1,96 @@
-'use client';
+"use client";
 
-import { useRef } from 'react';
+import { ExportButtonGroup } from "@/components/diagram/ExportButtonGroup";
+import { EXPORT_CONFIG } from "@/constants/toulmin-styles";
+import { useImageExport } from "@/hooks/useImageExport";
+import useLayout from "@/hooks/useLayout";
+import { useToulminGraph } from "@/hooks/useToulminGraph";
+import type { ToulminArgument } from "@/types/toulmin";
 import {
-  ReactFlow,
-  Controls,
   Background,
   BackgroundVariant,
-} from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
-import type { ToulminArgument } from '@/types/toulmin';
-import { EXPORT_CONFIG } from '@/constants/toulmin-styles';
-import { useImageExport } from '@/hooks/useImageExport';
-import { useToulminGraph } from '@/hooks/useToulminGraph';
-import { ExportButtonGroup } from '@/components/diagram/ExportButtonGroup';
+  Controls,
+  ReactFlow,
+  ReactFlowInstance,
+  ReactFlowProvider,
+  useEdgesState,
+  useNodesState
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { useCallback, useEffect, useRef } from "react";
 
 interface ToulminDiagramProps {
   readonly data: ToulminArgument;
 }
 
-export function ToulminDiagram({ data }: ToulminDiagramProps) {
+function ToulminDiagram({ data }: ToulminDiagramProps) {
   const diagramRef = useRef<HTMLDivElement>(null);
-  const { nodes, edges } = useToulminGraph(data);
-  const { exportAsPNG, exportAsJPG, exportAsPDF } = useImageExport(diagramRef, EXPORT_CONFIG);
+  const { initialNodes, initialEdges, nodeTypes } = useToulminGraph(data);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, , onEdgesChange] = useEdgesState(initialEdges);
+  const flowRef = useRef<ReactFlowInstance | null>(null);
+  const updatedNodes = useLayout();
+
+  const { exportAsPNG, exportAsJPG, exportAsPDF } = useImageExport(
+    diagramRef,
+    EXPORT_CONFIG
+  );
+
+  const onInit = useCallback(
+    (instance: ReactFlowInstance) => {
+      flowRef.current = instance;
+      window.requestAnimationFrame(() => {
+        flowRef.current?.fitView({ padding: 0.1 });
+      });
+    },
+    [flowRef]
+  );
+
+  useEffect(() => {
+    if (updatedNodes.length > 0) {
+      setNodes(updatedNodes);
+    }
+  }, [setNodes, updatedNodes]);
 
   return (
     <div className="space-y-4">
-      <ExportButtonGroup 
+      <ExportButtonGroup
         onExportPNG={exportAsPNG}
         onExportJPG={exportAsJPG}
         onExportPDF={exportAsPDF}
       />
-      
-      <div 
-        ref={diagramRef} 
-        style={{ width: '100%', height: '600px', background: 'white' }}
+
+      <div
+        ref={diagramRef}
         aria-label="Toulmin argument diagram"
+        className="overflow-hidden h-[600px] bg-white"
       >
         <ReactFlow
           nodes={nodes}
           edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          nodeTypes={nodeTypes}
           fitView
           attributionPosition="bottom-right"
+          onInit={onInit}
+          minZoom={0.2}
+          maxZoom={3}
         >
           <Controls />
-          <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
+          <Background variant={BackgroundVariant.Dots} gap={16} />
         </ReactFlow>
       </div>
     </div>
   );
-} 
+}
+
+function ToulminDiagramWithProvider({ data }: ToulminDiagramProps) {
+  return (
+    <ReactFlowProvider>
+      <ToulminDiagram data={data} />
+    </ReactFlowProvider>
+  );
+}
+
+export default ToulminDiagramWithProvider;

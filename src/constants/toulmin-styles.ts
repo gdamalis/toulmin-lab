@@ -1,21 +1,58 @@
 export const NODE_BASE_STYLE = {
-  padding: '10px',
-  borderRadius: '5px',
-  width: 180,
+  padding: "8px",
+  borderRadius: "5px",
+  width: 250,
 };
 
 export const NODE_STYLES = {
-  claim: { ...NODE_BASE_STYLE, background: '#e3f2fd' },
-  grounds: { ...NODE_BASE_STYLE, background: '#e8f5e9' },
-  warrant: { ...NODE_BASE_STYLE, background: '#fff3e0' },
-  qualifier: { ...NODE_BASE_STYLE, background: '#e0f7fa' },
-  groundsBacking: { ...NODE_BASE_STYLE, background: '#f1f8e9' },
-  warrantBacking: { ...NODE_BASE_STYLE, background: '#fff8e1' },
-  rebuttal: { ...NODE_BASE_STYLE, background: '#ffebee' },
+  claim: {
+    ...NODE_BASE_STYLE,
+    background: "#fff",
+    borderWidth: 5,
+    borderColor: "#2563eb",
+  },
+  grounds: {
+    ...NODE_BASE_STYLE,
+    background: "#fff",
+    borderWidth: 5,
+    borderColor: "#0891b2",
+  },
+  warrant: {
+    ...NODE_BASE_STYLE,
+    background: "#fff",
+    borderWidth: 5,
+    borderColor: "#15803d",
+  },
+  qualifier: {
+    ...NODE_BASE_STYLE,
+    background: "#fff",
+    borderWidth: 5,
+    borderColor: "#a16207",
+  },
+  groundsBacking: {
+    ...NODE_BASE_STYLE,
+    background: "#fff",
+    borderWidth: 5,
+    borderColor: "#7c3aed",
+  },
+  warrantBacking: {
+    ...NODE_BASE_STYLE,
+    background: "#fff",
+    borderWidth: 5,
+    borderColor: "#7c3aed",
+  },
+  rebuttal: {
+    ...NODE_BASE_STYLE,
+    background: "#fff",
+    borderWidth: 5,
+    borderColor: "#b91c1c",
+  },
+  midpointClaim: { width: 0, height: 0, background: "#fff" },
+  midpointQualifier: { width: 0, height: 0, background: "#fff" },
 };
 
 export const EXPORT_CONFIG = {
-  backgroundColor: 'white',
-  canvasWidth: 800,
-  canvasHeight: 600,
-}; 
+  backgroundColor: "white",
+  canvasWidth: 1000,
+  canvasHeight: 1000,
+};
