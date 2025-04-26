@@ -1,16 +1,15 @@
-import { useEffect, useMemo, useRef } from "react";
+import { NODE_STYLES } from "@/constants/toulmin-styles";
+import type { ToulminArgument } from "@/types/toulmin";
 import {
-  type Node,
   type Edge,
   Handle,
-  Position,
   MarkerType,
-  useReactFlow,
+  type Node,
+  Position
 } from "@xyflow/react";
-import type { ToulminArgument } from "@/types/toulmin";
-import { NODE_STYLES } from "@/constants/toulmin-styles";
+import { memo, useMemo } from "react";
 
-const MidpointNode = () => (
+const MidpointNode = memo(() => (
   <div style={{ width: 0, height: 0 }}>
     <Handle
       type="target"
@@ -61,9 +60,11 @@ const MidpointNode = () => (
       style={{ opacity: 0, width: 0, height: 0 }}
     />
   </div>
-);
+));
 
-const ElementNode = ({ data }: { data: { label: string; title: string } }) => {
+MidpointNode.displayName = 'MidpointNode';
+
+const ElementNode = memo(({ data }: { data: { label: string; title: string } }) => {
   return (
     <div className="node-content">
       {/* Simplify to just have handles on the needed sides based on node position */}
@@ -120,7 +121,9 @@ const ElementNode = ({ data }: { data: { label: string; title: string } }) => {
       <div className="node-text">{data.label}</div>
     </div>
   );
-};
+});
+
+ElementNode.displayName = 'ElementNode';
 
 const nodeTypes = {
   element: ElementNode,

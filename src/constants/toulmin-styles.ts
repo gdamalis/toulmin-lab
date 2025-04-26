@@ -53,6 +53,4 @@ export const NODE_STYLES = {
 
 export const EXPORT_CONFIG = {
   backgroundColor: "white",
-  canvasWidth: 1000,
-  canvasHeight: 1000,
 };

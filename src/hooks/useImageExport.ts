@@ -1,53 +1,90 @@
-import { RefObject, useCallback } from 'react';
-import { toPng, toJpeg } from 'html-to-image';
-import { jsPDF } from 'jspdf';
+import { getNodesBounds, useReactFlow } from "@xyflow/react";
+import { toJpeg, toPng } from "html-to-image";
+import { jsPDF } from "jspdf";
+import { useCallback } from "react";
 
 export interface ExportConfig {
   backgroundColor: string;
-  canvasWidth: number;
-  canvasHeight: number;
 }
 
-export function useImageExport<T extends HTMLElement>(ref: RefObject<T | null>, config: ExportConfig) {
-  const handleExportImage = useCallback((format: 'png' | 'jpeg' | 'pdf') => {
-    if (!ref.current) return;
-    
-    const exportConfig = {
-      ...config,
-      quality: format === 'jpeg' ? 0.95 : undefined,
-    };
-    
-    const processImage = format === 'png' ? toPng : toJpeg;
-    
-    return processImage(ref.current, exportConfig)
-      .then((dataUrl) => {
-        if (format === 'pdf') {
-          const pdf = new jsPDF('landscape', 'mm', 'a4');
-          const imgProps = pdf.getImageProperties(dataUrl);
-          const pdfWidth = pdf.internal.pageSize.getWidth();
-          const imgWidth = pdfWidth - 20;
-          const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-          
-          pdf.addImage(dataUrl, 'PNG', 10, 10, imgWidth, imgHeight);
-          pdf.save('toulmin-diagram.pdf');
-          return dataUrl;
+export function useImageExport(config: ExportConfig) {
+  const { getNodes } = useReactFlow();
+
+  const nodesBounds = getNodesBounds(getNodes());
+
+  const handleExportImage = useCallback(
+    async (format: "png" | "jpeg" | "pdf") => {
+      const flowViewport = document.querySelector(
+        ".react-flow__viewport"
+      ) as HTMLElement;
+      if (!flowViewport) return;
+
+      // Store original style
+      const originalStyle = flowViewport.getAttribute("style");
+
+      // Calculate size
+      const padding = 20; // Optional: extra padding around nodes
+      const width = nodesBounds.width + padding * 2;
+      const height = nodesBounds.height + padding * 2;
+
+      // Temporarily apply new size and reset transform
+      flowViewport.style.width = `${width}px`;
+      flowViewport.style.height = `${height}px`;
+      flowViewport.style.transform = `translate(${
+        -nodesBounds.x + padding
+      }px, ${-nodesBounds.y + padding}px) scale(1)`;
+
+      try {
+        const processImage = format === "png" ? toPng : toJpeg;
+
+        const dataUrl = await processImage(flowViewport, {
+          backgroundColor: config.backgroundColor,
+          pixelRatio: 2,
+        });
+
+        if (format === "pdf") {
+          const pdf = new jsPDF({
+            orientation: width > height ? "landscape" : "portrait",
+            unit: "px",
+            format: [width, height],
+          });
+          pdf.addImage(dataUrl, "PNG", 0, 0, width, height);
+          pdf.save("toulmin-argument-diagram.pdf");
         } else {
-          const link = document.createElement('a');
-          link.download = `toulmin-diagram.${format}`;
+          const link = document.createElement("a");
+          link.download = `toulmin-argument-diagram.${format}`;
           link.href = dataUrl;
           link.click();
-          return dataUrl;
         }
-      })
-      .catch((error) => {
+
+        return dataUrl;
+      } catch (error) {
         console.error(`Error generating ${format.toUpperCase()}:`, error);
         return null;
-      });
-  }, [ref, config]);
+      } finally {
+        // Restore original style
+        if (originalStyle !== null) {
+          flowViewport.setAttribute("style", originalStyle);
+        } else {
+          flowViewport.removeAttribute("style");
+        }
+      }
+    },
+    [config, nodesBounds]
+  );
 
   return {
-    exportAsPNG: useCallback(() => handleExportImage('png'), [handleExportImage]),
-    exportAsJPG: useCallback(() => handleExportImage('jpeg'), [handleExportImage]),
-    exportAsPDF: useCallback(() => handleExportImage('pdf'), [handleExportImage]),
+    exportAsPNG: useCallback(
+      () => handleExportImage("png"),
+      [handleExportImage]
+    ),
+    exportAsJPG: useCallback(
+      () => handleExportImage("jpeg"),
+      [handleExportImage]
+    ),
+    exportAsPDF: useCallback(
+      () => handleExportImage("pdf"),
+      [handleExportImage]
+    ),
   };
-} 
+}
