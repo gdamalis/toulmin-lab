@@ -14,7 +14,7 @@ import {
   ReactFlowInstance,
   ReactFlowProvider,
   useEdgesState,
-  useNodesState
+  useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback, useEffect, useRef } from "react";
@@ -22,6 +22,8 @@ import { useCallback, useEffect, useRef } from "react";
 interface ToulminDiagramProps {
   readonly data: ToulminArgument;
 }
+
+const snapGrid: [number, number] = [6, 6];
 
 function ToulminDiagram({ data }: ToulminDiagramProps) {
   const diagramRef = useRef<HTMLDivElement>(null);
@@ -31,10 +33,8 @@ function ToulminDiagram({ data }: ToulminDiagramProps) {
   const flowRef = useRef<ReactFlowInstance | null>(null);
   const updatedNodes = useLayout();
 
-  const { exportAsPNG, exportAsJPG, exportAsPDF } = useImageExport(
-    diagramRef,
-    EXPORT_CONFIG
-  );
+  const { exportAsPNG, exportAsJPG, exportAsPDF } =
+    useImageExport(EXPORT_CONFIG);
 
   const onInit = useCallback(
     (instance: ReactFlowInstance) => {
@@ -71,6 +71,8 @@ function ToulminDiagram({ data }: ToulminDiagramProps) {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           nodeTypes={nodeTypes}
+          snapToGrid={true}
+          snapGrid={snapGrid}
           fitView
           attributionPosition="bottom-right"
           onInit={onInit}
@@ -78,7 +80,7 @@ function ToulminDiagram({ data }: ToulminDiagramProps) {
           maxZoom={3}
         >
           <Controls />
-          <Background variant={BackgroundVariant.Dots} gap={16} />
+          <Background variant={BackgroundVariant.Dots} gap={12} />
         </ReactFlow>
       </div>
     </div>

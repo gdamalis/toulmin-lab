@@ -9,7 +9,7 @@ const FLOW_OPTIONS = {
 const LAYOUT_CONFIG = {
   spacing: 100,
   nodeWidth: 250,
-  threshold: 22,
+  threshold: 23,
   heightOffset: 2,
 };
 
@@ -187,8 +187,6 @@ const positionMainNodes = (
       },
     });
   });
-
-  console.log(updatedNodes);
 
   return updatedNodes;
 };
