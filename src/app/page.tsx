@@ -15,16 +15,10 @@ export default function Home() {
         
         <div className="flex flex-col space-y-4">
           <Link
-            href="/auth/signin"
+            href="/auth"
             className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-center"
           >
-            Sign In
-          </Link>
-          <Link
-            href="/auth/signup"
-            className="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-center"
-          >
-            Create Account
+            Sign In / Create Account
           </Link>
         </div>
         

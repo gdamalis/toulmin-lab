@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "emulators": "firebase emulators:start --project toulmin-lab --import ./emulator-data --export-on-exit"
   },
   "dependencies": {
     "@xyflow/react": "^12.6.0",
