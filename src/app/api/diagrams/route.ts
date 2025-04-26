@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     }
 
     const client = await clientPromise;
-    const db = client.db('toulmin-diagrams');
+    const db = client.db('toulmin-lab');
     
     const diagrams = await db
       .collection('diagrams')
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     }
 
     const client = await clientPromise;
-    const db = client.db('toulmin-diagrams');
+    const db = client.db('toulmin-lab');
     
     const diagramData = {
       userId,

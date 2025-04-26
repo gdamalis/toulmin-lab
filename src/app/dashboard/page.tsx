@@ -1,91 +1,153 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import { ToulminForm } from "@/components/ToulminForm";
-import ToulminDiagram from "@/components/ToulminDiagram";
-import type { ToulminArgument } from "@/types/toulmin";
-import { useAuth } from "@/contexts/AuthContext";
+import AppShell from "@/components/layout/AppShell";
+import { 
+  ChartBarIcon, 
+  UsersIcon, 
+  DocumentTextIcon 
+} from '@heroicons/react/24/outline';
 
-// Sample data for initial demo
-const sampleArgument: ToulminArgument = {
-  claim: "We should implement renewable energy sources",
-  grounds: "Fossil fuels are depleting and causing climate change",
-  groundsBacking:
-    "Scientific studies show global temperature rising due to CO2 emissions",
-  warrant: "Renewable energy is sustainable and reduces carbon emissions",
-  warrantBacking:
-    "Wind and solar power produce zero emissions during operation",
-  qualifier: "In most developed countries",
-  rebuttal: "Unless the infrastructure costs prove prohibitively expensive",
+// Mock data for the dashboard
+const mockStats = {
+  totalDiagrams: 128,
+  totalUsers: 42,
+  highestWordCountDiagram: {
+    title: "Climate Change Policy Analysis",
+    wordCount: 872,
+    author: "Jane Smith",
+    date: "2023-05-15",
+  }
 };
 
 export default function Dashboard() {
-  const [argument, setArgument] = useState<ToulminArgument>(sampleArgument);
-  const [showDiagram, setShowDiagram] = useState(false);
-  const { signOutUser } = useAuth();
-  const router = useRouter();
-
-  const handleFormSubmit = (data: ToulminArgument) => {
-    setArgument(data);
-    setShowDiagram(true);
-  };
-
-  const handleNewDiagram = () => {
-    setShowDiagram(false);
-  };
-
-  const handleSignOut = async () => {
-    await signOutUser();
-    router.push("/");
-  };
-
   return (
-    <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white shadow">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">
-              Toulmin Diagram Builder
-            </h1>
-            <button
-              onClick={handleSignOut}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-            >
-              Sign Out
-            </button>
-          </div>
-        </header>
-
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {!showDiagram ? (
-            <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
-              <h2 className="text-xl font-semibold mb-6">
-                Create Your Toulmin Argument
-              </h2>
-              <ToulminForm onSubmit={handleFormSubmit} initialData={argument} />
-            </div>
-          ) : (
-            <div className="space-y-6">
-              <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-semibold">
-                    Your Toulmin Diagram
-                  </h2>
-                  <button
-                    onClick={handleNewDiagram}
-                    className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                  >
-                    Edit Argument
-                  </button>
+    <AppShell title="Dashboard">
+      <div className="-mt-32">
+        <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+          <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
+            <h2 className="text-lg font-medium text-gray-900 mb-6">Analytics Overview</h2>
+            
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {/* Total Diagrams Card */}
+              <div className="bg-white overflow-hidden shadow rounded-lg border border-gray-200">
+                <div className="p-5">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <ChartBarIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
+                    </div>
+                    <div className="ml-5 w-0 flex-1">
+                      <dl>
+                        <dt className="text-sm font-medium text-gray-500 truncate">
+                          Total Diagrams
+                        </dt>
+                        <dd>
+                          <div className="text-lg font-medium text-gray-900">
+                            {mockStats.totalDiagrams}
+                          </div>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
                 </div>
-                <ToulminDiagram data={argument} />
+                <div className="bg-gray-50 px-5 py-3">
+                  <div className="text-sm">
+                    <a
+                      href="/dashboard/diagrams"
+                      className="font-medium text-indigo-600 hover:text-indigo-500"
+                    >
+                      View all
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Total Users Card */}
+              <div className="bg-white overflow-hidden shadow rounded-lg border border-gray-200">
+                <div className="p-5">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <UsersIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
+                    </div>
+                    <div className="ml-5 w-0 flex-1">
+                      <dl>
+                        <dt className="text-sm font-medium text-gray-500 truncate">
+                          Active Users
+                        </dt>
+                        <dd>
+                          <div className="text-lg font-medium text-gray-900">
+                            {mockStats.totalUsers}
+                          </div>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 px-5 py-3">
+                  <div className="text-sm">
+                    <a
+                      href="/dashboard/users"
+                      className="font-medium text-indigo-600 hover:text-indigo-500"
+                    >
+                      View details
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Highest Word Count Card */}
+              <div className="bg-white overflow-hidden shadow rounded-lg border border-gray-200">
+                <div className="p-5">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <DocumentTextIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
+                    </div>
+                    <div className="ml-5 w-0 flex-1">
+                      <dl>
+                        <dt className="text-sm font-medium text-gray-500 truncate">
+                          Largest Diagram
+                        </dt>
+                        <dd>
+                          <div className="text-lg font-medium text-gray-900">
+                            {mockStats.highestWordCountDiagram.wordCount} words
+                          </div>
+                          <div className="text-sm text-gray-500 mt-1">
+                            {mockStats.highestWordCountDiagram.title}
+                          </div>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 px-5 py-3">
+                  <div className="text-sm">
+                    <a
+                      href={`/dashboard/diagrams/${encodeURIComponent(mockStats.highestWordCountDiagram.title)}`}
+                      className="font-medium text-indigo-600 hover:text-indigo-500"
+                    >
+                      View diagram
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-          )}
-        </main>
+
+            <div className="mt-8">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-medium text-gray-900">Recent Activity</h3>
+                <a 
+                  href="/dashboard/argument-builder" 
+                  className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Create New Diagram
+                </a>
+              </div>
+              <div className="mt-4 bg-gray-50 p-6 rounded-lg text-center text-gray-500">
+                No recent activity to display. Create your first diagram to get started.
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </ProtectedRoute>
+    </AppShell>
   );
 }
