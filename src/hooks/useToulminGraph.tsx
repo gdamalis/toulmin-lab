@@ -1,14 +1,13 @@
-import { useEffect, useMemo, useRef } from "react";
+import { NODE_STYLES } from "@/constants/toulmin-styles";
+import type { ToulminArgument } from "@/types/toulmin";
 import {
-  type Node,
   type Edge,
   Handle,
-  Position,
   MarkerType,
-  useReactFlow,
+  type Node,
+  Position
 } from "@xyflow/react";
-import type { ToulminArgument } from "@/types/toulmin";
-import { NODE_STYLES } from "@/constants/toulmin-styles";
+import { useMemo } from "react";
 
 const MidpointNode = () => (
   <div style={{ width: 0, height: 0 }}>
