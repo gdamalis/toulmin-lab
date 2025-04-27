@@ -5,7 +5,7 @@ interface GoogleAuthButtonProps {
   readonly onClick: () => void;
 }
 
-export function GoogleAuthButton({ isLoading, onClick }: GoogleAuthButtonProps) {
+export function GoogleAuthButton({ isLoading, onClick }: Readonly<GoogleAuthButtonProps>) {
   return (
     <button
       type="button"

@@ -7,7 +7,7 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-export function Card({ className, children, ...props }: CardProps) {
+export function Card({ className, children, ...props }: Readonly<CardProps>) {
   return (
     <div 
       className={cn("bg-white overflow-hidden shadow rounded-lg border border-gray-200", className)}
@@ -22,7 +22,7 @@ interface CardContentProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-export function CardContent({ className, children, ...props }: CardContentProps) {
+export function CardContent({ className, children, ...props }: Readonly<CardContentProps>) {
   return (
     <div className={cn("p-5", className)} {...props}>
       {children}
@@ -34,7 +34,7 @@ interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-export function CardFooter({ className, children, ...props }: CardFooterProps) {
+export function CardFooter({ className, children, ...props }: Readonly<CardFooterProps>) {
   return (
     <div className={cn("bg-gray-50 px-5 py-3", className)} {...props}>
       {children}
@@ -56,7 +56,7 @@ export function CardHeader({
   description,
   icon,
   ...props 
-}: CardHeaderProps) {
+}: Readonly<CardHeaderProps>) {
   return (
     <div className={cn("p-5 border-b border-gray-200", className)} {...props}>
       {children || (

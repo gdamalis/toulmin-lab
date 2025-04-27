@@ -40,7 +40,7 @@ interface ExportButtonProps {
   readonly icon: React.ReactNode;
 }
 
-function ExportButton({ onClick, label, icon }: ExportButtonProps) {
+function ExportButton({ onClick, label, icon }: Readonly<ExportButtonProps>) {
   return (
     <button
       onClick={onClick}

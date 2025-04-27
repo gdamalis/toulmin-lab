@@ -26,7 +26,7 @@ interface ToulminDiagramProps {
 
 const snapGrid: [number, number] = [6, 6];
 
-function ToulminDiagram({ data }: ToulminDiagramProps) {
+function ToulminDiagram({ data }: Readonly<ToulminDiagramProps>) {
   const diagramRef = useRef<HTMLDivElement>(null);
   const { initialNodes, initialEdges, nodeTypes } = useToulminGraph(data);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -89,7 +89,7 @@ function ToulminDiagram({ data }: ToulminDiagramProps) {
   );
 }
 
-function ToulminDiagramWithProvider({ data }: ToulminDiagramProps) {
+function ToulminDiagramWithProvider({ data }: Readonly<ToulminDiagramProps>) {
   return (
     <ReactFlowProvider>
       <ToulminDiagram data={data} />

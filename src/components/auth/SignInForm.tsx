@@ -11,7 +11,7 @@ interface SignInFormProps {
   readonly onSubmit: (formData: FormState) => void;
 }
 
-export function SignInForm({ error, isLoading, onSubmit }: SignInFormProps) {
+export function SignInForm({ error, isLoading, onSubmit }: Readonly<SignInFormProps>) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);

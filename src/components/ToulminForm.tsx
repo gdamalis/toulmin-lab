@@ -20,7 +20,7 @@ const emptyArgument: ToulminArgument = {
   rebuttal: '',
 };
 
-export function ToulminForm({ onSubmit, initialData = emptyArgument }: ToulminFormProps) {
+export function ToulminForm({ onSubmit, initialData = emptyArgument }: Readonly<ToulminFormProps>) {
   const [formData, setFormData] = useState<ToulminArgument>(initialData);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

@@ -4,7 +4,7 @@ interface FormDividerProps {
   readonly text: string;
 }
 
-export function FormDivider({ text }: FormDividerProps) {
+export function FormDivider({ text }: Readonly<FormDividerProps>) {
   return (
     <div className="relative mt-10">
       <div aria-hidden="true" className="absolute inset-0 flex items-center">

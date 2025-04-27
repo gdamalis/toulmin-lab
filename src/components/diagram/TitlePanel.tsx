@@ -6,7 +6,7 @@ interface TitlePanelProps {
   readonly className?: string;
 }
 
-export function TitlePanel({ data, className = "" }: TitlePanelProps) {
+export function TitlePanel({ data, className = "" }: Readonly<TitlePanelProps>) {
   return (
     <Panel
       position="top-left"

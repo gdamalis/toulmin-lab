@@ -7,7 +7,7 @@ interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
   readonly id: string;
 }
 
-export function FormInput({ label, id, ...props }: FormInputProps) {
+export function FormInput({ label, id, ...props }: Readonly<FormInputProps>) {
   return (
     <div>
       <label htmlFor={id} className="block text-sm/6 font-medium text-gray-900">
