@@ -1,29 +1,31 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import type { ToulminArgument } from '@/types/toulmin';
+import { useAuth } from "@/contexts/AuthContext";
+import { emptyArgument, sampleArgument } from "@/data/toulminTemplates";
+import type { ToulminArgument } from "@/types/toulmin";
+import { useEffect, useState } from "react";
+import { DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 
 interface ToulminFormProps {
   readonly onSubmit: (data: ToulminArgument) => void;
-  readonly initialData?: ToulminArgument;
 }
 
-const emptyArgument: ToulminArgument = {
-  name: '',
-  author: '',
-  claim: '',
-  grounds: '',
-  groundsBacking: '',
-  warrant: '',
-  warrantBacking: '',
-  qualifier: '',
-  rebuttal: '',
-};
+export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
+  const { user } = useAuth();
+  const [formData, setFormData] = useState<ToulminArgument>(emptyArgument);
 
-export function ToulminForm({ onSubmit, initialData = emptyArgument }: Readonly<ToulminFormProps>) {
-  const [formData, setFormData] = useState<ToulminArgument>(initialData);
+  // Autopopulate author field with user's name when user data is available
+  useEffect(() => {
+    if (user && formData.author === "") {
+      // Get user's display name or use email if name not available
+      const userName = user.displayName ?? user.email?.split("@")[0] ?? "";
+      setFormData((prev) => ({ ...prev, author: userName }));
+    }
+  }, [user, formData.author]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -37,14 +39,32 @@ export function ToulminForm({ onSubmit, initialData = emptyArgument }: Readonly<
     <form onSubmit={handleSubmit}>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
-          <h2 className="text-base/7 font-semibold text-gray-900">Diagram Details</h2>
-          <p className="mt-1 text-sm/6 text-gray-600">
-            Provide basic information about your argument diagram.
-          </p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-base/7 font-semibold text-gray-900">
+                Diagram Details
+              </h2>
+              <p className="mt-1 text-sm/6 text-gray-600">
+                Provide basic information about your argument diagram.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setFormData(sampleArgument)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              title="Load sample argument"
+            >
+              <DocumentDuplicateIcon className="w-4 h-4" />
+              <span>Use Sample</span>
+            </button>
+          </div>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-3">
-              <label htmlFor="name" className="block text-sm/6 font-medium text-gray-900">
+              <label
+                htmlFor="name"
+                className="block text-sm/6 font-medium text-gray-900"
+              >
                 Argument Name
               </label>
               <div className="mt-2">
@@ -62,7 +82,10 @@ export function ToulminForm({ onSubmit, initialData = emptyArgument }: Readonly<
             </div>
 
             <div className="sm:col-span-3">
-              <label htmlFor="author" className="block text-sm/6 font-medium text-gray-900">
+              <label
+                htmlFor="author"
+                className="block text-sm/6 font-medium text-gray-900"
+              >
                 Author
               </label>
               <div className="mt-2">
@@ -82,14 +105,20 @@ export function ToulminForm({ onSubmit, initialData = emptyArgument }: Readonly<
         </div>
 
         <div className="border-b border-gray-900/10 pb-12">
-          <h2 className="text-base/7 font-semibold text-gray-900">Toulmin Argument Structure</h2>
+          <h2 className="text-base/7 font-semibold text-gray-900">
+            Toulmin Argument Structure
+          </h2>
           <p className="mt-1 text-sm/6 text-gray-600">
-            Complete the fields below to build your logical argument using the Toulmin model.
+            Complete the fields below to build your logical argument using the
+            Toulmin model.
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="col-span-full">
-              <label htmlFor="claim" className="block text-sm/6 font-medium text-gray-900">
+              <label
+                htmlFor="claim"
+                className="block text-sm/6 font-medium text-gray-900"
+              >
                 Claim (Conclusion)
               </label>
               <div className="mt-2">
@@ -107,7 +136,10 @@ export function ToulminForm({ onSubmit, initialData = emptyArgument }: Readonly<
             </div>
 
             <div className="col-span-full">
-              <label htmlFor="grounds" className="block text-sm/6 font-medium text-gray-900">
+              <label
+                htmlFor="grounds"
+                className="block text-sm/6 font-medium text-gray-900"
+              >
                 Grounds (Data)
               </label>
               <div className="mt-2">
@@ -125,7 +157,10 @@ export function ToulminForm({ onSubmit, initialData = emptyArgument }: Readonly<
             </div>
 
             <div className="col-span-full">
-              <label htmlFor="groundsBacking" className="block text-sm/6 font-medium text-gray-900">
+              <label
+                htmlFor="groundsBacking"
+                className="block text-sm/6 font-medium text-gray-900"
+              >
                 Backing for Grounds
               </label>
               <div className="mt-2">
@@ -144,14 +179,19 @@ export function ToulminForm({ onSubmit, initialData = emptyArgument }: Readonly<
         </div>
 
         <div className="border-b border-gray-900/10 pb-12">
-          <h2 className="text-base/7 font-semibold text-gray-900">Reasoning & Justification</h2>
+          <h2 className="text-base/7 font-semibold text-gray-900">
+            Reasoning & Justification
+          </h2>
           <p className="mt-1 text-sm/6 text-gray-600">
             Connect your evidence to your claim through logical reasoning.
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="col-span-full">
-              <label htmlFor="warrant" className="block text-sm/6 font-medium text-gray-900">
+              <label
+                htmlFor="warrant"
+                className="block text-sm/6 font-medium text-gray-900"
+              >
                 Warrant (Justification)
               </label>
               <div className="mt-2">
@@ -169,7 +209,10 @@ export function ToulminForm({ onSubmit, initialData = emptyArgument }: Readonly<
             </div>
 
             <div className="col-span-full">
-              <label htmlFor="warrantBacking" className="block text-sm/6 font-medium text-gray-900">
+              <label
+                htmlFor="warrantBacking"
+                className="block text-sm/6 font-medium text-gray-900"
+              >
                 Backing for Warrant
               </label>
               <div className="mt-2">
@@ -188,14 +231,19 @@ export function ToulminForm({ onSubmit, initialData = emptyArgument }: Readonly<
         </div>
 
         <div className="border-b border-gray-900/10 pb-12">
-          <h2 className="text-base/7 font-semibold text-gray-900">Limitations & Challenges</h2>
+          <h2 className="text-base/7 font-semibold text-gray-900">
+            Limitations & Challenges
+          </h2>
           <p className="mt-1 text-sm/6 text-gray-600">
             Acknowledge the scope and potential objections to your argument.
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-3">
-              <label htmlFor="qualifier" className="block text-sm/6 font-medium text-gray-900">
+              <label
+                htmlFor="qualifier"
+                className="block text-sm/6 font-medium text-gray-900"
+              >
                 Qualifier (Modality)
               </label>
               <div className="mt-2">
@@ -212,7 +260,10 @@ export function ToulminForm({ onSubmit, initialData = emptyArgument }: Readonly<
             </div>
 
             <div className="sm:col-span-3">
-              <label htmlFor="rebuttal" className="block text-sm/6 font-medium text-gray-900">
+              <label
+                htmlFor="rebuttal"
+                className="block text-sm/6 font-medium text-gray-900"
+              >
                 Rebuttal (Objections)
               </label>
               <div className="mt-2">
@@ -248,4 +299,4 @@ export function ToulminForm({ onSubmit, initialData = emptyArgument }: Readonly<
       </div>
     </form>
   );
-} 
+}

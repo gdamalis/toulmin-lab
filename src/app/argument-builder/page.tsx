@@ -1,25 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { ToulminForm } from "@/components/ToulminForm";
-import ToulminDiagram from "@/components/ToulminDiagram";
-import type { ToulminArgument } from "@/types/toulmin";
 import AppShell from "@/components/layout/AppShell";
-
-// Sample data for initial demo
-const sampleArgument: ToulminArgument = {
-  name: "Renewable Energy Proposal",
-  author: "Environmental Policy Team",
-  claim: "We should implement renewable energy sources",
-  grounds: "Fossil fuels are depleting and causing climate change",
-  groundsBacking:
-    "Scientific studies show global temperature rising due to CO2 emissions",
-  warrant: "Renewable energy is sustainable and reduces carbon emissions",
-  warrantBacking:
-    "Wind and solar power produce zero emissions during operation",
-  qualifier: "In most developed countries",
-  rebuttal: "Unless the infrastructure costs prove prohibitively expensive",
-};
+import ToulminDiagram from "@/components/ToulminDiagram";
+import { ToulminForm } from "@/components/ToulminForm";
+import { sampleArgument } from "@/data/toulminTemplates";
+import type { ToulminArgument } from "@/types/toulmin";
+import { useState } from "react";
 
 export default function ArgumentBuilder() {
   const [argument, setArgument] = useState<ToulminArgument>(sampleArgument);
@@ -44,7 +30,7 @@ export default function ArgumentBuilder() {
                 <h2 className="text-xl font-semibold mb-6">
                   Create Your Toulmin Argument
                 </h2>
-                <ToulminForm onSubmit={handleFormSubmit} initialData={argument} />
+                <ToulminForm onSubmit={handleFormSubmit} />
               </div>
             ) : (
               <div className="space-y-6">
@@ -76,4 +62,4 @@ export default function ArgumentBuilder() {
       </div>
     </AppShell>
   );
-} 
+}
