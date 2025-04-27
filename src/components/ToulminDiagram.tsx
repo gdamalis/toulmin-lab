@@ -1,6 +1,7 @@
 "use client";
 
 import { ExportButtonGroup } from "@/components/diagram/ExportButtonGroup";
+import { TitlePanel } from "@/components/diagram/TitlePanel";
 import { EXPORT_CONFIG } from "@/constants/toulmin-styles";
 import { useImageExport } from "@/hooks/useImageExport";
 import useLayout from "@/hooks/useLayout";
@@ -79,6 +80,7 @@ function ToulminDiagram({ data }: ToulminDiagramProps) {
           minZoom={0.2}
           maxZoom={3}
         >
+          <TitlePanel data={data} />
           <Controls />
           <Background variant={BackgroundVariant.Dots} gap={12} />
         </ReactFlow>

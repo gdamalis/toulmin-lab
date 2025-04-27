@@ -9,6 +9,8 @@ interface ToulminFormProps {
 }
 
 const emptyArgument: ToulminArgument = {
+  name: '',
+  author: '',
   claim: '',
   grounds: '',
   groundsBacking: '',
@@ -32,119 +34,214 @@ export function ToulminForm({ onSubmit, initialData = emptyArgument }: ToulminFo
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="claim" className="block text-sm font-medium">
-          Claim (Conclusion)
-        </label>
-        <textarea
-          id="claim"
-          name="claim"
-          value={formData.claim}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          placeholder="What are you trying to prove?"
-          rows={2}
-          required
-        />
+    <form onSubmit={handleSubmit}>
+      <div className="space-y-12">
+        <div className="border-b border-gray-900/10 pb-12">
+          <h2 className="text-base/7 font-semibold text-gray-900">Diagram Details</h2>
+          <p className="mt-1 text-sm/6 text-gray-600">
+            Provide basic information about your argument diagram.
+          </p>
+
+          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+            <div className="sm:col-span-3">
+              <label htmlFor="name" className="block text-sm/6 font-medium text-gray-900">
+                Argument Name
+              </label>
+              <div className="mt-2">
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  placeholder="e.g., Climate Change Policy Argument"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-3">
+              <label htmlFor="author" className="block text-sm/6 font-medium text-gray-900">
+                Author
+              </label>
+              <div className="mt-2">
+                <input
+                  id="author"
+                  name="author"
+                  type="text"
+                  value={formData.author}
+                  onChange={handleChange}
+                  required
+                  placeholder="Your name"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-b border-gray-900/10 pb-12">
+          <h2 className="text-base/7 font-semibold text-gray-900">Toulmin Argument Structure</h2>
+          <p className="mt-1 text-sm/6 text-gray-600">
+            Complete the fields below to build your logical argument using the Toulmin model.
+          </p>
+
+          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+            <div className="col-span-full">
+              <label htmlFor="claim" className="block text-sm/6 font-medium text-gray-900">
+                Claim (Conclusion)
+              </label>
+              <div className="mt-2">
+                <textarea
+                  id="claim"
+                  name="claim"
+                  value={formData.claim}
+                  onChange={handleChange}
+                  rows={2}
+                  required
+                  placeholder="What are you trying to prove?"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+              </div>
+            </div>
+
+            <div className="col-span-full">
+              <label htmlFor="grounds" className="block text-sm/6 font-medium text-gray-900">
+                Grounds (Data)
+              </label>
+              <div className="mt-2">
+                <textarea
+                  id="grounds"
+                  name="grounds"
+                  value={formData.grounds}
+                  onChange={handleChange}
+                  rows={2}
+                  required
+                  placeholder="What evidence supports your claim?"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+              </div>
+            </div>
+
+            <div className="col-span-full">
+              <label htmlFor="groundsBacking" className="block text-sm/6 font-medium text-gray-900">
+                Backing for Grounds
+              </label>
+              <div className="mt-2">
+                <textarea
+                  id="groundsBacking"
+                  name="groundsBacking"
+                  value={formData.groundsBacking}
+                  onChange={handleChange}
+                  rows={2}
+                  placeholder="Why is this evidence credible?"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-b border-gray-900/10 pb-12">
+          <h2 className="text-base/7 font-semibold text-gray-900">Reasoning & Justification</h2>
+          <p className="mt-1 text-sm/6 text-gray-600">
+            Connect your evidence to your claim through logical reasoning.
+          </p>
+
+          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+            <div className="col-span-full">
+              <label htmlFor="warrant" className="block text-sm/6 font-medium text-gray-900">
+                Warrant (Justification)
+              </label>
+              <div className="mt-2">
+                <textarea
+                  id="warrant"
+                  name="warrant"
+                  value={formData.warrant}
+                  onChange={handleChange}
+                  rows={2}
+                  required
+                  placeholder="How does your evidence connect to your claim?"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+              </div>
+            </div>
+
+            <div className="col-span-full">
+              <label htmlFor="warrantBacking" className="block text-sm/6 font-medium text-gray-900">
+                Backing for Warrant
+              </label>
+              <div className="mt-2">
+                <textarea
+                  id="warrantBacking"
+                  name="warrantBacking"
+                  value={formData.warrantBacking}
+                  onChange={handleChange}
+                  rows={2}
+                  placeholder="Why is this logical connection valid?"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-b border-gray-900/10 pb-12">
+          <h2 className="text-base/7 font-semibold text-gray-900">Limitations & Challenges</h2>
+          <p className="mt-1 text-sm/6 text-gray-600">
+            Acknowledge the scope and potential objections to your argument.
+          </p>
+
+          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+            <div className="sm:col-span-3">
+              <label htmlFor="qualifier" className="block text-sm/6 font-medium text-gray-900">
+                Qualifier (Modality)
+              </label>
+              <div className="mt-2">
+                <textarea
+                  id="qualifier"
+                  name="qualifier"
+                  value={formData.qualifier}
+                  onChange={handleChange}
+                  rows={2}
+                  placeholder="Under what circumstances is your claim true? (e.g., 'usually', 'sometimes')"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-3">
+              <label htmlFor="rebuttal" className="block text-sm/6 font-medium text-gray-900">
+                Rebuttal (Objections)
+              </label>
+              <div className="mt-2">
+                <textarea
+                  id="rebuttal"
+                  name="rebuttal"
+                  value={formData.rebuttal}
+                  onChange={handleChange}
+                  rows={2}
+                  placeholder="When would your claim not hold true?"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div>
-        <label htmlFor="grounds" className="block text-sm font-medium">
-          Grounds (Data)
-        </label>
-        <textarea
-          id="grounds"
-          name="grounds"
-          value={formData.grounds}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          placeholder="What evidence supports your claim?"
-          rows={2}
-          required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="groundsBacking" className="block text-sm font-medium">
-          Backing for Grounds
-        </label>
-        <textarea
-          id="groundsBacking"
-          name="groundsBacking"
-          value={formData.groundsBacking}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          placeholder="Why is this evidence credible?"
-          rows={2}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="warrant" className="block text-sm font-medium">
-          Warrant (Justification)
-        </label>
-        <textarea
-          id="warrant"
-          name="warrant"
-          value={formData.warrant}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          placeholder="How does your evidence connect to your claim?"
-          rows={2}
-          required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="warrantBacking" className="block text-sm font-medium">
-          Backing for Warrant
-        </label>
-        <textarea
-          id="warrantBacking"
-          name="warrantBacking"
-          value={formData.warrantBacking}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          placeholder="Why is this logical connection valid?"
-          rows={2}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="qualifier" className="block text-sm font-medium">
-          Qualifier (Modality)
-        </label>
-        <textarea
-          id="qualifier"
-          name="qualifier"
-          value={formData.qualifier}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          placeholder="Under what circumstances is your claim true? (e.g., 'usually', 'sometimes')"
-          rows={2}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="rebuttal" className="block text-sm font-medium">
-          Rebuttal (Objections)
-        </label>
-        <textarea
-          id="rebuttal"
-          name="rebuttal"
-          value={formData.rebuttal}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          placeholder="When would your claim not hold true?"
-          rows={2}
-        />
-      </div>
-
-      <div>
+      <div className="mt-6 flex items-center justify-end gap-x-6">
+        <button
+          type="button"
+          className="text-sm/6 font-semibold text-gray-900"
+          onClick={() => setFormData(emptyArgument)}
+        >
+          Clear
+        </button>
         <button
           type="submit"
-          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Generate Diagram
         </button>

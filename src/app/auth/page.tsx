@@ -15,7 +15,6 @@ export default function Auth() {
           height={40}
           className="mx-auto w-10 h-10"
         />
-        {/* Title is included in AuthForm component */}
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">

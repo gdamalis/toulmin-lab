@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/Button';
+import { DocumentArrowDownIcon, PhotoIcon } from "@heroicons/react/24/outline";
 
 interface ExportButtonGroupProps {
-  readonly onExportPNG: () => void;
-  readonly onExportJPG: () => void;
-  readonly onExportPDF: () => void;
+  readonly onExportPNG: () => Promise<string | null | undefined>;
+  readonly onExportJPG: () => Promise<string | null | undefined>;
+  readonly onExportPDF: () => Promise<string | null | undefined>;
 }
 
 export function ExportButtonGroup({
@@ -14,28 +14,41 @@ export function ExportButtonGroup({
   onExportPDF,
 }: ExportButtonGroupProps) {
   return (
-    <div className="flex space-x-2">
-      <Button 
+    <div className="flex flex-wrap gap-2 justify-end">
+      <ExportButton
         onClick={onExportPNG}
-        variant="blue"
-        aria-label="Download diagram as PNG"
-      >
-        Download PNG
-      </Button>
-      <Button
+        label="PNG"
+        icon={<PhotoIcon className="w-4 h-4" />}
+      />
+      <ExportButton
         onClick={onExportJPG}
-        variant="green"
-        aria-label="Download diagram as JPG"
-      >
-        Download JPG
-      </Button>
-      <Button
+        label="JPG"
+        icon={<PhotoIcon className="w-4 h-4" />}
+      />
+      <ExportButton
         onClick={onExportPDF}
-        variant="purple"
-        aria-label="Download diagram as PDF"
-      >
-        Download PDF
-      </Button>
+        label="PDF"
+        icon={<DocumentArrowDownIcon className="w-4 h-4" />}
+      />
     </div>
   );
-} 
+}
+
+interface ExportButtonProps {
+  readonly onClick: () => Promise<string | null | undefined>;
+  readonly label: string;
+  readonly icon: React.ReactNode;
+}
+
+function ExportButton({ onClick, label, icon }: ExportButtonProps) {
+  return (
+    <button
+      onClick={onClick}
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      title={`Export as ${label}`}
+    >
+      {icon}
+      <span>Export {label}</span>
+    </button>
+  );
+}

@@ -8,6 +8,8 @@ import AppShell from "@/components/layout/AppShell";
 
 // Sample data for initial demo
 const sampleArgument: ToulminArgument = {
+  name: "Renewable Energy Proposal",
+  author: "Environmental Policy Team",
   claim: "We should implement renewable energy sources",
   grounds: "Fossil fuels are depleting and causing climate change",
   groundsBacking:
@@ -48,9 +50,16 @@ export default function ArgumentBuilder() {
               <div className="space-y-6">
                 <div className="overflow-hidden p-2">
                   <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-semibold">
-                      Your Toulmin Diagram
-                    </h2>
+                    <div>
+                      <h2 className="text-xl font-semibold text-gray-900">
+                        {argument.name ?? "Untitled Argument"}
+                      </h2>
+                      {argument.author && (
+                        <p className="text-sm text-gray-500 mt-1">
+                          by {argument.author}
+                        </p>
+                      )}
+                    </div>
                     <button
                       onClick={handleNewDiagram}
                       className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
