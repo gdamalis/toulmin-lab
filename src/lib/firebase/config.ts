@@ -1,6 +1,6 @@
 // Firebase configuration
-import { initializeApp, getApps } from 'firebase/app';
-import { getAuth, connectAuthEmulator, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { getApps, initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -16,11 +16,12 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 export const auth = getAuth(app);
 
-// Connect to Auth emulator when in development
-if (process.env.NODE_ENV === 'development') {
-  connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
-  // Add persistence to keep auth state across redirects
-  setPersistence(auth, browserLocalPersistence);
-}
+// Disabled for now, due to the emulator not being able to provide a valid token
+// // Connect to Auth emulator when in development
+// if (process.env.NODE_ENV === 'development') {
+//   connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
+//   // Add persistence to keep auth state across redirects
+//   setPersistence(auth, browserLocalPersistence);
+// }
 
-export { app }; 
+export { app };

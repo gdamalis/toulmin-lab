@@ -11,4 +11,5 @@ export {
   ChartIcon, 
   ShareIcon,
   ArrowDownIcon 
-} from './Icon'; 
+} from './Icon';
+export { default as Toast } from './Toast'; 
