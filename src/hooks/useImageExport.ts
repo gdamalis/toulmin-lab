@@ -10,10 +10,10 @@ export interface ExportConfig {
 export function useImageExport(config: ExportConfig) {
   const { getNodes } = useReactFlow();
 
-  const nodesBounds = getNodesBounds(getNodes());
-
   const handleExportImage = useCallback(
     async (format: "png" | "jpeg" | "pdf") => {
+      const nodesBounds = getNodesBounds(getNodes());
+      
       const flowViewport = document.querySelector(
         ".react-flow__viewport"
       ) as HTMLElement;
@@ -70,7 +70,7 @@ export function useImageExport(config: ExportConfig) {
         }
       }
     },
-    [config, nodesBounds]
+    [config, getNodes]
   );
 
   return {

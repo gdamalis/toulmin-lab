@@ -38,7 +38,7 @@ export default function ArgumentBuilder() {
         <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
           <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
             {!showDiagram ? (
-              <div className="overflow-hidden">
+              <div className="overflow-hidden p-2">
                 <h2 className="text-xl font-semibold mb-6">
                   Create Your Toulmin Argument
                 </h2>
@@ -46,7 +46,7 @@ export default function ArgumentBuilder() {
               </div>
             ) : (
               <div className="space-y-6">
-                <div className="overflow-hidden">
+                <div className="overflow-hidden p-2">
                   <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-semibold">
                       Your Toulmin Diagram
