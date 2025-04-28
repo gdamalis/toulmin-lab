@@ -8,7 +8,7 @@ const uri = process.env.MONGODB_URI;
 const options = {};
 
 // Initialize clientPromise with the appropriate connection based on environment
-const clientPromise: Promise<MongoClient> = (process.env.NODE_ENV === 'development')
+const clientPromise: Promise<MongoClient> = (process.env.NODE_ENV !== 'development')
   ? (function() {
       // In development mode, use a global variable so that the value
       // is preserved across module reloads caused by HMR (Hot Module Replacement).

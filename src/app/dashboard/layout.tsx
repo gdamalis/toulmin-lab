@@ -7,10 +7,8 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  return (
-    <ProtectedRoute>
-      {children}
-    </ProtectedRoute>
-  );
-} 
+export default function DashboardLayout({
+  children,
+}: Readonly<DashboardLayoutProps>) {
+  return <ProtectedRoute>{children}</ProtectedRoute>;
+}

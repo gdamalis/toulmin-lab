@@ -1,4 +1,4 @@
-import type { ToulminArgument } from "@/types/toulmin";
+import { ToulminArgument } from "@/types/client";
 import { Panel } from "@xyflow/react";
 
 interface TitlePanelProps {
@@ -6,7 +6,10 @@ interface TitlePanelProps {
   readonly className?: string;
 }
 
-export function TitlePanel({ data, className = "" }: Readonly<TitlePanelProps>) {
+export function TitlePanel({
+  data,
+  className = "",
+}: Readonly<TitlePanelProps>) {
   return (
     <Panel
       position="top-left"
@@ -14,11 +17,11 @@ export function TitlePanel({ data, className = "" }: Readonly<TitlePanelProps>) 
       data-export-include="true"
     >
       <h3 className="text-sm font-semibold text-gray-900 truncate">
-        {data.name ?? "Untitled Argument"}
+        {data.name ?? "Untitled ToulminArgument"}
       </h3>
       {data.author && (
         <p className="text-xs text-gray-500 mt-0.5 truncate">
-          by {data.author}
+          by {data.author.name}
         </p>
       )}
     </Panel>

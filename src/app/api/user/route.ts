@@ -1,4 +1,4 @@
-import { getArgumentsByUserId } from '@/lib/mongodb/service';
+import { getToulminArgumentsByUserId } from '@/lib/mongodb/service';
 import { getToken } from '@/lib/firebase/auth-admin';
 
 export async function GET(request: Request) {
@@ -21,12 +21,12 @@ export async function GET(request: Request) {
     const userId = decodedToken.uid;
     
     // Get arguments for this user
-    const userArguments = await getArgumentsByUserId(userId);
+    const userToulminArguments = await getToulminArgumentsByUserId(userId);
     
     // Return the arguments
     return Response.json({
       success: true,
-      arguments: userArguments,
+      arguments: userToulminArguments,
     });
   } catch (error) {
     console.error('Error retrieving user diagrams:', error);

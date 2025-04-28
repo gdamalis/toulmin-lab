@@ -1,6 +1,6 @@
-import { saveArgument, createOrUpdateUser } from "@/lib/mongodb/service";
-import { ToulminArgument } from "@/types/toulmin";
 import { getToken } from "@/lib/firebase/auth-admin";
+import { createOrUpdateUser, saveToulminArgument } from "@/lib/mongodb/service";
+import { ToulminArgument } from "@/types/client";
 
 export async function POST(request: Request) {
   try {
@@ -22,10 +22,9 @@ export async function POST(request: Request) {
     const userId = decodedToken.uid;
 
     // Parse the request body
-    const data = await request.json();
-    const { argument } = data as { argument: ToulminArgument };
+    const data = (await request.json()) as ToulminArgument;
 
-    if (!argument) {
+    if (!data) {
       return Response.json({ error: "Missing argument data" }, { status: 400 });
     }
 
@@ -40,7 +39,7 @@ export async function POST(request: Request) {
     }
 
     // Save the argument to the database
-    const argumentId = await saveArgument(userId, argument);
+    const argumentId = await saveToulminArgument(data, userId);
 
     return Response.json({ success: true, argumentId });
   } catch (error) {

@@ -1,20 +1,20 @@
-import { ObjectId } from 'mongodb';
-import { ToulminArgument } from './toulmin';
+import { ObjectId } from "mongodb";
+import { BaseAuthor, BaseEntity, BaseToulminArgument } from "./base";
 
-export interface DBUser {
+// MongoDB collection types - only for server-side code
+export interface UserCollection extends BaseEntity {
   _id?: ObjectId;
   userId: string;
   name: string;
   email: string;
   picture?: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
-export interface DBArgument {
+export interface AuthorCollection extends BaseAuthor {
+  _id: ObjectId;
+}
+
+export interface ToulminArgumentCollection extends BaseToulminArgument {
   _id?: ObjectId;
-  userId: string;
-  argument: ToulminArgument;
-  createdAt: Date;
-  updatedAt: Date;
-} 
+  author: AuthorCollection;
+}

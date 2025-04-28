@@ -14,11 +14,11 @@ const LAYOUT_CONFIG = {
 };
 
 // Type definitions
-type ArgumentLayoutMap = Record<string, string[]>;
+type ToulminArgumentLayoutMap = Record<string, string[]>;
 type NodeMap = Record<string, Node>;
 
 // Layout structure definition
-const ARGUMENT_LAYOUT: ArgumentLayoutMap = {
+const ARGUMENT_LAYOUT: ToulminArgumentLayoutMap = {
   main: [
     "groundsBacking",
     "grounds",

@@ -1,33 +1,49 @@
-import { getArgumentById } from '@/lib/mongodb/service';
+import clientPromise from "@/lib/mongodb/config";
+import { ObjectId } from "mongodb";
+import { NextRequest, NextResponse } from "next/server";
 
-interface GetDiagramContext {
-  params: {
-    id: string;
-  };
-}
-
-export async function GET(_: Request, { params }: GetDiagramContext) {
+// GET /api/argument/:id - Get a specific diagram by ID
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = params;
-    
-    if (!id) {
-      return Response.json({ error: 'Diagram ID is required' }, { status: 400 });
+    const userId = req.headers.get("user-id");
+
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
-    // Get the diagram
-    const diagram = await getArgumentById(id);
-    
-    if (!diagram) {
-      return Response.json({ error: 'Diagram not found' }, { status: 404 });
+
+    const { id } = await params;
+
+    if (!id || !ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { error: "Invalid argument ID" },
+        { status: 400 }
+      );
     }
-    
-    // Return the diagram
-    return Response.json({
-      success: true,
-      argument: diagram,
+
+    const client = await clientPromise;
+    const db = client.db("toulmin_lab");
+
+    const toulminArgument = await db.collection("toulminArguments").findOne({
+      _id: new ObjectId(id),
+      userId,
     });
+
+    if (!toulminArgument) {
+      return NextResponse.json(
+        { error: "ToulminArgument not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(toulminArgument);
   } catch (error) {
-    console.error('Error retrieving diagram:', error);
-    return Response.json({ error: 'Failed to retrieve diagram' }, { status: 500 });
+    console.error("Error fetching argument:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
-} 
+}

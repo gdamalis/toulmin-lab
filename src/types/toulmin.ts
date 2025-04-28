@@ -1,6 +1,4 @@
-export interface ToulminArgument {
-  name?: string;
-  author?: string;
+export interface ToulminArgumentPart {
   claim: string;
   grounds: string;
   groundsBacking: string;

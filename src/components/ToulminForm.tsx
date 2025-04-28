@@ -1,10 +1,10 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { emptyArgument, sampleArgument } from "@/data/toulminTemplates";
-import type { ToulminArgument } from "@/types/toulmin";
-import { useEffect, useState } from "react";
+import { emptyToulminArgument, sampleToulminArgument } from "@/data/toulminTemplates";
+import { ToulminArgument } from "@/types/client";
 import { DocumentDuplicateIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
 
 interface ToulminFormProps {
   readonly onSubmit: (data: ToulminArgument) => void;
@@ -12,22 +12,49 @@ interface ToulminFormProps {
 
 export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
   const { user } = useAuth();
-  const [formData, setFormData] = useState<ToulminArgument>(emptyArgument);
+  const [formData, setFormData] = useState<ToulminArgument>(emptyToulminArgument);
 
   // Autopopulate author field with user's name when user data is available
   useEffect(() => {
-    if (user && formData.author === "") {
+    if (user && formData.author.name === "") {
       // Get user's display name or use email if name not available
       const userName = user.displayName ?? user.email?.split("@")[0] ?? "";
-      setFormData((prev) => ({ ...prev, author: userName }));
+      setFormData((prev) => ({ 
+        ...prev, 
+        author: { 
+          ...prev.author,
+          name: userName, 
+          userId: user.uid 
+        } 
+      }));
     }
-  }, [user, formData.author]);
+  }, [user, formData.author.name]);
 
-  const handleChange = (
+  const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    if (name === "name") {
+      setFormData((prev) => ({ ...prev, name: value }));
+    } else if (name === "author") {
+      setFormData((prev) => ({ 
+        ...prev, 
+        author: { 
+          ...prev.author,
+          name: value 
+        } 
+      }));
+    } else {
+      // Handle parts structure
+      setFormData((prev) => ({ 
+        ...prev, 
+        parts: { 
+          ...prev.parts, 
+          [name]: value 
+        } 
+      }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -50,7 +77,7 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
             </div>
             <button
               type="button"
-              onClick={() => setFormData(sampleArgument)}
+              onClick={() => setFormData(sampleToulminArgument)}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               title="Load sample argument"
             >
@@ -65,7 +92,7 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
                 htmlFor="name"
                 className="block text-sm/6 font-medium text-gray-900"
               >
-                Argument Name
+                ToulminArgument Name
               </label>
               <div className="mt-2">
                 <input
@@ -73,9 +100,9 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
                   name="name"
                   type="text"
                   value={formData.name}
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   required
-                  placeholder="e.g., Climate Change Policy Argument"
+                  placeholder="e.g., Climate Change Policy ToulminArgument"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -93,8 +120,8 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
                   id="author"
                   name="author"
                   type="text"
-                  value={formData.author}
-                  onChange={handleChange}
+                  value={formData.author.name}
+                  onChange={handleInputChange}
                   required
                   placeholder="Your name"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -125,8 +152,8 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
                 <textarea
                   id="claim"
                   name="claim"
-                  value={formData.claim}
-                  onChange={handleChange}
+                  value={formData.parts.claim}
+                  onChange={handleInputChange}
                   rows={2}
                   required
                   placeholder="What are you trying to prove?"
@@ -146,8 +173,8 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
                 <textarea
                   id="grounds"
                   name="grounds"
-                  value={formData.grounds}
-                  onChange={handleChange}
+                  value={formData.parts.grounds}
+                  onChange={handleInputChange}
                   rows={2}
                   required
                   placeholder="What evidence supports your claim?"
@@ -167,8 +194,8 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
                 <textarea
                   id="groundsBacking"
                   name="groundsBacking"
-                  value={formData.groundsBacking}
-                  onChange={handleChange}
+                  value={formData.parts.groundsBacking}
+                  onChange={handleInputChange}
                   rows={2}
                   placeholder="Why is this evidence credible?"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -198,8 +225,8 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
                 <textarea
                   id="warrant"
                   name="warrant"
-                  value={formData.warrant}
-                  onChange={handleChange}
+                  value={formData.parts.warrant}
+                  onChange={handleInputChange}
                   rows={2}
                   required
                   placeholder="How does your evidence connect to your claim?"
@@ -219,8 +246,8 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
                 <textarea
                   id="warrantBacking"
                   name="warrantBacking"
-                  value={formData.warrantBacking}
-                  onChange={handleChange}
+                  value={formData.parts.warrantBacking}
+                  onChange={handleInputChange}
                   rows={2}
                   placeholder="Why is this logical connection valid?"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -235,7 +262,7 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
             Limitations & Challenges
           </h2>
           <p className="mt-1 text-sm/6 text-gray-600">
-            Acknowledge the scope and potential objections to your argument.
+            Acknowledge the scope and potential objections to your toulminArgument
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -250,8 +277,8 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
                 <textarea
                   id="qualifier"
                   name="qualifier"
-                  value={formData.qualifier}
-                  onChange={handleChange}
+                  value={formData.parts.qualifier}
+                  onChange={handleInputChange}
                   rows={2}
                   placeholder="Under what circumstances is your claim true? (e.g., 'usually', 'sometimes')"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -270,8 +297,8 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
                 <textarea
                   id="rebuttal"
                   name="rebuttal"
-                  value={formData.rebuttal}
-                  onChange={handleChange}
+                  value={formData.parts.rebuttal}
+                  onChange={handleInputChange}
                   rows={2}
                   placeholder="When would your claim not hold true?"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -286,7 +313,7 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
         <button
           type="button"
           className="text-sm/6 font-semibold text-gray-900"
-          onClick={() => setFormData(emptyArgument)}
+          onClick={() => setFormData(emptyToulminArgument)}
         >
           Clear
         </button>

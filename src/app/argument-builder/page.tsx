@@ -3,21 +3,21 @@
 import AppShell from "@/components/layout/AppShell";
 import ToulminDiagram from "@/components/ToulminDiagram";
 import { ToulminForm } from "@/components/ToulminForm";
-import { sampleArgument } from "@/data/toulminTemplates";
-import type { ToulminArgument } from "@/types/toulmin";
+import { sampleToulminArgument } from "@/data/toulminTemplates";
+import { ToulminArgument } from "@/types/client";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import useNotification from "@/hooks/useNotification";
 
-export default function ArgumentBuilder() {
-  const [argument, setArgument] = useState<ToulminArgument>(sampleArgument);
+export default function ToulminArgumentBuilder() {
+  const [toulminArgument, setToulminArgument] = useState<ToulminArgument>(sampleToulminArgument);
   const [showDiagram, setShowDiagram] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { user } = useAuth();
   const { showSuccess, showError } = useNotification();
 
   const handleFormSubmit = async (data: ToulminArgument) => {
-    setArgument(data);
+    setToulminArgument(data);
     setShowDiagram(true);
 
     // If user is logged in, save to database
@@ -35,9 +35,7 @@ export default function ArgumentBuilder() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            argument: data,
-          }),
+          body: JSON.stringify(data),
         });
 
         const result = await response.json();
@@ -50,7 +48,7 @@ export default function ArgumentBuilder() {
       } catch (error) {
         console.error("Error saving diagram:", error);
         showError(
-          "Save Failed", 
+          "Save Failed",
           error instanceof Error ? error.message : "Failed to save diagram"
         );
       } finally {
@@ -64,7 +62,7 @@ export default function ArgumentBuilder() {
   };
 
   return (
-    <AppShell title="Argument Builder">
+    <AppShell title="ToulminArgument Builder">
       <div className="-mt-32">
         <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
           <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
@@ -81,11 +79,11 @@ export default function ArgumentBuilder() {
                   <div className="flex justify-between items-center mb-6">
                     <div>
                       <h2 className="text-xl font-semibold text-gray-900">
-                        {argument.name ?? "Untitled Argument"}
+                        {toulminArgument.name ?? "Untitled ToulminArgument"}
                       </h2>
-                      {argument.author && (
+                      {toulminArgument.author && (
                         <p className="text-sm text-gray-500 mt-1">
-                          by {argument.author}
+                          by {toulminArgument.author.name}
                         </p>
                       )}
                       {!user && (
@@ -104,11 +102,11 @@ export default function ArgumentBuilder() {
                         onClick={handleNewDiagram}
                         className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                       >
-                        Edit Argument
+                        Edit ToulminArgument
                       </button>
                     </div>
                   </div>
-                  <ToulminDiagram data={argument} />
+                  <ToulminDiagram data={toulminArgument} />
                 </div>
               </div>
             )}

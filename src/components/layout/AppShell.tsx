@@ -26,7 +26,7 @@ interface AppShellProps {
 const navigation = [
   { name: "Dashboard", href: "/dashboard", current: true },
   {
-    name: "Argument Builder",
+    name: "ToulminArgument Builder",
     href: "/argument-builder",
     current: false,
   },
