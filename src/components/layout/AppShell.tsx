@@ -27,7 +27,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", current: true },
   {
     name: "ToulminArgument Builder",
-    href: "/argument-builder",
+    href: "/argument/create",
     current: false,
   },
 ];

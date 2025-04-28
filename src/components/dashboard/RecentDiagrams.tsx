@@ -115,7 +115,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
                     <MenuItem>
                       {({ active }) => (
                         <a
-                          href={`/argument-builder/${toulminArgument._id}`}
+                          href={`/argument/create/${toulminArgument._id}`}
                           className={classNames(
                             active ? "bg-gray-50" : "",
                             "block px-3 py-1 text-sm leading-6 text-gray-900"
@@ -170,7 +170,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
     <div className="mt-8">
       <div className="flex items-center justify-between">
         <Typography variant="h3">Recent Activity</Typography>
-        <Button href="/argument-builder">Create New Diagram</Button>
+        <Button href="/argument/create">Create New Diagram</Button>
       </div>
       
       {renderDiagramContent()}

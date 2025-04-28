@@ -58,7 +58,7 @@ export default function ToulminArgumentViewPage({
   }, [toulminArgumentId, user]);
 
   const handleEdit = () => {
-    router.push(`/argument-builder/${toulminArgumentId}`);
+    router.push(`/argument/create/${toulminArgumentId}`);
   };
 
   const handleBack = () => {
