@@ -109,3 +109,40 @@ export const getToulminArgumentById = async (id: string): Promise<ToulminArgumen
   
   return toClientToulminArgument(doc);
 };
+
+export const updateToulminArgument = async (
+  id: string,
+  clientArg: ToulminArgument,
+  userId: string
+): Promise<boolean> => {
+  const collection = await getCollection<ToulminArgumentCollection & Document>(
+    COLLECTIONS.ARGUMENTS
+  );
+
+  // Make sure the argument exists and belongs to the user
+  const existingArg = await collection.findOne({
+    _id: new ObjectId(id),
+    "author.userId": userId
+  });
+
+  if (!existingArg) {
+    throw new Error("Argument not found or not authorized to update");
+  }
+
+  // Convert client argument to collection format
+  const dbArg = toCollectionToulminArgument(clientArg);
+  
+  // Update the author from existing document (don't modify the author)
+  dbArg.author = existingArg.author;
+  
+  // Update updatedAt timestamp
+  dbArg.updatedAt = new Date();
+
+  // Update document
+  const result = await collection.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: dbArg }
+  );
+
+  return result.modifiedCount === 1;
+};

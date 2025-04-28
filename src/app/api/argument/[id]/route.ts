@@ -2,6 +2,9 @@ import { COLLECTIONS } from "@/constants/database.constants";
 import clientPromise from "@/lib/mongodb/config";
 import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "@/lib/firebase/auth-admin";
+import { updateToulminArgument } from "@/lib/mongodb/service";
+import { ToulminArgument } from "@/types/client";
 
 // GET /api/argument/:id - Get a specific diagram by ID
 export async function GET(
@@ -46,6 +49,64 @@ export async function GET(
     console.error("Error fetching argument:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+// PUT /api/argument/:id - Update a specific diagram by ID
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    // Verify authentication
+    const authHeader = req.headers.get("Authorization");
+
+    if (!authHeader?.startsWith("Bearer ")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const token = authHeader.split("Bearer ")[1];
+
+    // Verify the token
+    const decodedToken = await getToken(token);
+    if (!decodedToken) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
+
+    const userId = decodedToken.uid;
+    const { id } = await params;
+
+    if (!id || !ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { error: "Invalid argument ID" },
+        { status: 400 }
+      );
+    }
+
+    // Parse the request body
+    const data = (await req.json()) as ToulminArgument;
+
+    if (!data) {
+      return NextResponse.json({ error: "Missing argument data" }, { status: 400 });
+    }
+
+    // Update the argument
+    const updated = await updateToulminArgument(id, data, userId);
+
+    if (!updated) {
+      return NextResponse.json(
+        { error: "Failed to update argument" },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json({ success: true, toulminArgumentId: id });
+  } catch (error) {
+    console.error("Error updating argument:", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Internal Server Error" },
       { status: 500 }
     );
   }

@@ -115,7 +115,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
                     <MenuItem>
                       {({ active }) => (
                         <a
-                          href={`/argument/create/${toulminArgument._id}`}
+                          href={`/argument/edit/${toulminArgument._id}`}
                           className={classNames(
                             active ? "bg-gray-50" : "",
                             "block px-3 py-1 text-sm leading-6 text-gray-900"
