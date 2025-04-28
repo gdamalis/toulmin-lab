@@ -119,13 +119,20 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                             </MenuButton>
                           </div>
                           <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden">
+                            <div className="px-4 py-3">
+                              <p className="text-sm font-medium text-gray-900">
+                                {user?.displayName ?? user?.email?.split('@')[0] ?? 'User'}
+                              </p>
+                              <p className="text-xs text-gray-500 truncate">{user?.email ?? ''}</p>
+                            </div>
+                            <div className="border-t border-gray-100 my-1"></div>
                             <MenuItem>
                               {({ active }) => (
                                 <Button
                                   onClick={handleSignOut}
                                   className={classNames(
                                     active ? "bg-gray-100" : "",
-                                    "block w-full text-left px-4 py-2 text-sm text-gray-700"
+                                    "block w-full text-left px-4 py-2 text-sm text-gray-700 border-none"
                                   )}
                                   variant="secondary"
                                 >
