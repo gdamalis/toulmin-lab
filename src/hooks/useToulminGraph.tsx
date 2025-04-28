@@ -8,6 +8,7 @@ import {
   Position,
 } from "@xyflow/react";
 import { memo, useMemo } from "react";
+import { useTranslations } from "next-intl";
 
 const MidpointNode = memo(() => (
   <div style={{ width: 0, height: 0 }}>
@@ -133,6 +134,8 @@ const nodeTypes = {
 };
 
 export function useToulminGraph(data: ToulminArgument) {
+  const t = useTranslations("pages.argument");
+  
   const initialNodes: Node[] = useMemo(() => {
     const baseNodes: Node[] = [
       {
@@ -140,7 +143,7 @@ export function useToulminGraph(data: ToulminArgument) {
         type: "element",
         data: {
           label: data.parts.groundsBacking,
-          title: "BACKING FOR GROUNDS",
+          title: t("evidenceBacking"),
         },
         position: { x: 0, y: 400 },
         style: NODE_STYLES.groundsBacking,
@@ -149,7 +152,7 @@ export function useToulminGraph(data: ToulminArgument) {
       {
         id: "grounds",
         type: "element",
-        data: { label: data.parts.grounds, title: "GROUNDS" },
+        data: { label: data.parts.grounds, title: t("evidence") },
         position: { x: 270, y: 400 },
         style: NODE_STYLES.grounds,
       },
@@ -158,7 +161,7 @@ export function useToulminGraph(data: ToulminArgument) {
         type: "element",
         data: {
           label: data.parts.warrantBacking,
-          title: "BACKING FOR WARRANT",
+          title: t("backing"),
         },
         position: { x: 450, y: 0 },
         style: NODE_STYLES.warrantBacking,
@@ -166,7 +169,7 @@ export function useToulminGraph(data: ToulminArgument) {
       {
         id: "warrant",
         type: "element",
-        data: { label: data.parts.warrant, title: "WARRANT" },
+        data: { label: data.parts.warrant, title: t("warrant") },
         position: { x: 450, y: 200 },
         style: NODE_STYLES.warrant,
       },
@@ -180,7 +183,7 @@ export function useToulminGraph(data: ToulminArgument) {
       {
         id: "qualifier",
         type: "element",
-        data: { label: data.parts.qualifier, title: "QUALIFIER" },
+        data: { label: data.parts.qualifier, title: t("qualifier") },
         position: { x: 650, y: 400 },
         style: NODE_STYLES.qualifier,
       },
@@ -195,21 +198,21 @@ export function useToulminGraph(data: ToulminArgument) {
       {
         id: "claim",
         type: "element",
-        data: { label: data.parts.claim, title: "CLAIM" },
+        data: { label: data.parts.claim, title: t("claim") },
         position: { x: 1150, y: 400 },
         style: NODE_STYLES.claim,
       },
       {
         id: "rebuttal",
         type: "element",
-        data: { label: data.parts.rebuttal, title: "REBUTTAL" },
+        data: { label: data.parts.rebuttal, title: t("rebuttal") },
         position: { x: 950, y: 600 },
         style: NODE_STYLES.rebuttal,
       },
     ];
 
     return baseNodes;
-  }, [data]);
+  }, [data, t]);
 
   const initialEdges: Edge[] = useMemo(() => {
     const baseEdges: Edge[] = [
