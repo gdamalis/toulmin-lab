@@ -1,3 +1,4 @@
+import { COLLECTIONS } from "@/constants/database.constants";
 import clientPromise from "@/lib/mongodb/config";
 import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
@@ -26,10 +27,12 @@ export async function GET(
     const client = await clientPromise;
     const db = client.db("toulmin_lab");
 
-    const toulminArgument = await db.collection("toulminArguments").findOne({
-      _id: new ObjectId(id),
-      userId,
-    });
+    const toulminArgument = await db
+      .collection(COLLECTIONS.ARGUMENTS)
+      .findOne({
+        _id: new ObjectId(id),
+        "author.userId": userId,
+      });
 
     if (!toulminArgument) {
       return NextResponse.json(

@@ -32,9 +32,13 @@ export default function ToulminArgumentViewPage({
       }
 
       try {
+        // Get the current user's ID token
+        const token = await user.getIdToken();
+
         const response = await fetch(`/api/argument/${toulminArgumentId}`, {
           headers: {
             "user-id": user.uid,
+            "Authorization": `Bearer ${token}`,
           },
         });
 

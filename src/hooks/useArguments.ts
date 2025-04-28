@@ -18,9 +18,13 @@ export function useToulminArguments() {
       }
 
       try {
-        const response = await fetch('/api/argument', {
+        // Get the current user's ID token
+        const token = await user.getIdToken();
+
+        const response = await fetch("/api/argument", {
           headers: {
-            'user-id': user.uid,
+            "user-id": user.uid,
+            "Authorization": `Bearer ${token}`,
           },
         });
 

@@ -1,5 +1,6 @@
 import { getToken } from "@/lib/firebase/auth-admin";
 import clientPromise from "@/lib/mongodb/config";
+import { COLLECTIONS } from "@/constants/database.constants";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/arguments - Get all toulmin arguments for the authenticated user
@@ -26,8 +27,8 @@ export async function GET(request: NextRequest) {
     const db = client.db("toulmin_lab");
 
     const toulminArguments = await db
-      .collection("toulminArguments")
-      .find({ author: { userId } })
+      .collection(COLLECTIONS.ARGUMENTS)
+      .find({ "author.userId": userId })
       .sort({ createdAt: -1 })
       .toArray();
 
