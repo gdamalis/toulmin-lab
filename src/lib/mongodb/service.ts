@@ -146,3 +146,61 @@ export const updateToulminArgument = async (
 
   return result.modifiedCount === 1;
 };
+
+export const getAnalyticsData = async (): Promise<{
+  totalDiagrams: number;
+  totalDiagramsChange: number;
+  totalUsers: number;
+  totalUsersChange: number;
+}> => {
+  const argCollection = await getCollection<ToulminArgumentCollection & Document>(
+    COLLECTIONS.ARGUMENTS
+  );
+  
+  const userCollection = await getCollection<UserCollection & Document>(
+    COLLECTIONS.USERS
+  );
+
+  // Get total counts
+  const totalDiagrams = await argCollection.countDocuments();
+  const totalUsers = await userCollection.countDocuments();
+
+  // Calculate dates for time periods
+  const now = new Date();
+  const oneWeekAgo = new Date(now);
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  
+  const twoWeeksAgo = new Date(now);
+  twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+  // Count diagrams created in the last week
+  const lastWeekDiagrams = await argCollection.countDocuments({
+    createdAt: { $gte: oneWeekAgo }
+  });
+
+  // Count diagrams created in the week before
+  const previousWeekDiagrams = await argCollection.countDocuments({
+    createdAt: { $gte: twoWeeksAgo, $lt: oneWeekAgo }
+  });
+
+  // Count users created in the last week
+  const lastWeekUsers = await userCollection.countDocuments({
+    createdAt: { $gte: oneWeekAgo }
+  });
+
+  // Count users created in the week before
+  const previousWeekUsers = await userCollection.countDocuments({
+    createdAt: { $gte: twoWeeksAgo, $lt: oneWeekAgo }
+  });
+
+  // Calculate changes
+  const totalDiagramsChange = lastWeekDiagrams - previousWeekDiagrams;
+  const totalUsersChange = lastWeekUsers - previousWeekUsers;
+
+  return {
+    totalDiagrams,
+    totalDiagramsChange,
+    totalUsers,
+    totalUsersChange
+  };
+};
