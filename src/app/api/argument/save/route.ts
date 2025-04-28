@@ -39,9 +39,9 @@ export async function POST(request: Request) {
     }
 
     // Save the argument to the database
-    const argumentId = await saveToulminArgument(data, userId);
+    const toulminArgumentId = await saveToulminArgument(data, userId);
 
-    return Response.json({ success: true, argumentId });
+    return Response.json({ success: true, toulminArgumentId });
   } catch (error) {
     console.error("Error saving diagram:", error);
     return Response.json({ error: "Failed to save diagram" }, { status: 500 });

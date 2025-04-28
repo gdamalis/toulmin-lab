@@ -8,53 +8,71 @@ import { useEffect, useState } from "react";
 
 interface ToulminFormProps {
   readonly onSubmit: (data: ToulminArgument) => void;
+  readonly onChange?: (data: ToulminArgument) => void;
+  readonly initialData?: ToulminArgument;
 }
 
-export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
+export function ToulminForm({ 
+  onSubmit, 
+  onChange,
+  initialData = emptyToulminArgument 
+}: Readonly<ToulminFormProps>) {
   const { user } = useAuth();
-  const [formData, setFormData] = useState<ToulminArgument>(emptyToulminArgument);
+  const [formData, setFormData] = useState<ToulminArgument>(initialData);
+
+  // Update form data if initialData changes externally
+  useEffect(() => {
+    setFormData(initialData);
+  }, [initialData]);
 
   // Autopopulate author field with user's name when user data is available
   useEffect(() => {
     if (user && formData.author.name === "") {
       // Get user's display name or use email if name not available
       const userName = user.displayName ?? user.email?.split("@")[0] ?? "";
-      setFormData((prev) => ({ 
-        ...prev, 
+      const updatedData = { 
+        ...formData, 
         author: { 
-          ...prev.author,
+          ...formData.author,
           name: userName, 
           userId: user.uid 
         } 
-      }));
+      };
+      setFormData(updatedData);
+      onChange?.(updatedData);
     }
-  }, [user, formData.author.name]);
+  }, [user, formData.author.name, onChange]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+    let updatedData: ToulminArgument;
     
     if (name === "name") {
-      setFormData((prev) => ({ ...prev, name: value }));
+      updatedData = { ...formData, name: value };
     } else if (name === "author") {
-      setFormData((prev) => ({ 
-        ...prev, 
+      updatedData = { 
+        ...formData, 
         author: { 
-          ...prev.author,
+          ...formData.author,
           name: value 
         } 
-      }));
+      };
     } else {
       // Handle parts structure
-      setFormData((prev) => ({ 
-        ...prev, 
+      updatedData = { 
+        ...formData, 
         parts: { 
-          ...prev.parts, 
+          ...formData.parts, 
           [name]: value 
         } 
-      }));
+      };
     }
+    
+    setFormData(updatedData);
+    // Call onChange handler if provided to update parent's state
+    onChange?.(updatedData);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -77,7 +95,11 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
             </div>
             <button
               type="button"
-              onClick={() => setFormData(sampleToulminArgument)}
+              onClick={() => {
+                const sampleData = sampleToulminArgument;
+                setFormData(sampleData);
+                onChange?.(sampleData);
+              }}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               title="Load sample argument"
             >
@@ -92,7 +114,7 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
                 htmlFor="name"
                 className="block text-sm/6 font-medium text-gray-900"
               >
-                ToulminArgument Name
+                Toulmin Argument Name
               </label>
               <div className="mt-2">
                 <input
@@ -102,7 +124,7 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  placeholder="e.g., Climate Change Policy ToulminArgument"
+                  placeholder="e.g., Climate Change Policy Toulmin Argument"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -262,7 +284,7 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
             Limitations & Challenges
           </h2>
           <p className="mt-1 text-sm/6 text-gray-600">
-            Acknowledge the scope and potential objections to your toulminArgument
+            Acknowledge the scope and potential objections to your argument
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -313,7 +335,11 @@ export function ToulminForm({ onSubmit }: Readonly<ToulminFormProps>) {
         <button
           type="button"
           className="text-sm/6 font-semibold text-gray-900"
-          onClick={() => setFormData(emptyToulminArgument)}
+          onClick={() => {
+            const emptyData = emptyToulminArgument;
+            setFormData(emptyData);
+            onChange?.(emptyData);
+          }}
         >
           Clear
         </button>

@@ -30,9 +30,15 @@ function ToulminDiagram({ data }: Readonly<ToulminDiagramProps>) {
   const diagramRef = useRef<HTMLDivElement>(null);
   const { initialNodes, initialEdges, nodeTypes } = useToulminGraph(data);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, , onEdgesChange] = useEdgesState(initialEdges);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const flowRef = useRef<ReactFlowInstance | null>(null);
   const updatedNodes = useLayout();
+
+  // Update nodes when initialNodes change (when data from form changes)
+  useEffect(() => {
+    setNodes(initialNodes);
+    setEdges(initialEdges);
+  }, [initialNodes, initialEdges, setNodes, setEdges]);
 
   const { exportAsPNG, exportAsJPG, exportAsPDF } =
     useImageExport(EXPORT_CONFIG);
