@@ -167,7 +167,7 @@ export default function ToulminArgumentEditor({
           />
         </div>
         <div>
-          <ToulminDiagram data={toulminArgument} />
+          <ToulminDiagram data={toulminArgument} showExportButtons={false} />
         </div>
       </div>
     );

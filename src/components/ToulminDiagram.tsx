@@ -22,11 +22,12 @@ import { useCallback, useEffect, useRef } from "react";
 
 interface ToulminDiagramProps {
   readonly data: ToulminArgument;
+  readonly showExportButtons?: boolean;
 }
 
 const snapGrid: [number, number] = [6, 6];
 
-function ToulminDiagram({ data }: Readonly<ToulminDiagramProps>) {
+function ToulminDiagram({ data, showExportButtons = false }: Readonly<ToulminDiagramProps>) {
   const diagramRef = useRef<HTMLDivElement>(null);
   const { initialNodes, initialEdges, nodeTypes } = useToulminGraph(data);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -61,11 +62,13 @@ function ToulminDiagram({ data }: Readonly<ToulminDiagramProps>) {
 
   return (
     <div className="space-y-4">
-      <ExportButtonGroup
-        onExportPNG={exportAsPNG}
-        onExportJPG={exportAsJPG}
-        onExportPDF={exportAsPDF}
-      />
+      {showExportButtons && (
+        <ExportButtonGroup
+          onExportPNG={exportAsPNG}
+          onExportJPG={exportAsJPG}
+          onExportPDF={exportAsPDF}
+        />
+      )}
 
       <div
         ref={diagramRef}
@@ -95,10 +98,10 @@ function ToulminDiagram({ data }: Readonly<ToulminDiagramProps>) {
   );
 }
 
-function ToulminDiagramWithProvider({ data }: Readonly<ToulminDiagramProps>) {
+function ToulminDiagramWithProvider({ data, showExportButtons }: Readonly<ToulminDiagramProps>) {
   return (
     <ReactFlowProvider>
-      <ToulminDiagram data={data} />
+      <ToulminDiagram data={data} showExportButtons={showExportButtons} />
     </ReactFlowProvider>
   );
 }

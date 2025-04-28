@@ -78,10 +78,10 @@ export default function ToulminArgumentBuilder() {
         <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
           <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
             <div className="space-y-4 md:space-y-0">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold">
+              <div className="flex justify-start md:justify-end md:items-center flex-col md:flex-row gap-4 mb-6">
+                {/* <h2 className="text-xl font-semibold">
                   {t("createYourArgument")}
-                </h2>
+                </h2> */}
                 <div className="flex space-x-3">
                   {isSaving && (
                     <span className="text-sm text-gray-500 self-center">
@@ -114,7 +114,10 @@ export default function ToulminArgumentBuilder() {
                   />
                 </div>
                 <div>
-                  <ToulminDiagram data={toulminArgument} />
+                  <ToulminDiagram
+                    data={toulminArgument}
+                    showExportButtons={false}
+                  />
                 </div>
               </div>
             </div>
