@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "@/lib/firebase/auth-admin";
 import { updateToulminArgument } from "@/lib/mongodb/service";
 import { ToulminArgument } from "@/types/client";
+import { getAuth } from 'firebase-admin/auth';
 
 // GET /api/argument/:id - Get a specific diagram by ID
 export async function GET(
@@ -107,6 +108,74 @@ export async function PUT(
     console.error("Error updating argument:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    // Get the argument ID from the URL
+    const { id } = await params;
+    
+    // Validate ObjectId format
+    if (!ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { error: 'Invalid argument ID format' },
+        { status: 400 }
+      );
+    }
+
+    // Get authorization token from request headers
+    const authHeader = request.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Missing or invalid authorization token' },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.split('Bearer ')[1];
+    
+    // Verify the token
+    let userId;
+    try {
+      const decodedToken = await getAuth().verifyIdToken(token);
+      userId = decodedToken.uid;
+    } catch (authError) {
+      console.error('Error verifying auth token:', authError);
+      return NextResponse.json(
+        { error: 'Invalid or expired authorization token' },
+        { status: 401 }
+      );
+    }
+    
+    // Get MongoDB client and database
+    const client = await clientPromise;
+    const db = client.db("toulmin_lab");
+    
+    // Delete the argument if it belongs to the authenticated user
+    const result = await db.collection(COLLECTIONS.ARGUMENTS).deleteOne({
+      _id: new ObjectId(id),
+      'author.userId': userId // Only delete if the argument belongs to this user
+    });
+    
+    if (result.deletedCount === 0) {
+      // Either the argument doesn't exist or doesn't belong to this user
+      return NextResponse.json(
+        { error: 'Argument not found or you do not have permission to delete it' },
+        { status: 404 }
+      );
+    }
+    
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting argument:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

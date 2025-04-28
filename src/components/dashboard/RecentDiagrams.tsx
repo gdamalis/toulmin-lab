@@ -8,6 +8,8 @@ import { format } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
 import { ToulminArgument } from "@/types/client";
 import { useToulminArguments } from "@/hooks/useArguments";
+import { useState } from "react";
+import { DeleteArgumentModal } from "./DeleteArgumentModal";
 
 interface RecentDiagramsProps {
   limit?: number;
@@ -18,8 +20,10 @@ function classNames(...classes: string[]) {
 }
 
 export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
-  const { toulminArguments, isLoading, error } = useToulminArguments();
+  const { toulminArguments, isLoading, error, deleteArgument, isDeleting } = useToulminArguments();
   const { user } = useAuth();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [argumentToDelete, setArgumentToDelete] = useState<ToulminArgument | null>(null);
   
   // Take only the most recent diagrams up to the limit
   const recentToulminArguments = toulminArguments.slice(0, limit);
@@ -30,6 +34,29 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
       return format(new Date(dateString), "MMM d, yyyy");
     } catch {
       return "Invalid date";
+    }
+  };
+
+  // Handler for opening the delete modal
+  const handleOpenDeleteModal = (toulminArgument: ToulminArgument) => {
+    setArgumentToDelete(toulminArgument);
+    setIsDeleteModalOpen(true);
+  };
+
+  // Handler for closing the delete modal
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setArgumentToDelete(null);
+  };
+
+  // Handler for deleting the argument
+  const handleDeleteArgument = async () => {
+    if (!argumentToDelete?._id) return;
+    
+    const success = await deleteArgument(argumentToDelete._id.toString());
+    
+    if (success) {
+      handleCloseDeleteModal();
     }
   };
 
@@ -131,10 +158,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
                     <MenuItem>
                       {({ active }) => (
                         <button
-                          onClick={() => {
-                            // Handle delete logic
-                            console.log(`Delete diagram ${toulminArgument._id}`);
-                          }}
+                          onClick={() => handleOpenDeleteModal(toulminArgument)}
                           className={classNames(
                             active ? "bg-gray-50" : "",
                             "block w-full text-left px-3 py-1 text-sm leading-6 text-gray-900"
@@ -174,6 +198,15 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
       </div>
       
       {renderDiagramContent()}
+      
+      {/* Delete confirmation modal */}
+      <DeleteArgumentModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onDelete={handleDeleteArgument}
+        argumentName={argumentToDelete?.name || 'this diagram'}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 } 

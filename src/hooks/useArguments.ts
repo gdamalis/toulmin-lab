@@ -8,6 +8,7 @@ export function useToulminArguments() {
   const [toulminArguments, setToulminArguments] = useState<ToulminArgument[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -45,5 +46,36 @@ export function useToulminArguments() {
     fetchToulminArguments();
   }, [user]);
 
-  return { toulminArguments, isLoading, error };
+  const deleteArgument = async (argumentId: string) => {
+    if (!user) return false;
+    
+    setIsDeleting(true);
+    try {
+      const token = await user.getIdToken();
+      
+      const response = await fetch(`/api/argument/${argumentId}`, {
+        method: 'DELETE',
+        headers: {
+          "user-id": user.uid,
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete argument');
+      }
+      
+      // Update the state to remove the deleted argument
+      setToulminArguments(prev => prev.filter(arg => arg._id?.toString() !== argumentId));
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred while deleting');
+      console.error('Error deleting argument:', err);
+      return false;
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  return { toulminArguments, isLoading, error, deleteArgument, isDeleting };
 } 
