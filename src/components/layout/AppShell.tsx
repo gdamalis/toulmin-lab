@@ -67,10 +67,10 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                       <div className="shrink-0">
                         <Image
                           alt="Toulmin Lab"
-                          src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                          width={32}
-                          height={32}
-                          className="size-8"
+                          src="/logo.png"
+                          width={320}
+                          height={320}
+                          className="w-auto h-10"
                         />
                       </div>
                       <div className="hidden md:block">

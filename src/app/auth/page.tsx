@@ -10,10 +10,10 @@ export default function Auth() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Image
           alt="Toulmin Lab"
-          src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-          width={40}
-          height={40}
-          className="mx-auto w-10 h-10"
+          src="/logo.png"
+          width={320}
+          height={320}
+          className="mx-auto w-auto h-10"
         />
       </div>
 
