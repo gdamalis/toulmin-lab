@@ -13,12 +13,14 @@ import { FirebaseError } from 'firebase/app';
 import { auth } from '@/lib/firebase/config';
 import { useRouter } from 'next/navigation';
 import { AuthMode, FormState } from '../types';
+import { useTranslations } from 'next-intl';
 
 export function useAuth(redirectPath = '/dashboard') {
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
+  const t = useTranslations('errors.auth');
 
   useEffect(() => {
     // Check if returning from a redirect flow
@@ -57,7 +59,7 @@ export function useAuth(redirectPath = '/dashboard') {
       if (err instanceof FirebaseError) {
         setError(`Authentication failed: ${err.code}`);
       } else {
-        setError('Authentication with Google failed. Please try again.');
+        setError(t('googleFailed'));
       }
       console.error(err);
     }
@@ -83,17 +85,17 @@ export function useAuth(redirectPath = '/dashboard') {
     } catch (err: unknown) {
       if (err instanceof FirebaseError) {
         if (err.code === 'auth/email-already-in-use') {
-          setError('Email already in use');
+          setError(t('emailInUse'));
         } else if (err.code === 'auth/invalid-email') {
-          setError('Invalid email format');
+          setError(t('invalidEmail'));
         } else if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
-          setError('Invalid email or password');
+          setError(t('invalidCredentials'));
         } else {
-          setError(`Failed to ${mode === 'signin' ? 'sign in' : 'create account'}`);
+          setError(mode === 'signin' ? t('signInFailed') : t('signUpFailed'));
           console.error(err);
         }
       } else {
-        setError('An unexpected error occurred');
+        setError(t('unexpected'));
         console.error(err);
       }
     } finally {

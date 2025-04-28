@@ -1,57 +1,75 @@
-import { HeroSection, FeatureSection, CTASection, LightningIcon, CheckBadgeIcon, ChartIcon, ShareIcon } from '@/components/ui';
+import {
+  HeroSection,
+  FeatureSection,
+  CTASection,
+  LightningIcon,
+  CheckBadgeIcon,
+  ChartIcon,
+  ShareIcon,
+} from "@/components/ui";
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 
 export default function Home() {
+  const t = useTranslations("pages.home");
+
   const features = [
     {
-      title: 'Clarity in reasoning',
-      description: 'Break down complex arguments into clear, connected components that anyone can follow and understand.',
+      title: t("features.clarity.title"),
+      description: t("features.clarity.description"),
       icon: <LightningIcon className="h-6 w-6 text-white" />,
     },
     {
-      title: 'Better persuasion',
-      description: 'Strengthen your arguments by anticipating rebuttals and providing solid backing for your claims.',
+      title: t("features.persuasion.title"),
+      description: t("features.persuasion.description"),
       icon: <CheckBadgeIcon className="h-6 w-6 text-white" />,
     },
     {
-      title: 'Academic excellence',
-      description: 'Widely used in academic writing and critical thinking courses to develop and evaluate arguments.',
+      title: t("features.academic.title"),
+      description: t("features.academic.description"),
       icon: <ChartIcon className="h-6 w-6 text-white" />,
     },
     {
-      title: 'Visualize and share',
-      description: 'Create beautiful diagrams that can be easily shared, exported, and embedded in presentations or documents.',
+      title: t("features.visualize.title"),
+      description: t("features.visualize.description"),
       icon: <ShareIcon className="h-6 w-6 text-white" />,
     },
   ];
 
   return (
     <div className="bg-white">
-      <HeroSection 
-        title="Build stronger arguments visually"
-        description="Create, analyze, and share structured arguments using the Toulmin method. Make your reasoning clear, identify weak points, and persuade effectively."
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8 py-8">
+        <div className="flex justify-end">
+          <LanguageSwitcher />
+        </div>
+      </div>
+
+      <HeroSection
+        title={t("hero.title")}
+        description={t("hero.description")}
         primaryCta={{
-          text: "Get started",
-          href: "/auth"
+          text: t("getStarted"),
+          href: "/auth",
         }}
         secondaryCta={{
-          text: "Learn more",
-          href: "#features"
+          text: t("learnMore"),
+          href: "#features",
         }}
       />
 
       <div id="features">
-        <FeatureSection 
-          heading="Structured Argumentation"
-          subheading="Why use the Toulmin method?"
-          description="The Toulmin model provides a framework for analyzing and constructing arguments, making complex reasoning more accessible and persuasive."
+        <FeatureSection
+          heading={t("featureSection.heading")}
+          subheading={t("featureSection.subheading")}
+          description={t("featureSection.description")}
           features={features}
         />
       </div>
 
-      <CTASection 
-        title="Ready to strengthen your arguments?"
-        description="Join thousands of academics, students, and professionals who use our tool to build compelling arguments."
-        buttonText="Get started"
+      <CTASection
+        title={t("ctaSection.title")}
+        description={t("ctaSection.description")}
+        buttonText={t("getStarted")}
         buttonHref="/auth"
       />
     </div>

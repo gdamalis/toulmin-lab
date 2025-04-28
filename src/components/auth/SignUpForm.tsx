@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { FormInput } from './ui/FormInput';
 import { FormState } from './types';
+import { useTranslations } from 'next-intl';
 
 interface SignUpFormProps {
   readonly error: string;
@@ -11,6 +12,7 @@ interface SignUpFormProps {
 }
 
 export function SignUpForm({ error, isLoading, onSubmit }: SignUpFormProps) {
+  const t = useTranslations('pages.auth');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -30,7 +32,7 @@ export function SignUpForm({ error, isLoading, onSubmit }: SignUpFormProps) {
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
       <FormInput
-        label="Full name"
+        label={t('fullName')}
         id="name"
         name="name"
         type="text"
@@ -38,11 +40,11 @@ export function SignUpForm({ error, isLoading, onSubmit }: SignUpFormProps) {
         required
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="Your full name"
+        placeholder={t('fullNamePlaceholder')}
       />
 
       <FormInput
-        label="Email address"
+        label={t('emailAddress')}
         id="email-address"
         name="email"
         type="email"
@@ -50,11 +52,11 @@ export function SignUpForm({ error, isLoading, onSubmit }: SignUpFormProps) {
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email address"
+        placeholder={t('emailPlaceholder')}
       />
 
       <FormInput
-        label="Password"
+        label={t('password')}
         id="password"
         name="password"
         type="password"
@@ -62,11 +64,11 @@ export function SignUpForm({ error, isLoading, onSubmit }: SignUpFormProps) {
         required
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
+        placeholder={t('passwordPlaceholder')}
       />
 
       <FormInput
-        label="Confirm Password"
+        label={t('confirmPassword')}
         id="confirm-password"
         name="confirm-password"
         type="password"
@@ -74,7 +76,7 @@ export function SignUpForm({ error, isLoading, onSubmit }: SignUpFormProps) {
         required
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
-        placeholder="Confirm Password"
+        placeholder={t('confirmPasswordPlaceholder')}
       />
 
       {error && (
@@ -89,7 +91,7 @@ export function SignUpForm({ error, isLoading, onSubmit }: SignUpFormProps) {
           disabled={isLoading}
           className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
         >
-          {isLoading ? 'Creating account...' : 'Sign up'}
+          {isLoading ? t('creatingAccount') : t('signUp')}
         </button>
       </div>
     </form>

@@ -1,5 +1,6 @@
 import { ToulminArgument } from "@/types/client";
 import { Panel } from "@xyflow/react";
+import { useTranslations } from "next-intl";
 
 interface TitlePanelProps {
   readonly data: Pick<ToulminArgument, "name" | "author">;
@@ -10,6 +11,9 @@ export function TitlePanel({
   data,
   className = "",
 }: Readonly<TitlePanelProps>) {
+  const t = useTranslations('pages.auth');
+  const commonT = useTranslations('common');
+  
   return (
     <Panel
       position="top-left"
@@ -17,11 +21,11 @@ export function TitlePanel({
       data-export-include="true"
     >
       <h3 className="text-sm font-semibold text-gray-900 truncate">
-        {data.name ?? "Untitled ToulminArgument"}
+        {data.name ?? t('untitledArgument')}
       </h3>
       {data.author && (
         <p className="text-xs text-gray-500 mt-0.5 truncate">
-          by {data.author.name}
+          {commonT('by')} {data.author.name}
         </p>
       )}
     </Panel>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { FormInput } from './ui/FormInput';
 import { Checkbox } from './ui/Checkbox';
 import { FormState } from './types';
+import { useTranslations } from 'next-intl';
 
 interface SignInFormProps {
   readonly error: string;
@@ -12,6 +13,7 @@ interface SignInFormProps {
 }
 
 export function SignInForm({ error, isLoading, onSubmit }: Readonly<SignInFormProps>) {
+  const t = useTranslations('pages.auth');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -30,7 +32,7 @@ export function SignInForm({ error, isLoading, onSubmit }: Readonly<SignInFormPr
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
       <FormInput
-        label="Email address"
+        label={t('emailAddress')}
         id="email-address"
         name="email"
         type="email"
@@ -38,11 +40,11 @@ export function SignInForm({ error, isLoading, onSubmit }: Readonly<SignInFormPr
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email address"
+        placeholder={t('emailPlaceholder')}
       />
 
       <FormInput
-        label="Password"
+        label={t('password')}
         id="password"
         name="password"
         type="password"
@@ -50,21 +52,21 @@ export function SignInForm({ error, isLoading, onSubmit }: Readonly<SignInFormPr
         required
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
+        placeholder={t('passwordPlaceholder')}
       />
 
       <div className="flex items-center justify-between">
         <Checkbox
           id="remember-me"
           name="remember-me"
-          label="Remember me"
+          label={t('rememberMe')}
           checked={rememberMe}
           onChange={setRememberMe}
         />
 
         <div className="text-sm/6">
           <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-            Forgot password?
+            {t('forgotPassword')}
           </a>
         </div>
       </div>
@@ -81,7 +83,7 @@ export function SignInForm({ error, isLoading, onSubmit }: Readonly<SignInFormPr
           disabled={isLoading}
           className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
         >
-          {isLoading ? 'Signing in...' : 'Sign in'}
+          {isLoading ? t('signingIn') : t('signIn')}
         </button>
       </div>
     </form>

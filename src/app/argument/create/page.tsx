@@ -3,17 +3,20 @@
 import AppShell from "@/components/layout/AppShell";
 import ToulminDiagram from "@/components/ToulminDiagram";
 import { ToulminForm } from "@/components/ToulminForm";
-import { sampleToulminArgument } from "@/data/toulminTemplates";
-import { ToulminArgument } from "@/types/client";
-import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { emptyToulminArgument } from "@/data/toulminTemplates";
 import useNotification from "@/hooks/useNotification";
+import { ToulminArgument } from "@/types/client";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function ToulminArgumentBuilder() {
-  const [toulminArgument, setToulminArgument] = useState<ToulminArgument>(
-    sampleToulminArgument
-  );
+  const t = useTranslations("pages.argument");
+  const commonT = useTranslations("common");
+
+  const [toulminArgument, setToulminArgument] =
+    useState<ToulminArgument>(emptyToulminArgument);
   const [isSaving, setIsSaving] = useState(false);
   const { user } = useAuth();
   const { showSuccess, showError } = useNotification();
@@ -26,10 +29,7 @@ export default function ToulminArgumentBuilder() {
   const handleSave = async () => {
     // Only save if user is logged in
     if (!user) {
-      showError(
-        "Authentication Required",
-        "Please sign in to save your diagram"
-      );
+      showError(t("authRequired"), t("pleaseSignIn"));
       return;
     }
 
@@ -55,10 +55,8 @@ export default function ToulminArgumentBuilder() {
         throw new Error(result.error ?? "Failed to save diagram");
       }
 
-      showSuccess("Success", "Diagram saved successfully!");
+      showSuccess(commonT("success"), t("saveSuccess"));
 
-      console.log({ result });
-      
       // Redirect to the view page using the returned ID
       if (result.toulminArgumentId) {
         router.push(`/argument/view/${result.toulminArgumentId}`);
@@ -66,7 +64,7 @@ export default function ToulminArgumentBuilder() {
     } catch (error) {
       console.error("Error saving diagram:", error);
       showError(
-        "Save Failed",
+        t("saveFailed"),
         error instanceof Error ? error.message : "Failed to save diagram"
       );
     } finally {
@@ -75,19 +73,19 @@ export default function ToulminArgumentBuilder() {
   };
 
   return (
-    <AppShell title="Toulmin Argument Builder">
+    <AppShell title={t("createYourArgument")}>
       <div className="-mt-32">
         <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
           <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
             <div className="space-y-4 md:space-y-0">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-semibold">
-                  Create Your Toulmin Argument
+                  {t("createYourArgument")}
                 </h2>
                 <div className="flex space-x-3">
                   {isSaving && (
                     <span className="text-sm text-gray-500 self-center">
-                      Saving...
+                      {commonT("saving")}
                     </span>
                   )}
                   <button
@@ -95,14 +93,14 @@ export default function ToulminArgumentBuilder() {
                     disabled={isSaving}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Save & View
+                    {t("saveAndView")}
                   </button>
                 </div>
               </div>
 
               {!user && (
                 <p className="text-sm text-amber-600 mb-4">
-                  Sign in to save your diagrams
+                  {t("signInToSave")}
                 </p>
               )}
 
@@ -112,7 +110,7 @@ export default function ToulminArgumentBuilder() {
                     onSubmit={handleSave}
                     onChange={handleFormChange}
                     initialData={toulminArgument}
-                    buttonText="Save & View"
+                    buttonText={t("saveAndView")}
                   />
                 </div>
                 <div>

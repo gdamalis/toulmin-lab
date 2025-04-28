@@ -3,8 +3,11 @@
 import { AuthForm } from '@/components/auth/AuthForm';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 export default function Auth() {
+  const t = useTranslations('pages.auth');
+  
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -24,7 +27,7 @@ export default function Auth() {
             href="/"
             className="font-medium text-gray-600 hover:text-gray-500 text-sm"
           >
-            Back to home
+            {t('backToHome')}
           </Link>
         </div>
       </div>

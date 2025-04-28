@@ -10,12 +10,16 @@ import useNotification from "@/hooks/useNotification";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Typography } from "@/components/ui/Typography";
+import { useTranslations } from "next-intl";
 
 export default function ToulminArgumentEditor({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = useTranslations('pages.argument');
+  const commonT = useTranslations('common');
+  
   const [toulminArgument, setToulminArgument] = useState<ToulminArgument | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,14 +76,14 @@ export default function ToulminArgumentEditor({
     // Only save if user is logged in and argument is loaded
     if (!user) {
       showError(
-        "Authentication Required",
-        "Please sign in to save your diagram"
+        t("authRequired"),
+        t("pleaseSignIn")
       );
       return;
     }
 
     if (!toulminArgument) {
-      showError("Error", "No argument data to save");
+      showError(commonT("error"), "No argument data to save");
       return;
     }
 
@@ -102,18 +106,18 @@ export default function ToulminArgumentEditor({
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error ?? "Failed to update diagram");
+        throw new Error(result.error ?? t("saveFailed"));
       }
 
-      showSuccess("Success", "Diagram updated successfully!");
+      showSuccess(commonT("success"), t("saveSuccess"));
       
       // Redirect to the view page
       router.push(`/argument/view/${toulminArgumentId}`);
     } catch (error) {
       console.error("Error updating diagram:", error);
       showError(
-        "Update Failed",
-        error instanceof Error ? error.message : "Failed to update diagram"
+        t("saveFailed"),
+        error instanceof Error ? error.message : t("saveFailed")
       );
     } finally {
       setIsSaving(false);
@@ -129,7 +133,7 @@ export default function ToulminArgumentEditor({
     if (isLoading) {
       return (
         <div className="flex justify-center items-center h-64">
-          <Typography textColor="muted">Loading diagram...</Typography>
+          <Typography textColor="muted">{commonT("loading")}</Typography>
         </div>
       );
     }
@@ -137,7 +141,7 @@ export default function ToulminArgumentEditor({
     if (error) {
       return (
         <div className="bg-red-50 p-6 rounded-lg text-center text-red-600">
-          <Typography>Error: {error}</Typography>
+          <Typography>{commonT("error")}: {error}</Typography>
         </div>
       );
     }
@@ -146,7 +150,7 @@ export default function ToulminArgumentEditor({
       return (
         <div className="bg-gray-50 p-6 rounded-lg text-center text-gray-500">
           <Typography textColor="muted">
-            Diagram not found or you don&apos;t have permission to edit it.
+            {t("diagramNotFound")}
           </Typography>
         </div>
       );
@@ -159,7 +163,7 @@ export default function ToulminArgumentEditor({
             onSubmit={handleSave}
             onChange={handleFormChange}
             initialData={toulminArgument}
-            buttonText="Update & View"
+            buttonText={t("saveAndView")}
           />
         </div>
         <div>
@@ -170,7 +174,7 @@ export default function ToulminArgumentEditor({
   };
 
   return (
-    <AppShell title={toulminArgument?.name ? `Edit: ${toulminArgument.name}` : "Edit Toulmin Argument"}>
+    <AppShell title={toulminArgument?.name ? `${commonT("edit")}: ${toulminArgument.name}` : t("editToulminArgument")}>
       <div className="-mt-32">
         <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
           <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
@@ -178,16 +182,16 @@ export default function ToulminArgumentEditor({
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <Button variant="outline" onClick={handleCancel} className="mb-4">
-                    ← Back to View
+                    ← {t("backToView")}
                   </Button>
                   <h2 className="text-xl font-semibold">
-                    Edit Toulmin Argument
+                    {t("editToulminArgument")}
                   </h2>
                 </div>
                 <div className="flex space-x-3">
                   {isSaving && (
                     <span className="text-sm text-gray-500 self-center">
-                      Saving...
+                      {commonT("saving")}
                     </span>
                   )}
                   <button
@@ -195,14 +199,14 @@ export default function ToulminArgumentEditor({
                     disabled={isSaving || isLoading || !toulminArgument}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Update & View
+                    {t("saveAndView")}
                   </button>
                 </div>
               </div>
 
               {!user && (
                 <p className="text-sm text-amber-600 mb-4">
-                  Sign in to edit your diagrams
+                  {t("signInToSave")}
                 </p>
               )}
 

@@ -1,0 +1,192 @@
+{
+  "common": {
+    "signOut": "Sign out",
+    "back": "Back",
+    "user": "User",
+    "language": "Language",
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "edit": "Edit",
+    "view": "View",
+    "create": "Create",
+    "save": "Save",
+    "close": "Close",
+    "clear": "Clear",
+    "by": "by",
+    "openUserMenu": "Open user menu",
+    "openMainMenu": "Open main menu",
+    "stats": "stats",
+    "openOptions": "Open options"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "arguments": "Arguments"
+  },
+  "stats": {
+    "increased": "Increased",
+    "decreased": "Decreased",
+    "neutral": "",
+    "increasedBy": "Increased by",
+    "decreasedBy": "Decreased by"
+  },
+  "errors": {
+    "auth": {
+      "emailInUse": "Email already in use",
+      "invalidEmail": "Invalid email format",
+      "invalidCredentials": "Invalid email or password",
+      "signInFailed": "Failed to sign in",
+      "signUpFailed": "Failed to create account", 
+      "unexpected": "An unexpected error occurred",
+      "nameMissing": "Name is required",
+      "passwordMismatch": "Passwords do not match",
+      "passwordTooShort": "Password should be at least 6 characters",
+      "googleFailed": "Authentication with Google failed. Please try again."
+    }
+  },
+  "pages": {
+    "home": {
+      "title": "Toulmin Diagram Builder",
+      "description": "Build and export Toulmin argument diagrams",
+      "getStarted": "Get Started",
+      "learnMore": "Learn more",
+      "hero": {
+        "title": "Build stronger arguments visually",
+        "description": "Create, analyze, and share structured arguments using the Toulmin method. Make your reasoning clear, identify weak points, and persuade effectively.",
+        "badge": {
+          "text": "New",
+          "label": "Public beta now available"
+        }
+      },
+      "featureSection": {
+        "heading": "Structured Argumentation",
+        "subheading": "Why use the Toulmin method?",
+        "description": "The Toulmin model provides a framework for analyzing and constructing arguments, making complex reasoning more accessible and persuasive."
+      },
+      "features": {
+        "clarity": {
+          "title": "Clarity in reasoning",
+          "description": "Break down complex arguments into clear, connected components that anyone can follow and understand."
+        },
+        "persuasion": {
+          "title": "Better persuasion",
+          "description": "Strengthen your arguments by anticipating rebuttals and providing solid backing for your claims."
+        },
+        "academic": {
+          "title": "Academic excellence",
+          "description": "Widely used in academic writing and critical thinking courses to develop and evaluate arguments."
+        },
+        "visualize": {
+          "title": "Visualize and share",
+          "description": "Create beautiful diagrams that can be easily shared, exported, and embedded in presentations or documents."
+        }
+      },
+      "ctaSection": {
+        "title": "Ready to strengthen your arguments?",
+        "description": "Join thousands of academics, students, and professionals who use our tool to build compelling arguments."
+      }
+    },
+    "auth": {
+      "backToHome": "Back to home",
+      "signIn": "Sign in",
+      "signUp": "Sign up",
+      "signInHeading": "Sign in to your account",
+      "signUpHeading": "Create a new account",
+      "signingIn": "Signing in...",
+      "creatingAccount": "Creating account...",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Your full name",
+      "emailAddress": "Email address",
+      "emailPlaceholder": "Email address",
+      "password": "Password",
+      "passwordPlaceholder": "Password",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "orContinueWith": "Or continue with",
+      "noAccount": "Don't have an account?",
+      "haveAccount": "Already have an account?",
+      "untitledArgument": "Untitled Argument"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "createNew": "Create New Argument",
+      "myArguments": "My Arguments",
+      "noArguments": "You haven't created any arguments yet.",
+      "loading": "Loading your arguments...",
+      "analyticsOverview": "Analytics Overview",
+      "recentActivity": "Recent Activity",
+      "createNewDiagram": "Create New Diagram",
+      "loadingDiagrams": "Loading diagrams...",
+      "errorLoading": "Error loading diagrams:",
+      "noRecentActivity": "No recent activity to display. Create your first diagram to get started.",
+      "createdOn": "Created on",
+      "updatedOn": "Updated on",
+      "author": "Author",
+      "anonymous": "Anonymous",
+      "viewDiagram": "View diagram",
+      "totalDiagrams": "Total Diagrams",
+      "activeUsers": "Active Users"
+    },
+    "argument": {
+      "save": "Save",
+      "export": "Export",
+      "exportAsFormat": "Export as {format}",
+      "saveAndView": "Save & View",
+      "signInToSave": "Sign in to save your diagrams",
+      "claim": "Claim",
+      "evidence": "Evidence",
+      "warrant": "Warrant",
+      "backing": "Backing",
+      "rebuttal": "Rebuttal",
+      "qualifier": "Qualifier",
+      "untitled": "Untitled Argument",
+      "createYourArgument": "Create Your Toulmin Argument",
+      "authRequired": "Authentication Required",
+      "pleaseSignIn": "Please sign in to save your diagram",
+      "saveFailed": "Save Failed",
+      "saveSuccess": "Diagram saved successfully!",
+      "diagramDetails": "Diagram Details",
+      "basicInfoDescription": "Provide basic information about your argument diagram.",
+      "loadSampleTooltip": "Load sample argument",
+      "useSample": "Use Sample",
+      "argumentName": "Toulmin Argument Name",
+      "argumentNamePlaceholder": "e.g., Climate Change Policy Toulmin Argument",
+      "author": "Author",
+      "authorPlaceholder": "Your name",
+      "argumentStructure": "Toulmin Argument Structure",
+      "argumentStructureDescription": "Complete the fields below to build your logical argument using the Toulmin model.",
+      "evidenceBacking": "Backing for Evidence",
+      "evidenceBackingPlaceholder": "Why is this evidence credible?",
+      "reasoningSection": "Reasoning & Justification",
+      "reasoningSectionDescription": "Connect your evidence to your claim through logical reasoning.",
+      "limitationsSection": "Limitations & Challenges",
+      "limitationsSectionDescription": "Acknowledge the scope and potential objections to your argument",
+      "claimPlaceholder": "What are you trying to prove?",
+      "evidencePlaceholder": "What evidence supports your claim?",
+      "warrantPlaceholder": "How does your evidence connect to your claim?",
+      "backingPlaceholder": "Why is this logical connection valid?",
+      "qualifierPlaceholder": "Under what circumstances is your claim true? (e.g., 'usually', 'sometimes')",
+      "rebuttalPlaceholder": "When would your claim not hold true?",
+      "editToulminArgument": "Edit Toulmin Argument",
+      "backToView": "Back to View",
+      "backToDashboard": "Back to Dashboard",
+      "editDiagram": "Edit Diagram",
+      "fetchFailed": "Failed to fetch diagram",
+      "unknownError": "An unknown error occurred",
+      "diagramNotFound": "Diagram not found or you don't have permission to access it",
+      "lastUpdated": "Last updated",
+      "toulminArgumentDiagram": "Toulmin Argument Diagram",
+      "diagram": "Diagram"
+    },
+    "modals": {
+      "deleteArgument": "Delete Argument",
+      "deleteConfirmation": "Are you sure you want to delete \"{name}\"? All of the argument data will be permanently removed. This action cannot be undone."
+    }
+  }
+} 

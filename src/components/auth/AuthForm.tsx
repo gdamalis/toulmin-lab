@@ -7,8 +7,11 @@ import { SignUpForm } from './SignUpForm';
 import { GoogleAuthButton } from './ui/GoogleAuthButton';
 import { FormDivider } from './ui/FormDivider';
 import { AuthMode, AuthFormProps, FormState } from './types';
+import { useTranslations } from 'next-intl';
 
 export function AuthForm({ redirectPath = '/dashboard' }: Readonly<AuthFormProps>) {
+  const t = useTranslations('pages.auth');
+  const errorT = useTranslations('errors.auth');
   const [mode, setMode] = useState<AuthMode>('signin');
   const { 
     error, 
@@ -29,19 +32,19 @@ export function AuthForm({ redirectPath = '/dashboard' }: Readonly<AuthFormProps
     if (mode === 'signup') {
       // Validate name
       if (!formData.name.trim()) {
-        setError('Name is required');
+        setError(errorT('nameMissing'));
         return;
       }
       
       // Validate passwords match
       if (formData.password !== formData.confirmPassword) {
-        setError('Passwords do not match');
+        setError(errorT('passwordMismatch'));
         return;
       }
 
       // Validate password strength
       if (formData.password.length < 6) {
-        setError('Password should be at least 6 characters');
+        setError(errorT('passwordTooShort'));
         return;
       }
     }
@@ -52,7 +55,7 @@ export function AuthForm({ redirectPath = '/dashboard' }: Readonly<AuthFormProps
   return (
     <>
       <h2 className="mt-6 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-        {mode === 'signin' ? 'Sign in to your account' : 'Create a new account'}
+        {mode === 'signin' ? t('signInHeading') : t('signUpHeading')}
       </h2>
       
       <div className="bg-white px-6 py-12 shadow-sm sm:rounded-lg sm:px-12">
@@ -71,7 +74,7 @@ export function AuthForm({ redirectPath = '/dashboard' }: Readonly<AuthFormProps
         )}
 
         <div>
-          <FormDivider text="Or continue with" />
+          <FormDivider text={t('orContinueWith')} />
 
           <div className="mt-6 grid grid-cols-1 gap-4">
             <GoogleAuthButton 
@@ -84,16 +87,16 @@ export function AuthForm({ redirectPath = '/dashboard' }: Readonly<AuthFormProps
 
       <p className="mt-10 text-center text-sm/6 text-gray-500">
         {mode === 'signin' 
-          ? "Don't have an account?" 
-          : "Already have an account?"}{' '}
+          ? t('noAccount')
+          : t('haveAccount')}{' '}
         <button 
           type="button"
           onClick={toggleMode} 
           className="font-semibold text-indigo-600 hover:text-indigo-500"
         >
           {mode === 'signin' 
-            ? "Sign up" 
-            : "Sign in"}
+            ? t('signUp')
+            : t('signIn')}
         </button>
       </p>
     </>

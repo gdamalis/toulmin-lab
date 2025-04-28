@@ -23,6 +23,29 @@ export const sampleToulminArgument: ToulminArgument = {
   updatedAt: new Date(),
 };
 
+// Spanish translation of the sample argument
+export const sampleToulminArgumentES: ToulminArgument = {
+  name: "Propuesta de Energía Renovable",
+  author: {
+    _id: "sample-author-id",
+    name: "Equipo de Política Ambiental",
+    userId: "",
+  },
+  parts: {
+    claim: "Deberíamos implementar fuentes de energía renovable",
+    grounds: "Los combustibles fósiles se están agotando y causando el cambio climático",
+    groundsBacking:
+      "Estudios científicos muestran que la temperatura global está aumentando debido a las emisiones de CO2",
+    warrant: "La energía renovable es sostenible y reduce las emisiones de carbono",
+    warrantBacking:
+      "La energía eólica y solar no producen emisiones durante su operación",
+    qualifier: "En la mayoría de los países desarrollados",
+    rebuttal: "A menos que los costos de infraestructura resulten prohibitivamente caros",
+  },
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
 // Empty argument template
 export const emptyToulminArgument: ToulminArgument = {
   name: "",

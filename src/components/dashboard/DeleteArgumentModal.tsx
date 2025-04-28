@@ -1,7 +1,16 @@
-'use client'
+"use client";
 
-import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
+import {
+  ExclamationTriangleIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
 
 interface DeleteArgumentModalProps {
   isOpen: boolean;
@@ -11,13 +20,16 @@ interface DeleteArgumentModalProps {
   isDeleting?: boolean;
 }
 
-export function DeleteArgumentModal({ 
-  isOpen, 
-  onClose, 
-  onDelete, 
+export function DeleteArgumentModal({
+  isOpen,
+  onClose,
+  onDelete,
   argumentName,
-  isDeleting = false 
+  isDeleting = false,
 }: Readonly<DeleteArgumentModalProps>) {
+  const t = useTranslations("pages.modals");
+  const commonT = useTranslations("common");
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-10">
       <DialogBackdrop
@@ -38,22 +50,27 @@ export function DeleteArgumentModal({
                 className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
                 disabled={isDeleting}
               >
-                <span className="sr-only">Close</span>
+                <span className="sr-only">{commonT("close")}</span>
                 <XMarkIcon aria-hidden="true" className="size-6" />
               </button>
             </div>
             <div className="sm:flex sm:items-start">
               <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
-                <ExclamationTriangleIcon aria-hidden="true" className="size-6 text-red-600" />
+                <ExclamationTriangleIcon
+                  aria-hidden="true"
+                  className="size-6 text-red-600"
+                />
               </div>
               <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <DialogTitle as="h3" className="text-base font-semibold text-gray-900">
-                  Delete Argument
+                <DialogTitle
+                  as="h3"
+                  className="text-base font-semibold text-gray-900"
+                >
+                  {t("deleteArgument")}
                 </DialogTitle>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">
-                    Are you sure you want to delete &quot;{argumentName}&quot;? All of the argument data will be permanently removed.
-                    This action cannot be undone.
+                    {t("deleteConfirmation", { name: argumentName })}
                   </p>
                 </div>
               </div>
@@ -65,7 +82,7 @@ export function DeleteArgumentModal({
                 className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto disabled:bg-red-400"
                 disabled={isDeleting}
               >
-                {isDeleting ? 'Deleting...' : 'Delete'}
+                {isDeleting ? commonT("deleting") : commonT("delete")}
               </button>
               <button
                 type="button"
@@ -73,12 +90,12 @@ export function DeleteArgumentModal({
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto disabled:bg-gray-100"
                 disabled={isDeleting}
               >
-                Cancel
+                {commonT("cancel")}
               </button>
             </div>
           </DialogPanel>
         </div>
       </div>
     </Dialog>
-  )
-} 
+  );
+}

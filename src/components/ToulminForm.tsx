@@ -1,10 +1,11 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { emptyToulminArgument, sampleToulminArgument } from "@/data/toulminTemplates";
+import { emptyToulminArgument, sampleToulminArgument, sampleToulminArgumentES } from "@/data/toulminTemplates";
 import { ToulminArgument } from "@/types/client";
 import { DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 
 interface ToulminFormProps {
   readonly onSubmit: (data: ToulminArgument) => void;
@@ -19,8 +20,16 @@ export function ToulminForm({
   initialData = emptyToulminArgument,
   buttonText = "Generate Diagram"
 }: Readonly<ToulminFormProps>) {
+  const t = useTranslations('pages.argument');
+  const commonT = useTranslations('common');
+  const locale = useLocale();
   const { user } = useAuth();
   const [formData, setFormData] = useState<ToulminArgument>(initialData);
+
+  // Get the appropriate sample data based on the current locale
+  const getSampleData = () => {
+    return locale === 'es' ? sampleToulminArgumentES : sampleToulminArgument;
+  };
 
   // Update form data if initialData changes externally
   useEffect(() => {
@@ -89,24 +98,24 @@ export function ToulminForm({
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-base/7 font-semibold text-gray-900">
-                Diagram Details
+                {t('diagramDetails')}
               </h2>
               <p className="mt-1 text-sm/6 text-gray-600">
-                Provide basic information about your argument diagram.
+                {t('basicInfoDescription')}
               </p>
             </div>
             <button
               type="button"
               onClick={() => {
-                const sampleData = sampleToulminArgument;
+                const sampleData = getSampleData();
                 setFormData(sampleData);
                 onChange?.(sampleData);
               }}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              title="Load sample argument"
+              title={t('loadSampleTooltip')}
             >
               <DocumentDuplicateIcon className="w-4 h-4" />
-              <span>Use Sample</span>
+              <span>{t('useSample')}</span>
             </button>
           </div>
 
@@ -116,7 +125,7 @@ export function ToulminForm({
                 htmlFor="name"
                 className="block text-sm/6 font-medium text-gray-900"
               >
-                Toulmin Argument Name
+                {t('argumentName')}
               </label>
               <div className="mt-2">
                 <input
@@ -126,7 +135,7 @@ export function ToulminForm({
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  placeholder="e.g., Climate Change Policy Toulmin Argument"
+                  placeholder={t('argumentNamePlaceholder')}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -137,7 +146,7 @@ export function ToulminForm({
                 htmlFor="author"
                 className="block text-sm/6 font-medium text-gray-900"
               >
-                Author
+                {t('author')}
               </label>
               <div className="mt-2">
                 <input
@@ -147,7 +156,7 @@ export function ToulminForm({
                   value={formData.author.name}
                   onChange={handleInputChange}
                   required
-                  placeholder="Your name"
+                  placeholder={t('authorPlaceholder')}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -157,11 +166,10 @@ export function ToulminForm({
 
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base/7 font-semibold text-gray-900">
-            Toulmin Argument Structure
+            {t('argumentStructure')}
           </h2>
           <p className="mt-1 text-sm/6 text-gray-600">
-            Complete the fields below to build your logical argument using the
-            Toulmin model.
+            {t('argumentStructureDescription')}
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -170,7 +178,7 @@ export function ToulminForm({
                 htmlFor="claim"
                 className="block text-sm/6 font-medium text-gray-900"
               >
-                Claim (Conclusion)
+                {t('claim')}
               </label>
               <div className="mt-2">
                 <textarea
@@ -180,7 +188,7 @@ export function ToulminForm({
                   onChange={handleInputChange}
                   rows={2}
                   required
-                  placeholder="What are you trying to prove?"
+                  placeholder={t('claimPlaceholder')}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -191,7 +199,7 @@ export function ToulminForm({
                 htmlFor="grounds"
                 className="block text-sm/6 font-medium text-gray-900"
               >
-                Grounds (Data)
+                {t('evidence')}
               </label>
               <div className="mt-2">
                 <textarea
@@ -201,7 +209,7 @@ export function ToulminForm({
                   onChange={handleInputChange}
                   rows={2}
                   required
-                  placeholder="What evidence supports your claim?"
+                  placeholder={t('evidencePlaceholder')}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -212,7 +220,7 @@ export function ToulminForm({
                 htmlFor="groundsBacking"
                 className="block text-sm/6 font-medium text-gray-900"
               >
-                Backing for Grounds
+                {t('evidenceBacking')}
               </label>
               <div className="mt-2">
                 <textarea
@@ -221,7 +229,7 @@ export function ToulminForm({
                   value={formData.parts.groundsBacking}
                   onChange={handleInputChange}
                   rows={2}
-                  placeholder="Why is this evidence credible?"
+                  placeholder={t('evidenceBackingPlaceholder')}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -231,10 +239,10 @@ export function ToulminForm({
 
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base/7 font-semibold text-gray-900">
-            Reasoning & Justification
+            {t('reasoningSection')}
           </h2>
           <p className="mt-1 text-sm/6 text-gray-600">
-            Connect your evidence to your claim through logical reasoning.
+            {t('reasoningSectionDescription')}
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -243,7 +251,7 @@ export function ToulminForm({
                 htmlFor="warrant"
                 className="block text-sm/6 font-medium text-gray-900"
               >
-                Warrant (Justification)
+                {t('warrant')}
               </label>
               <div className="mt-2">
                 <textarea
@@ -253,7 +261,7 @@ export function ToulminForm({
                   onChange={handleInputChange}
                   rows={2}
                   required
-                  placeholder="How does your evidence connect to your claim?"
+                  placeholder={t('warrantPlaceholder')}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -264,7 +272,7 @@ export function ToulminForm({
                 htmlFor="warrantBacking"
                 className="block text-sm/6 font-medium text-gray-900"
               >
-                Backing for Warrant
+                {t('backing')}
               </label>
               <div className="mt-2">
                 <textarea
@@ -273,7 +281,7 @@ export function ToulminForm({
                   value={formData.parts.warrantBacking}
                   onChange={handleInputChange}
                   rows={2}
-                  placeholder="Why is this logical connection valid?"
+                  placeholder={t('backingPlaceholder')}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -283,10 +291,10 @@ export function ToulminForm({
 
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base/7 font-semibold text-gray-900">
-            Limitations & Challenges
+            {t('limitationsSection')}
           </h2>
           <p className="mt-1 text-sm/6 text-gray-600">
-            Acknowledge the scope and potential objections to your argument
+            {t('limitationsSectionDescription')}
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -295,7 +303,7 @@ export function ToulminForm({
                 htmlFor="qualifier"
                 className="block text-sm/6 font-medium text-gray-900"
               >
-                Qualifier (Modality)
+                {t('qualifier')}
               </label>
               <div className="mt-2">
                 <textarea
@@ -304,7 +312,7 @@ export function ToulminForm({
                   value={formData.parts.qualifier}
                   onChange={handleInputChange}
                   rows={2}
-                  placeholder="Under what circumstances is your claim true? (e.g., 'usually', 'sometimes')"
+                  placeholder={t('qualifierPlaceholder')}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -315,7 +323,7 @@ export function ToulminForm({
                 htmlFor="rebuttal"
                 className="block text-sm/6 font-medium text-gray-900"
               >
-                Rebuttal (Objections)
+                {t('rebuttal')}
               </label>
               <div className="mt-2">
                 <textarea
@@ -324,7 +332,7 @@ export function ToulminForm({
                   value={formData.parts.rebuttal}
                   onChange={handleInputChange}
                   rows={2}
-                  placeholder="When would your claim not hold true?"
+                  placeholder={t('rebuttalPlaceholder')}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -343,7 +351,7 @@ export function ToulminForm({
             onChange?.(emptyData);
           }}
         >
-          Clear
+          {commonT('clear')}
         </button>
         <button
           type="submit"

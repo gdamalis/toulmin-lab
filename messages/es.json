@@ -1,0 +1,192 @@
+{
+  "common": {
+    "signOut": "Cerrar sesión",
+    "back": "Atrás",
+    "user": "Usuario",
+    "language": "Idioma",
+    "loading": "Cargando...",
+    "saving": "Guardando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "deleting": "Eliminando...",
+    "edit": "Editar",
+    "view": "Ver",
+    "create": "Crear",
+    "save": "Guardar",
+    "close": "Cerrar",
+    "clear": "Limpiar",
+    "by": "por",
+    "openUserMenu": "Abrir menú de usuario",
+    "openMainMenu": "Abrir menú principal",
+    "stats": "estadísticas",
+    "openOptions": "Abrir opciones"
+  },
+  "nav": {
+    "dashboard": "Tablero",
+    "arguments": "Argumentos"
+  },
+  "stats": {
+    "increased": "Aumentado",
+    "decreased": "Disminuido",
+    "neutral": "",
+    "increasedBy": "Aumentado por",
+    "decreasedBy": "Disminuido por"
+  },
+  "errors": {
+    "auth": {
+      "emailInUse": "El correo electrónico ya está en uso",
+      "invalidEmail": "Formato de correo electrónico inválido",
+      "invalidCredentials": "Correo electrónico o contraseña inválidos",
+      "signInFailed": "Error al iniciar sesión",
+      "signUpFailed": "Error al crear la cuenta", 
+      "unexpected": "Ocurrió un error inesperado",
+      "nameMissing": "El nombre es obligatorio",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
+      "googleFailed": "La autenticación con Google falló. Por favor, inténtalo de nuevo."
+    }
+  },
+  "pages": {
+    "home": {
+      "title": "Constructor de Diagramas Toulmin",
+      "description": "Construya y exporte diagramas de argumentos Toulmin",
+      "getStarted": "Comenzar",
+      "learnMore": "Saber más",
+      "hero": {
+        "title": "Construye argumentos más sólidos visualmente",
+        "description": "Crea, analiza y comparte argumentos estructurados utilizando el método Toulmin. Haz que tu razonamiento sea claro, identifica puntos débiles y persuade efectivamente.",
+        "badge": {
+          "text": "Nuevo",
+          "label": "Beta pública ya disponible"
+        }
+      },
+      "featureSection": {
+        "heading": "Argumentación Estructurada",
+        "subheading": "¿Por qué usar el método Toulmin?",
+        "description": "El modelo Toulmin proporciona un marco para analizar y construir argumentos, haciendo que el razonamiento complejo sea más accesible y persuasivo."
+      },
+      "features": {
+        "clarity": {
+          "title": "Claridad en el razonamiento",
+          "description": "Descompone argumentos complejos en componentes claros y conectados que cualquiera puede seguir y entender."
+        },
+        "persuasion": {
+          "title": "Mejor persuasión",
+          "description": "Fortalece tus argumentos anticipando refutaciones y proporcionando un respaldo sólido para tus afirmaciones."
+        },
+        "academic": {
+          "title": "Excelencia académica",
+          "description": "Ampliamente utilizado en escritura académica y cursos de pensamiento crítico para desarrollar y evaluar argumentos."
+        },
+        "visualize": {
+          "title": "Visualiza y comparte",
+          "description": "Crea hermosos diagramas que pueden ser fácilmente compartidos, exportados e incrustados en presentaciones o documentos."
+        }
+      },
+      "ctaSection": {
+        "title": "¿Listo para fortalecer tus argumentos?",
+        "description": "Únete a miles de académicos, estudiantes y profesionales que utilizan nuestra herramienta para construir argumentos convincentes."
+      }
+    },
+    "auth": {
+      "backToHome": "Volver al inicio",
+      "signIn": "Iniciar sesión",
+      "signUp": "Registrarse",
+      "signInHeading": "Inicia sesión en tu cuenta",
+      "signUpHeading": "Crea una nueva cuenta",
+      "signingIn": "Iniciando sesión...",
+      "creatingAccount": "Creando cuenta...",
+      "fullName": "Nombre completo",
+      "fullNamePlaceholder": "Tu nombre completo",
+      "emailAddress": "Correo electrónico",
+      "emailPlaceholder": "Correo electrónico",
+      "password": "Contraseña",
+      "passwordPlaceholder": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "confirmPasswordPlaceholder": "Confirmar Contraseña",
+      "rememberMe": "Recordarme",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "orContinueWith": "O continuar con",
+      "noAccount": "¿No tienes una cuenta?",
+      "haveAccount": "¿Ya tienes una cuenta?",
+      "untitledArgument": "Argumento sin título"
+    },
+    "dashboard": {
+      "title": "Tablero",
+      "createNew": "Crear Nuevo Argumento",
+      "myArguments": "Mis Argumentos",
+      "noArguments": "Aún no has creado ningún argumento.",
+      "loading": "Cargando tus argumentos...",
+      "analyticsOverview": "Resumen Analítico",
+      "recentActivity": "Actividad Reciente",
+      "createNewDiagram": "Crear Nuevo Diagrama",
+      "loadingDiagrams": "Cargando diagramas...",
+      "errorLoading": "Error al cargar diagramas:",
+      "noRecentActivity": "No hay actividad reciente para mostrar. Crea tu primer diagrama para comenzar.",
+      "createdOn": "Creado el",
+      "updatedOn": "Actualizado el",
+      "author": "Autor",
+      "anonymous": "Anónimo",
+      "viewDiagram": "Ver diagrama",
+      "totalDiagrams": "Total de Diagramas",
+      "activeUsers": "Usuarios Activos"
+    },
+    "argument": {
+      "save": "Guardar",
+      "export": "Exportar",
+      "exportAsFormat": "Exportar como {format}",
+      "saveAndView": "Guardar y Ver",
+      "signInToSave": "Inicia sesión para guardar tus diagramas",
+      "claim": "Afirmación",
+      "evidence": "Evidencia",
+      "warrant": "Garantía",
+      "backing": "Respaldo",
+      "rebuttal": "Refutación",
+      "qualifier": "Calificador",
+      "untitled": "Argumento sin título",
+      "createYourArgument": "Crea Tu Argumento Toulmin",
+      "authRequired": "Autenticación Requerida",
+      "pleaseSignIn": "Inicia sesión para guardar tu diagrama",
+      "saveFailed": "Error al Guardar",
+      "saveSuccess": "¡Diagrama guardado exitosamente!",
+      "diagramDetails": "Detalles del Diagrama",
+      "basicInfoDescription": "Proporciona información básica sobre tu diagrama de argumento.",
+      "loadSampleTooltip": "Cargar argumento de ejemplo",
+      "useSample": "Usar Ejemplo",
+      "argumentName": "Nombre del Argumento Toulmin",
+      "argumentNamePlaceholder": "ej., Política de Cambio Climático Argumento Toulmin",
+      "author": "Autor",
+      "authorPlaceholder": "Tu nombre",
+      "argumentStructure": "Estructura del Argumento Toulmin",
+      "argumentStructureDescription": "Completa los campos a continuación para construir tu argumento lógico utilizando el modelo Toulmin.",
+      "evidenceBacking": "Respaldo para la Evidencia",
+      "evidenceBackingPlaceholder": "¿Por qué esta evidencia es creíble?",
+      "reasoningSection": "Razonamiento y Justificación",
+      "reasoningSectionDescription": "Conecta tu evidencia con tu afirmación a través de un razonamiento lógico.",
+      "limitationsSection": "Limitaciones y Desafíos",
+      "limitationsSectionDescription": "Reconoce el alcance y las posibles objeciones a tu argumento",
+      "claimPlaceholder": "¿Qué estás tratando de probar?",
+      "evidencePlaceholder": "¿Qué evidencia respalda tu afirmación?",
+      "warrantPlaceholder": "¿Cómo se conecta tu evidencia con tu afirmación?",
+      "backingPlaceholder": "¿Por qué esta conexión lógica es válida?",
+      "qualifierPlaceholder": "¿Bajo qué circunstancias es cierta tu afirmación? (ej., 'usualmente', 'a veces')",
+      "rebuttalPlaceholder": "¿Cuándo no sería válida tu afirmación?",
+      "editToulminArgument": "Editar Argumento Toulmin",
+      "backToView": "Volver a Vista",
+      "backToDashboard": "Volver al Tablero",
+      "editDiagram": "Editar Diagrama",
+      "fetchFailed": "Error al cargar el diagrama",
+      "unknownError": "Ocurrió un error desconocido",
+      "diagramNotFound": "Diagrama no encontrado o no tienes permiso para acceder a él",
+      "lastUpdated": "Última actualización",
+      "toulminArgumentDiagram": "Diagrama de Argumento Toulmin",
+      "diagram": "Diagrama"
+    },
+    "modals": {
+      "deleteArgument": "Eliminar Argumento",
+      "deleteConfirmation": "¿Estás seguro de que deseas eliminar \"{name}\"? Todos los datos del argumento se eliminarán permanentemente. Esta acción no se puede deshacer."
+    }
+  }
+} 

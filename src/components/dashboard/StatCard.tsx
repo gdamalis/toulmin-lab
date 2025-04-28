@@ -4,6 +4,7 @@ import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { ElementType } from "react";
+import { useTranslations } from "next-intl";
 
 export interface StatCardProps {
   readonly id: number | string;
@@ -29,6 +30,9 @@ export function StatCard({
   linkText,
   className,
 }: StatCardProps) {
+  const t = useTranslations('stats');
+  const commonT = useTranslations('common');
+  
   const colorMap = {
     increase: "text-green-600",
     decrease: "text-red-600",
@@ -44,14 +48,6 @@ export function StatCard({
   };
   
   const changeIcon = iconMap[changeType];
-  
-  const textMap = {
-    increase: "Increased",
-    decrease: "Decreased",
-    neutral: ""
-  };
-  
-  const screenReaderText = textMap[changeType];
 
   return (
     <div
@@ -78,7 +74,10 @@ export function StatCard({
             )}
           >
             {changeIcon}
-            <span className="sr-only">{screenReaderText} by</span>
+            <span className="sr-only">
+              {changeType === 'increase' ? t('increasedBy') : 
+               changeType === 'decrease' ? t('decreasedBy') : ''}
+            </span>
             {change}
           </p>
         )}
@@ -93,7 +92,7 @@ export function StatCard({
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
                 {linkText}
-                <span className="sr-only"> {name} stats</span>
+                <span className="sr-only"> {name} {commonT('stats')}</span>
               </Link>
             </div>
           </div>

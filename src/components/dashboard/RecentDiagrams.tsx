@@ -10,6 +10,7 @@ import { ToulminArgument } from "@/types/client";
 import { useToulminArguments } from "@/hooks/useArguments";
 import { useState } from "react";
 import { DeleteArgumentModal } from "./DeleteArgumentModal";
+import { useTranslations } from "next-intl";
 
 interface RecentDiagramsProps {
   limit?: number;
@@ -20,6 +21,9 @@ function classNames(...classes: string[]) {
 }
 
 export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
+  const t = useTranslations('pages.dashboard');
+  const commonT = useTranslations('common');
+  
   const { toulminArguments, isLoading, error, deleteArgument, isDeleting } = useToulminArguments();
   const { user } = useAuth();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -65,7 +69,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
     if (isLoading) {
       return (
         <div className="mt-4 py-8 flex justify-center">
-          <Typography textColor="muted">Loading diagrams...</Typography>
+          <Typography textColor="muted">{t('loadingDiagrams')}</Typography>
         </div>
       );
     }
@@ -73,7 +77,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
     if (error) {
       return (
         <div className="mt-4 bg-red-50 p-6 rounded-lg text-center text-red-600">
-          <Typography>Error loading diagrams: {error}</Typography>
+          <Typography>{t('errorLoading')} {error}</Typography>
         </div>
       );
     }
@@ -94,7 +98,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
                 </div>
                 <div className="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
                   <p className="whitespace-nowrap">
-                    Created on{" "}
+                    {t('createdOn')}{" "}
                     <time dateTime={toulminArgument.createdAt.toString()}>
                       {formatDate(toulminArgument.createdAt.toString())}
                     </time>
@@ -106,7 +110,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
                     <circle cx={1} cy={1} r={1} />
                   </svg>
                   <p className="whitespace-nowrap">
-                    Updated on{" "}
+                    {t('updatedOn')}{" "}
                     <time dateTime={toulminArgument.updatedAt.toString()}>
                       {formatDate(toulminArgument.updatedAt.toString())}
                     </time>
@@ -118,7 +122,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
                     <circle cx={1} cy={1} r={1} />
                   </svg>
                   <p className="truncate">
-                    Author: {toulminArgument.author?.name ?? user?.displayName ?? 'Anonymous'}
+                    {t('author')}: {toulminArgument.author?.name ?? user?.displayName ?? t('anonymous')}
                   </p>
                 </div>
               </div>
@@ -127,12 +131,12 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
                   href={`/argument/view/${toulminArgument._id}`}
                   className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
                 >
-                  <span>View diagram</span>
+                  <span>{t('viewDiagram')}</span>
                   <span className="sr-only">, {toulminArgument.name || ''}</span>
                 </a>
                 <Menu as="div" className="relative flex-none">
                   <MenuButton className="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900">
-                    <span className="sr-only">Open options</span>
+                    <span className="sr-only">{commonT('openOptions')}</span>
                     <EllipsisVerticalIcon
                       className="h-5 w-5"
                       aria-hidden="true"
@@ -148,7 +152,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
                             "block px-3 py-1 text-sm leading-6 text-gray-900"
                           )}
                         >
-                          <span>Edit</span>
+                          <span>{commonT('edit')}</span>
                           <span className="sr-only">
                             , {toulminArgument.name || `Diagram ${toulminArgument._id?.toString()?.substring(0, 8) ?? ''}`}
                           </span>
@@ -164,7 +168,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
                             "block w-full text-left px-3 py-1 text-sm leading-6 text-gray-900"
                           )}
                         >
-                          <span>Delete</span>
+                          <span>{commonT('delete')}</span>
                           <span className="sr-only">
                             , {toulminArgument.name || `Diagram ${toulminArgument._id?.toString()?.substring(0, 8) ?? ''}`}
                           </span>
@@ -183,8 +187,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
     return (
       <div className="mt-4 bg-gray-50 p-6 rounded-lg text-center text-gray-500">
         <Typography textColor="muted">
-          No recent activity to display. Create your first diagram to
-          get started.
+          {t('noRecentActivity')}
         </Typography>
       </div>
     );
@@ -193,8 +196,8 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
   return (
     <div className="mt-8">
       <div className="flex items-center justify-between">
-        <Typography variant="h3">Recent Activity</Typography>
-        <Button href="/argument/create">Create New Diagram</Button>
+        <Typography variant="h3">{t('recentActivity')}</Typography>
+        <Button href="/argument/create">{t('createNewDiagram')}</Button>
       </div>
       
       {renderDiagramContent()}

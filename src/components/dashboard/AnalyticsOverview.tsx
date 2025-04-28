@@ -8,6 +8,7 @@ import {
   UsersIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslations } from "next-intl";
 
 interface AnalyticsOverviewProps {
   stats?: Array<Omit<StatCardProps, "icon"> & { icon: StatCardProps["icon"] }>;
@@ -23,6 +24,7 @@ interface AnalyticsData {
 export function AnalyticsOverview({
   stats,
 }: Readonly<AnalyticsOverviewProps>) {
+  const t = useTranslations('pages.dashboard');
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
@@ -68,7 +70,7 @@ export function AnalyticsOverview({
   const displayStats = analyticsData ? [
     {
       id: 1,
-      name: "Total Diagrams",
+      name: t('totalDiagrams'),
       stat: analyticsData.totalDiagrams.toString(),
       icon: ChartBarIcon,
       change: Math.abs(analyticsData.totalDiagramsChange).toString(),
@@ -76,7 +78,7 @@ export function AnalyticsOverview({
     },
     {
       id: 2,
-      name: "Active Users",
+      name: t('activeUsers'),
       stat: analyticsData.totalUsers.toString(),
       icon: UsersIcon,
       change: Math.abs(analyticsData.totalUsersChange).toString(),
@@ -87,7 +89,7 @@ export function AnalyticsOverview({
   return (
     <div>
       <Typography variant="h3" className="mb-6">
-        Analytics Overview
+        {t('analyticsOverview')}
       </Typography>
 
       {loading ? (

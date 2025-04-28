@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { DiagramPreview } from './DiagramPreview';
+import { useTranslations } from 'next-intl';
 
 interface HeroSectionProps {
   readonly title: string;
@@ -20,11 +20,17 @@ interface HeroSectionProps {
 export function HeroSection({
   title,
   description,
-  badgeText = 'New',
-  badgeLabel = 'Public beta now available',
+  badgeText,
+  badgeLabel,
   primaryCta,
   secondaryCta,
 }: HeroSectionProps) {
+  const t = useTranslations('pages.home');
+  
+  // Use provided values or fallback to translations
+  const badgeTextValue = badgeText ?? t('hero.badge.text');
+  const badgeLabelValue = badgeLabel ?? t('hero.badge.label');
+  
   return (
     <div className="relative isolate overflow-hidden bg-gradient-to-b from-blue-100/20">
       <div className="mx-auto max-w-7xl pt-10 pb-24 sm:pb-32 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:px-8 lg:py-40">
@@ -34,11 +40,11 @@ export function HeroSection({
               <div className="mt-10 sm:mt-16 lg:mt-4">
                 <a href="#" className="inline-flex space-x-6">
                   <span className="rounded-full bg-blue-600/10 px-3 py-1 text-sm/6 font-semibold text-blue-600 ring-1 ring-blue-600/10 ring-inset">
-                    {badgeText}
+                    {badgeTextValue}
                   </span>
                   <span className="inline-flex items-center space-x-2 text-sm/6 font-medium text-gray-600">
-                    <span>{badgeLabel}</span>
-                    <ArrowRightIcon className="size-5 text-gray-400" aria-hidden="true" />
+                    <span>{badgeLabelValue}</span>
+                    {/* <ArrowRightIcon className="size-5 text-gray-400" aria-hidden="true" /> */}
                   </span>
                 </a>
               </div>

@@ -17,20 +17,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
 import { Typography } from "@/components/ui/Typography";
 import { Button } from "@/components/ui/Button";
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 
 interface AppShellProps {
   readonly children: ReactNode;
   readonly title: string;
 }
-
-const navigation = [
-  { name: "Dashboard", href: "/dashboard", current: true },
-  {
-    name: "Toulmin Argument Builder",
-    href: "/argument/create",
-    current: false,
-  },
-];
 
 function classNames(...classes: (string | boolean)[]) {
   return classes.filter(Boolean).join(" ");
@@ -40,11 +33,23 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
   const { user, signOutUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const t = useTranslations();
+  const commonT = useTranslations('common');
 
   const handleSignOut = async () => {
     await signOutUser();
     router.push("/");
   };
+
+  // Navigation items with translations
+  const navigation = [
+    { name: t('nav.dashboard'), href: "/dashboard", current: false },
+    {
+      name: t('nav.arguments'),
+      href: "/argument/create",
+      current: false,
+    },
+  ];
 
   // Set the current navigation item based on the current path
   const updatedNavigation = navigation.map((item) => ({
@@ -94,13 +99,18 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                       </div>
                     </div>
                     <div className="hidden md:block">
-                      <div className="ml-4 flex items-center md:ml-6">
+                      <div className="ml-4 flex items-center md:ml-6 gap-2">
+                        {/* Language Switcher */}
+                        <div className="relative">
+                          <LanguageSwitcher />
+                        </div>
+                        
                         {/* Profile dropdown */}
                         <Menu as="div" className="relative ml-3">
                           <div>
                             <MenuButton className="relative flex max-w-xs cursor-pointer items-center rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                               <span className="absolute -inset-1.5" />
-                              <span className="sr-only">Open user menu</span>
+                              <span className="sr-only">{commonT('openUserMenu')}</span>
                               {user?.photoURL ? (
                                 <Image
                                   src={user.photoURL}
@@ -121,7 +131,7 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                           <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden">
                             <div className="px-4 py-3">
                               <p className="text-sm font-medium text-gray-900">
-                                {user?.displayName ?? user?.email?.split('@')[0] ?? 'User'}
+                                {user?.displayName ?? user?.email?.split('@')[0] ?? t('common.user')}
                               </p>
                               <p className="text-xs text-gray-500 truncate">{user?.email ?? ''}</p>
                             </div>
@@ -136,7 +146,7 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                                   )}
                                   variant="secondary"
                                 >
-                                  Sign out
+                                  {t('common.signOut')}
                                 </Button>
                               )}
                             </MenuItem>
@@ -148,7 +158,7 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                       {/* Mobile menu button */}
                       <DisclosureButton className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                         <span className="absolute -inset-0.5" />
-                        <span className="sr-only">Open main menu</span>
+                        <span className="sr-only">{commonT('openMainMenu')}</span>
                         {open ? (
                           <XMarkIcon
                             className="block size-6"
@@ -206,21 +216,24 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium text-white">
-                        {user?.displayName ?? "User"}
+                        {user?.displayName ?? t('common.user')}
                       </div>
                       <div className="text-sm font-medium text-gray-400">
                         {user?.email ?? ""}
                       </div>
+                    </div>
+                    <div className="ml-auto">
+                      <LanguageSwitcher />
                     </div>
                   </div>
                   <div className="mt-3 space-y-1 px-2">
                     <DisclosureButton
                       as={Button}
                       onClick={handleSignOut}
-                      className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                      className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-white bg-transparent hover:bg-gray-600 border-none"
                       variant="secondary"
                     >
-                      Sign out
+                      {t('common.signOut')}
                     </DisclosureButton>
                   </div>
                 </div>

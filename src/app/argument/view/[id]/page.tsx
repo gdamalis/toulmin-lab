@@ -8,12 +8,16 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ToulminArgument } from "@/types/client";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function ToulminArgumentViewPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = useTranslations('pages.argument');
+  const commonT = useTranslations('common');
+  
   const [toulminArgument, setToulminArgument] =
     useState<ToulminArgument | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,14 +47,14 @@ export default function ToulminArgumentViewPage({
         });
 
         if (!response.ok) {
-          throw new Error(`Failed to fetch diagram: ${response.statusText}`);
+          throw new Error(`${t("fetchFailed")}: ${response.statusText}`);
         }
 
         const data = await response.json();
         setToulminArgument(data);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "An unknown error occurred"
+          err instanceof Error ? err.message : t("unknownError")
         );
         console.error("Error fetching diagram:", err);
       } finally {
@@ -59,7 +63,7 @@ export default function ToulminArgumentViewPage({
     };
 
     fetchDiagram();
-  }, [toulminArgumentId, user]);
+  }, [toulminArgumentId, user, t]);
 
   const handleEdit = () => {
     router.push(`/argument/edit/${toulminArgumentId}`);
@@ -74,7 +78,7 @@ export default function ToulminArgumentViewPage({
     if (isLoading) {
       return (
         <div className="flex justify-center items-center h-64">
-          <Typography textColor="muted">Loading diagram...</Typography>
+          <Typography textColor="muted">{commonT("loading")}</Typography>
         </div>
       );
     }
@@ -82,7 +86,7 @@ export default function ToulminArgumentViewPage({
     if (error) {
       return (
         <div className="bg-red-50 p-6 rounded-lg text-center text-red-600">
-          <Typography>Error: {error}</Typography>
+          <Typography>{commonT("error")}: {error}</Typography>
         </div>
       );
     }
@@ -98,34 +102,34 @@ export default function ToulminArgumentViewPage({
     return (
       <div className="bg-gray-50 p-6 rounded-lg text-center text-gray-500">
         <Typography textColor="muted">
-          Diagram not found or you don&apos;t have permission to view it.
+          {t("diagramNotFound")}
         </Typography>
       </div>
     );
   };
 
   return (
-    <AppShell title={toulminArgument?.name || "ToulminArgument Diagram"}>
+    <AppShell title={toulminArgument?.name || t("toulminArgumentDiagram")}>
       <div className="-mt-32">
         <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
           <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <Button variant="outline" onClick={handleBack} className="mb-4">
-                  ← Back to Dashboard
+                  ← {t("backToDashboard")}
                 </Button>
                 <Typography variant="h2">
                   {toulminArgument?.name ||
-                    `Diagram ${toulminArgumentId.substring(0, 8)}`}
+                    `${t("diagram")} ${toulminArgumentId.substring(0, 8)}`}
                 </Typography>
                 {toulminArgument && (
                   <Typography textColor="muted" className="mt-1">
-                    Last updated:{" "}
+                    {t("lastUpdated")}:{" "}
                     {new Date(toulminArgument.updatedAt).toLocaleString()}
                   </Typography>
                 )}
               </div>
-              <Button onClick={handleEdit}>Edit Diagram</Button>
+              <Button onClick={handleEdit}>{t("editDiagram")}</Button>
             </div>
 
             {renderContent()}
