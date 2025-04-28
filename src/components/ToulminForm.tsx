@@ -10,12 +10,14 @@ interface ToulminFormProps {
   readonly onSubmit: (data: ToulminArgument) => void;
   readonly onChange?: (data: ToulminArgument) => void;
   readonly initialData?: ToulminArgument;
+  readonly buttonText?: string;
 }
 
 export function ToulminForm({ 
   onSubmit, 
   onChange,
-  initialData = emptyToulminArgument 
+  initialData = emptyToulminArgument,
+  buttonText = "Generate Diagram"
 }: Readonly<ToulminFormProps>) {
   const { user } = useAuth();
   const [formData, setFormData] = useState<ToulminArgument>(initialData);
@@ -347,7 +349,7 @@ export function ToulminForm({
           type="submit"
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Generate Diagram
+          {buttonText}
         </button>
       </div>
     </form>

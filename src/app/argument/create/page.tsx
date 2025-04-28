@@ -112,6 +112,7 @@ export default function ToulminArgumentBuilder() {
                     onSubmit={handleSave}
                     onChange={handleFormChange}
                     initialData={toulminArgument}
+                    buttonText="Save & View"
                   />
                 </div>
                 <div>

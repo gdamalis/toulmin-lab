@@ -159,6 +159,7 @@ export default function ToulminArgumentEditor({
             onSubmit={handleSave}
             onChange={handleFormChange}
             initialData={toulminArgument}
+            buttonText="Update & View"
           />
         </div>
         <div>
