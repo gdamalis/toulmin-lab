@@ -19,6 +19,7 @@ import { Typography } from "@/components/ui/Typography";
 import { Button } from "@/components/ui/Button";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
 interface AppShellProps {
   readonly children: ReactNode;
@@ -34,7 +35,7 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
   const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations();
-  const commonT = useTranslations('common');
+  const commonT = useTranslations("common");
 
   const handleSignOut = async () => {
     await signOutUser();
@@ -43,10 +44,10 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
 
   // Navigation items with translations
   const navigation = [
-    { name: t('nav.dashboard'), href: "/dashboard", current: false },
+    { name: t("nav.dashboard"), href: "/dashboard", current: false },
     {
-      name: t('nav.arguments'),
-      href: "/argument/create",
+      name: t("nav.myArguments"),
+      href: "/argument",
       current: false,
     },
   ];
@@ -98,19 +99,43 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                         </div>
                       </div>
                     </div>
+                    
+                    {/* Mobile New Argument Button */}
+                    <Link 
+                      href="/argument/create"
+                      className="md:hidden flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-white hover:bg-indigo-500"
+                      aria-label={t("nav.newArgument")}
+                    >
+                      <PlusIcon className="w-5 h-5" />
+                      <span className="ml-1 text-sm font-medium">{t("nav.newArgument")}</span>
+                    </Link>
+                    
                     <div className="hidden md:block">
-                      <div className="ml-4 flex items-center md:ml-6 gap-2">
+                      <div className="ml-4 flex items-center md:ml-6 gap-4">
+                        {/* New Argument Button */}
+                        <Button
+                          href="/argument/create"
+                          variant="primary"
+                          size="md"
+                          className="flex items-center gap-2"
+                        >
+                          <PlusIcon className="w-4 h-4" />
+                          {t("nav.newArgument")}
+                        </Button>
+
                         {/* Language Switcher */}
                         <div className="relative">
                           <LanguageSwitcher />
                         </div>
-                        
+
                         {/* Profile dropdown */}
-                        <Menu as="div" className="relative ml-3">
+                        <Menu as="div" className="relative">
                           <div>
                             <MenuButton className="relative flex max-w-xs cursor-pointer items-center rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                               <span className="absolute -inset-1.5" />
-                              <span className="sr-only">{commonT('openUserMenu')}</span>
+                              <span className="sr-only">
+                                {commonT("openUserMenu")}
+                              </span>
                               {user?.photoURL ? (
                                 <Image
                                   src={user.photoURL}
@@ -131,9 +156,13 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                           <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden">
                             <div className="px-4 py-3">
                               <p className="text-sm font-medium text-gray-900">
-                                {user?.displayName ?? user?.email?.split('@')[0] ?? t('common.user')}
+                                {user?.displayName ??
+                                  user?.email?.split("@")[0] ??
+                                  t("common.user")}
                               </p>
-                              <p className="text-xs text-gray-500 truncate">{user?.email ?? ''}</p>
+                              <p className="text-xs text-gray-500 truncate">
+                                {user?.email ?? ""}
+                              </p>
                             </div>
                             <div className="border-t border-gray-100 my-1"></div>
                             <MenuItem>
@@ -146,7 +175,7 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                                   )}
                                   variant="secondary"
                                 >
-                                  {t('common.signOut')}
+                                  {t("common.signOut")}
                                 </Button>
                               )}
                             </MenuItem>
@@ -158,7 +187,9 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                       {/* Mobile menu button */}
                       <DisclosureButton className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                         <span className="absolute -inset-0.5" />
-                        <span className="sr-only">{commonT('openMainMenu')}</span>
+                        <span className="sr-only">
+                          {commonT("openMainMenu")}
+                        </span>
                         {open ? (
                           <XMarkIcon
                             className="block size-6"
@@ -216,7 +247,7 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium text-white">
-                        {user?.displayName ?? t('common.user')}
+                        {user?.displayName ?? t("common.user")}
                       </div>
                       <div className="text-sm font-medium text-gray-400">
                         {user?.email ?? ""}
@@ -233,7 +264,7 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                       className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-white bg-transparent hover:bg-gray-600 border-none"
                       variant="secondary"
                     >
-                      {t('common.signOut')}
+                      {t("common.signOut")}
                     </DisclosureButton>
                   </div>
                 </div>

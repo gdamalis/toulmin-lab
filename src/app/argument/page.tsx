@@ -1,5 +1,6 @@
 "use client";
 
+import AppShell from "@/components/layout/AppShell";
 import { Typography } from "@/components/ui/Typography";
 import { Button } from "@/components/ui/Button";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
@@ -9,19 +10,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ToulminArgument } from "@/types/client";
 import { useToulminArguments } from "@/hooks/useArguments";
 import { useState } from "react";
-import { DeleteArgumentModal } from "./DeleteArgumentModal";
+import { DeleteArgumentModal } from "@/components/dashboard/DeleteArgumentModal";
 import { useTranslations } from "next-intl";
-
-interface RecentDiagramsProps {
-  limit?: number;
-}
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
-  const t = useTranslations('pages.dashboard');
+export default function ArgumentsPage() {
+  const t = useTranslations('pages.argument');
   const commonT = useTranslations('common');
   
   const { toulminArguments, isLoading, error, deleteArgument, isDeleting } = useToulminArguments();
@@ -29,9 +26,6 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [argumentToDelete, setArgumentToDelete] = useState<ToulminArgument | null>(null);
   
-  // Take only the most recent diagrams up to the limit
-  const recentToulminArguments = toulminArguments.slice(0, limit);
-
   // Helper function to format dates
   const formatDate = (dateString: string) => {
     try {
@@ -64,12 +58,12 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
     }
   };
 
-  // Function to render diagram content based on state
-  const renderDiagramContent = () => {
+  // Function to render arguments content based on state
+  const renderArgumentsContent = () => {
     if (isLoading) {
       return (
         <div className="mt-4 py-8 flex justify-center">
-          <Typography textColor="muted">{t('loadingDiagrams')}</Typography>
+          <Typography textColor="muted">{commonT('loading')}</Typography>
         </div>
       );
     }
@@ -77,15 +71,15 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
     if (error) {
       return (
         <div className="mt-4 bg-red-50 p-6 rounded-lg text-center text-red-600">
-          <Typography>{t('errorLoading')} {error}</Typography>
+          <Typography>{commonT('error')} {error}</Typography>
         </div>
       );
     }
 
-    if (recentToulminArguments.length > 0) {
+    if (toulminArguments.length > 0) {
       return (
         <ul className="mt-4 divide-y divide-gray-100">
-          {recentToulminArguments.map((toulminArgument: ToulminArgument) => (
+          {toulminArguments.map((toulminArgument: ToulminArgument) => (
             <li
               key={toulminArgument._id?.toString() ?? ''}
               className="flex items-center justify-between gap-x-6 py-5"
@@ -93,7 +87,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
               <div className="min-w-0">
                 <div className="flex items-start gap-x-3">
                   <p className="text-sm font-semibold leading-6 text-gray-900">
-                    {toulminArgument.name || `Diagram ${toulminArgument._id?.toString()?.substring(0, 8) ?? ''}`}
+                    {toulminArgument.name || `${t('diagram')} ${toulminArgument._id?.toString()?.substring(0, 8) ?? ''}`}
                   </p>
                 </div>
                 <div className="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
@@ -154,7 +148,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
                         >
                           <span>{commonT('edit')}</span>
                           <span className="sr-only">
-                            , {toulminArgument.name || `Diagram ${toulminArgument._id?.toString()?.substring(0, 8) ?? ''}`}
+                            , {toulminArgument.name || `${t('diagram')} ${toulminArgument._id?.toString()?.substring(0, 8) ?? ''}`}
                           </span>
                         </a>
                       )}
@@ -170,7 +164,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
                         >
                           <span>{commonT('delete')}</span>
                           <span className="sr-only">
-                            , {toulminArgument.name || `Diagram ${toulminArgument._id?.toString()?.substring(0, 8) ?? ''}`}
+                            , {toulminArgument.name || `${t('diagram')} ${toulminArgument._id?.toString()?.substring(0, 8) ?? ''}`}
                           </span>
                         </button>
                       )}
@@ -187,28 +181,34 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
     return (
       <div className="mt-4 bg-gray-50 p-6 rounded-lg text-center text-gray-500">
         <Typography textColor="muted">
-          {t('noRecentActivity')}
+          {t('noArguments')}
         </Typography>
       </div>
     );
   };
 
   return (
-    <div className="mt-8">
-      <div className="flex items-center justify-between">
-        <Typography variant="h3">{t('recentActivity')}</Typography>
+    <AppShell title={t('myArguments')}>
+      <div className="-mt-32">
+        <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+          <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
+            <div className="flex items-center justify-between">
+              <Typography variant="h3">{t('myArguments')}</Typography>
+            </div>
+            
+            {renderArgumentsContent()}
+            
+            {/* Delete confirmation modal */}
+            <DeleteArgumentModal
+              isOpen={isDeleteModalOpen}
+              onClose={handleCloseDeleteModal}
+              onDelete={handleDeleteArgument}
+              argumentName={argumentToDelete?.name || t('untitled')}
+              isDeleting={isDeleting}
+            />
+          </div>
+        </div>
       </div>
-      
-      {renderDiagramContent()}
-      
-      {/* Delete confirmation modal */}
-      <DeleteArgumentModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onDelete={handleDeleteArgument}
-        argumentName={argumentToDelete?.name || 'this diagram'}
-        isDeleting={isDeleting}
-      />
-    </div>
+    </AppShell>
   );
-} 
+}

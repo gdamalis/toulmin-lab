@@ -25,7 +25,8 @@
   },
   "nav": {
     "dashboard": "Tablero",
-    "arguments": "Argumentos"
+    "newArgument": "Nuevo",
+    "myArguments": "Mis Argumentos"
   },
   "stats": {
     "increased": "Aumentado",
@@ -157,7 +158,6 @@
       "useSample": "Usar Ejemplo",
       "argumentName": "Nombre del Argumento Toulmin",
       "argumentNamePlaceholder": "ej., Política de Cambio Climático Argumento Toulmin",
-      "author": "Autor",
       "authorPlaceholder": "Tu nombre",
       "argumentStructure": "Estructura del Argumento Toulmin",
       "argumentStructureDescription": "Completa los campos a continuación para construir tu argumento lógico utilizando el modelo Toulmin.",
@@ -182,7 +182,15 @@
       "diagramNotFound": "Diagrama no encontrado o no tienes permiso para acceder a él",
       "lastUpdated": "Última actualización",
       "toulminArgumentDiagram": "Diagrama de Argumento Toulmin",
-      "diagram": "Diagrama"
+      "diagram": "Diagrama",
+      "myArguments": "Mis Argumentos",
+      "newArgument": "Nuevo Argumento",
+      "noArguments": "Aún no has creado ningún argumento.",
+      "createdOn": "Creado el",
+      "updatedOn": "Actualizado el",
+      "author": "Autor",
+      "anonymous": "Anónimo",
+      "viewDiagram": "Ver diagrama"
     },
     "modals": {
       "deleteArgument": "Eliminar Argumento",
