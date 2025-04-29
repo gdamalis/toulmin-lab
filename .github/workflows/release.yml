@@ -55,4 +55,9 @@ jobs:
           name: v${{ steps.changelog.outputs.version }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
           draft: false
-          prerelease: false 
+          prerelease: false
+          
+      - name: Trigger Vercel Deployment
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: |
+          curl -X POST "https://api.vercel.com/v1/integrations/deploy/prj_RniZ8KMo0tkNR5MDGClBzYfdABzt/LanofJzHgc" 
