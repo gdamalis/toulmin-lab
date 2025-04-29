@@ -90,8 +90,27 @@ export function ToulminForm({
     onChange?.(updatedData);
   };
 
+  const validateForm = (): boolean => {
+    return (
+      !!formData.name &&
+      !!formData.author.name &&
+      !!formData.parts.claim &&
+      !!formData.parts.grounds &&
+      !!formData.parts.warrant &&
+      !!formData.parts.qualifier &&
+      !!formData.parts.groundsBacking &&
+      !!formData.parts.warrantBacking &&
+      !!formData.parts.rebuttal
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -101,18 +120,31 @@ export function ToulminForm({
     }
   };
 
+  const handleSampleData = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const sampleData = getSampleData();
+    setFormData(sampleData);
+    onChange?.(sampleData);
+  };
+
+  const handleClearForm = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const emptyData = emptyToulminArgument;
+    setFormData(emptyData);
+    onChange?.(emptyData);
+  };
+
   return (
     <form className="p-2" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-8">
         <div className="flex gap-2">
           <Button
+            type="button"
             variant="secondary"
             size="sm"
-            onClick={() => {
-              const sampleData = getSampleData();
-              setFormData(sampleData);
-              onChange?.(sampleData);
-            }}
+            onClick={handleSampleData}
             title={t("loadSampleTooltip")}
           >
             <DocumentDuplicateIcon className="w-4 h-4 mr-1.5" />
@@ -120,13 +152,10 @@ export function ToulminForm({
           </Button>
 
           <Button
+            type="button"
             variant="secondary"
             size="sm"
-            onClick={() => {
-              const emptyData = emptyToulminArgument;
-              setFormData(emptyData);
-              onChange?.(emptyData);
-            }}
+            onClick={handleClearForm}
           >
             <ArrowPathIcon className="w-4 h-4 mr-1.5" />
             <span>{commonT("clear")}</span>

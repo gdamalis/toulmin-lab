@@ -171,13 +171,7 @@ export default function ToulminArgumentEditor({
   };
 
   return (
-    <AppShell
-      title={
-        toulminArgument?.name
-          ? `${commonT("edit")}: ${toulminArgument.name}`
-          : t("editToulminArgument")
-      }
-    >
+    <AppShell title={t("editToulminArgument")}>
       <div className="mx-auto max-w-8xl pb-12">
         <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
           <div className="flex flex-col gap-4 mb-6">
@@ -195,9 +189,7 @@ export default function ToulminArgumentEditor({
             </div>
             <div>
               <Typography variant="h2">
-                {toulminArgument?.name
-                  ? `${commonT("edit")}: ${toulminArgument.name}`
-                  : t("editToulminArgument")}
+                {commonT("edit", { title: toulminArgument?.name ?? "" })}
               </Typography>
               {isSaving && (
                 <Typography textColor="muted" className="mt-1">
