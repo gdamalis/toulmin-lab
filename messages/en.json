@@ -21,7 +21,9 @@
     "openUserMenu": "Open user menu",
     "openMainMenu": "Open main menu",
     "stats": "stats",
-    "openOptions": "Open options"
+    "openOptions": "Open options",
+    "previous": "Previous",
+    "next": "Next"
   },
   "nav": {
     "dashboard": "Dashboard",

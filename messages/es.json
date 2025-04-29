@@ -21,7 +21,9 @@
     "openUserMenu": "Abrir menú de usuario",
     "openMainMenu": "Abrir menú principal",
     "stats": "estadísticas",
-    "openOptions": "Abrir opciones"
+    "openOptions": "Abrir opciones",
+    "previous": "Anterior",
+    "next": "Siguiente"
   },
   "nav": {
     "dashboard": "Tablero",
