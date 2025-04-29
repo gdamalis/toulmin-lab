@@ -161,7 +161,6 @@ export default function ToulminArgumentEditor({
             onSubmit={handleSave}
             onChange={handleFormChange}
             initialData={toulminArgument}
-            buttonText={t("saveAndView")}
           />
         </div>
         <div>
@@ -186,7 +185,8 @@ export default function ToulminArgumentEditor({
               <Button variant="outline" onClick={handleCancel}>
                 ← {t("backToView")}
               </Button>
-              <Button 
+              <Button
+                variant="primary"
                 onClick={handleSave}
                 disabled={isSaving || isLoading || !toulminArgument}
               >

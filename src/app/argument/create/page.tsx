@@ -3,6 +3,7 @@
 import AppShell from "@/components/layout/AppShell";
 import ToulminDiagram from "@/components/ToulminDiagram";
 import { ToulminForm } from "@/components/ToulminForm";
+import { Typography } from "@/components/ui/Typography";
 import { useAuth } from "@/contexts/AuthContext";
 import { emptyToulminArgument } from "@/data/toulminTemplates";
 import useNotification from "@/hooks/useNotification";
@@ -10,8 +11,6 @@ import { ToulminArgument } from "@/types/client";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { Typography } from "@/components/ui/Typography";
 
 export default function ToulminArgumentBuilder() {
   const t = useTranslations("pages.argument");
@@ -79,16 +78,9 @@ export default function ToulminArgumentBuilder() {
       <div className="mx-auto max-w-8xl pb-12">
         <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
           <div className="flex flex-col gap-4 mb-6">
-            <div className="flex gap-2 w-full">
-              <Button onClick={handleSave} disabled={isSaving}>
-                {t("saveAndView")}
-              </Button>
-            </div>
             <div>
               <Typography variant="h2">
-                {toulminArgument?.name
-                  ? toulminArgument.name
-                  : t("createYourArgument")}
+                {t("title", { title: toulminArgument.name })}
               </Typography>
               {isSaving && (
                 <Typography textColor="muted" className="mt-1">
@@ -109,7 +101,6 @@ export default function ToulminArgumentBuilder() {
                 onSubmit={handleSave}
                 onChange={handleFormChange}
                 initialData={toulminArgument}
-                buttonText={t("saveAndView")}
               />
             </div>
             <div>

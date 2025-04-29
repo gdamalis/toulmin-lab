@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  DocumentIcon,
+  ChatBubbleLeftRightIcon,
   HomeIcon
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
@@ -29,7 +29,7 @@ export function Sidebar() {
     {
       name: t("nav.myArguments"),
       href: "/argument",
-      icon: DocumentIcon,
+      icon: ChatBubbleLeftRightIcon,
       current:
         pathname === "/argument" ||
         (pathname.startsWith("/argument/") && !pathname.includes("/create")),

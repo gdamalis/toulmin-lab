@@ -1,5 +1,9 @@
 "use client";
 
+import { FormInput, FormSection, ToulminFormProps } from "@/components/form";
+import { Button } from "@/components/ui/Button";
+import { Divider } from "@/components/ui/Divider";
+import { Typography } from "@/components/ui/Typography";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   emptyToulminArgument,
@@ -7,15 +11,12 @@ import {
   sampleToulminArgumentES,
 } from "@/data/toulminTemplates";
 import { ToulminArgument } from "@/types/client";
-import { DocumentDuplicateIcon } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
-import { useTranslations, useLocale } from "next-intl";
-
-interface ToulminFormProps {
-  readonly onSubmit: (data: ToulminArgument) => void;
-  readonly onChange?: (data: ToulminArgument) => void;
-  readonly initialData?: ToulminArgument;
-}
+import {
+  ArrowPathIcon,
+  DocumentDuplicateIcon,
+} from "@heroicons/react/24/outline";
+import { useLocale, useTranslations } from "next-intl";
+import { ChangeEvent, useEffect, useState } from "react";
 
 export function ToulminForm({
   onSubmit,
@@ -27,6 +28,7 @@ export function ToulminForm({
   const locale = useLocale();
   const { user } = useAuth();
   const [formData, setFormData] = useState<ToulminArgument>(initialData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Get the appropriate sample data based on the current locale
   const getSampleData = () => {
@@ -57,7 +59,7 @@ export function ToulminForm({
   }, [user, formData.author.name, onChange]);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     let updatedData: ToulminArgument;
@@ -88,275 +90,187 @@ export function ToulminForm({
     onChange?.(updatedData);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    setIsSubmitting(true);
+
+    try {
+      await onSubmit(formData);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <form className="p-2" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-8">
         <div className="flex gap-2">
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={() => {
               const sampleData = getSampleData();
               setFormData(sampleData);
               onChange?.(sampleData);
             }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
             title={t("loadSampleTooltip")}
           >
-            <DocumentDuplicateIcon className="w-4 h-4" />
+            <DocumentDuplicateIcon className="w-4 h-4 mr-1.5" />
             <span>{t("useSample")}</span>
-          </button>
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+          </Button>
+
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={() => {
               const emptyData = emptyToulminArgument;
               setFormData(emptyData);
               onChange?.(emptyData);
             }}
           >
+            <ArrowPathIcon className="w-4 h-4 mr-1.5" />
             <span>{commonT("clear")}</span>
-          </button>
+          </Button>
         </div>
-        <div className="border-b border-gray-900/10 pb-8">
+
+        <Divider>
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-base/7 font-semibold text-gray-900">
+              <Typography variant="h2" className="text-base/7 font-semibold">
                 {t("diagramDetails")}
-              </h2>
-              <p className="mt-1 text-sm/6 text-gray-600">
+              </Typography>
+              <Typography
+                variant="body-sm"
+                textColor="muted"
+                className="mt-1 text-sm/6"
+              >
                 {t("basicInfoDescription")}
-              </p>
+              </Typography>
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="name"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                {t("argumentName")}
-              </label>
-              <div className="mt-2">
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  placeholder={t("argumentNamePlaceholder")}
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
+            <FormInput
+              inputComponent="input"
+              id="name"
+              name="name"
+              label={t("argumentName")}
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder={t("argumentNamePlaceholder")}
+              required
+            />
 
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="author"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                {t("author")}
-              </label>
-              <div className="mt-2">
-                <input
-                  id="author"
-                  name="author"
-                  type="text"
-                  value={formData.author.name}
-                  onChange={handleInputChange}
-                  required
-                  placeholder={t("authorPlaceholder")}
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
+            <FormInput
+              inputComponent="input"
+              id="author"
+              name="author"
+              label={t("author")}
+              value={formData.author.name}
+              onChange={handleInputChange}
+              placeholder={t("authorPlaceholder")}
+              required
+            />
           </div>
-        </div>
+        </Divider>
 
-        <div className="border-b border-gray-900/10 pb-8">
-          <h2 className="text-base/7 font-semibold text-gray-900">
-            {t("argumentStructure")}
-          </h2>
-          <p className="mt-1 text-sm/6 text-gray-600">
-            {t("argumentStructureDescription")}
-          </p>
+        <FormSection
+          title={t("argumentStructure")}
+          description={t("argumentStructureDescription")}
+        >
+          <FormInput
+            inputComponent="textarea"
+            id="claim"
+            name="claim"
+            label={t("claim")}
+            value={formData.parts.claim}
+            onChange={handleInputChange}
+            placeholder={t("claimPlaceholder")}
+            required
+          />
 
-          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="col-span-full">
-              <label
-                htmlFor="claim"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                {t("claim")}
-              </label>
-              <div className="mt-2">
-                <textarea
-                  id="claim"
-                  name="claim"
-                  value={formData.parts.claim}
-                  onChange={handleInputChange}
-                  rows={2}
-                  required
-                  placeholder={t("claimPlaceholder")}
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
+          <FormInput
+            inputComponent="textarea"
+            id="grounds"
+            name="grounds"
+            label={t("evidence")}
+            value={formData.parts.grounds}
+            onChange={handleInputChange}
+            placeholder={t("evidencePlaceholder")}
+            required
+          />
 
-            <div className="col-span-full">
-              <label
-                htmlFor="grounds"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                {t("evidence")}
-              </label>
-              <div className="mt-2">
-                <textarea
-                  id="grounds"
-                  name="grounds"
-                  value={formData.parts.grounds}
-                  onChange={handleInputChange}
-                  rows={2}
-                  required
-                  placeholder={t("evidencePlaceholder")}
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
+          <FormInput
+            inputComponent="textarea"
+            id="groundsBacking"
+            name="groundsBacking"
+            label={t("evidenceBacking")}
+            value={formData.parts.groundsBacking}
+            onChange={handleInputChange}
+            placeholder={t("evidenceBackingPlaceholder")}
+          />
+        </FormSection>
 
-            <div className="col-span-full">
-              <label
-                htmlFor="groundsBacking"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                {t("evidenceBacking")}
-              </label>
-              <div className="mt-2">
-                <textarea
-                  id="groundsBacking"
-                  name="groundsBacking"
-                  value={formData.parts.groundsBacking}
-                  onChange={handleInputChange}
-                  rows={2}
-                  placeholder={t("evidenceBackingPlaceholder")}
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+        <FormSection
+          title={t("reasoningSection")}
+          description={t("reasoningSectionDescription")}
+        >
+          <FormInput
+            inputComponent="textarea"
+            id="warrant"
+            name="warrant"
+            label={t("warrant")}
+            value={formData.parts.warrant}
+            onChange={handleInputChange}
+            placeholder={t("warrantPlaceholder")}
+            required
+          />
 
-        <div className="border-b border-gray-900/10 pb-8">
-          <h2 className="text-base/7 font-semibold text-gray-900">
-            {t("reasoningSection")}
-          </h2>
-          <p className="mt-1 text-sm/6 text-gray-600">
-            {t("reasoningSectionDescription")}
-          </p>
+          <FormInput
+            inputComponent="textarea"
+            id="warrantBacking"
+            name="warrantBacking"
+            label={t("backing")}
+            value={formData.parts.warrantBacking}
+            onChange={handleInputChange}
+            placeholder={t("backingPlaceholder")}
+          />
+        </FormSection>
 
-          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="col-span-full">
-              <label
-                htmlFor="warrant"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                {t("warrant")}
-              </label>
-              <div className="mt-2">
-                <textarea
-                  id="warrant"
-                  name="warrant"
-                  value={formData.parts.warrant}
-                  onChange={handleInputChange}
-                  rows={2}
-                  required
-                  placeholder={t("warrantPlaceholder")}
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
+        <FormSection
+          title={t("limitationsSection")}
+          description={t("limitationsSectionDescription")}
+        >
+          <FormInput
+            inputComponent="textarea"
+            id="qualifier"
+            name="qualifier"
+            label={t("qualifier")}
+            value={formData.parts.qualifier}
+            onChange={handleInputChange}
+            placeholder={t("qualifierPlaceholder")}
+            rows={3}
+            className="sm:col-span-3"
+          />
 
-            <div className="col-span-full">
-              <label
-                htmlFor="warrantBacking"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                {t("backing")}
-              </label>
-              <div className="mt-2">
-                <textarea
-                  id="warrantBacking"
-                  name="warrantBacking"
-                  value={formData.parts.warrantBacking}
-                  onChange={handleInputChange}
-                  rows={2}
-                  placeholder={t("backingPlaceholder")}
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-b border-gray-900/10 pb-8">
-          <h2 className="text-base/7 font-semibold text-gray-900">
-            {t("limitationsSection")}
-          </h2>
-          <p className="mt-1 text-sm/6 text-gray-600">
-            {t("limitationsSectionDescription")}
-          </p>
-
-          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="qualifier"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                {t("qualifier")}
-              </label>
-              <div className="mt-2">
-                <textarea
-                  id="qualifier"
-                  name="qualifier"
-                  value={formData.parts.qualifier}
-                  onChange={handleInputChange}
-                  rows={3}
-                  placeholder={t("qualifierPlaceholder")}
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="rebuttal"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                {t("rebuttal")}
-              </label>
-              <div className="mt-2">
-                <textarea
-                  id="rebuttal"
-                  name="rebuttal"
-                  value={formData.parts.rebuttal}
-                  onChange={handleInputChange}
-                  rows={3}
-                  placeholder={t("rebuttalPlaceholder")}
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+          <FormInput
+            inputComponent="textarea"
+            id="rebuttal"
+            name="rebuttal"
+            label={t("rebuttal")}
+            value={formData.parts.rebuttal}
+            onChange={handleInputChange}
+            placeholder={t("rebuttalPlaceholder")}
+            rows={3}
+            className="sm:col-span-3"
+          />
+        </FormSection>
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
+        <Button type="submit" isLoading={isSubmitting}>
+          {commonT("save")}
+        </Button>
       </div>
     </form>
   );

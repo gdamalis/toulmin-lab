@@ -4,12 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-} from "@headlessui/react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 export function ProfileMenu() {
@@ -25,7 +20,7 @@ export function ProfileMenu() {
   return (
     <Menu as="div" className="relative">
       <div>
-        <MenuButton className="relative flex items-center p-1.5">
+        <MenuButton className="relative flex items-center p-1.5 cursor-pointer">
           <span className="sr-only">{t("common.openUserMenu")}</span>
           <div className="flex items-center">
             {user?.photoURL ? (
@@ -45,11 +40,14 @@ export function ProfileMenu() {
             )}
             <span className="hidden lg:flex lg:items-center">
               <span className="ml-4 text-sm/6 font-semibold text-gray-900">
-                {user?.displayName ?? 
-                  user?.email?.split("@")[0] ?? 
+                {user?.displayName ??
+                  user?.email?.split("@")[0] ??
                   t("common.user")}
               </span>
-              <ChevronDownIcon className="ml-2 size-5 text-gray-400" aria-hidden="true" />
+              <ChevronDownIcon
+                className="ml-2 size-5 text-gray-400"
+                aria-hidden="true"
+              />
             </span>
           </div>
         </MenuButton>
@@ -64,9 +62,7 @@ export function ProfileMenu() {
               user?.email?.split("@")[0] ??
               t("common.user")}
           </p>
-          <p className="text-xs text-gray-500 truncate">
-            {user?.email ?? ""}
-          </p>
+          <p className="text-xs text-gray-500 truncate">{user?.email ?? ""}</p>
         </div>
         <div className="border-t border-gray-100 my-1"></div>
         <MenuItem>
@@ -75,7 +71,7 @@ export function ProfileMenu() {
               onClick={handleSignOut}
               className={`${
                 active ? "bg-gray-50" : ""
-              } block w-full text-left px-4 py-2 text-sm text-gray-700`}
+              } block cursor-pointer w-full text-left px-4 py-2 text-sm text-gray-700`}
             >
               {t("common.signOut")}
             </button>
@@ -84,4 +80,4 @@ export function ProfileMenu() {
       </MenuItems>
     </Menu>
   );
-} 
+}

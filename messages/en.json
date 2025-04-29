@@ -44,7 +44,7 @@
       "invalidEmail": "Invalid email format",
       "invalidCredentials": "Invalid email or password",
       "signInFailed": "Failed to sign in",
-      "signUpFailed": "Failed to create account", 
+      "signUpFailed": "Failed to create account",
       "unexpected": "An unexpected error occurred",
       "nameMissing": "Name is required",
       "passwordMismatch": "Passwords do not match",
@@ -151,6 +151,7 @@
       "qualifier": "Qualifier",
       "untitled": "Untitled Argument",
       "createYourArgument": "Create Your Toulmin Argument",
+      "title": "Title: {title}",
       "authRequired": "Authentication Required",
       "pleaseSignIn": "Please sign in to save your diagram",
       "saveFailed": "Save Failed",
@@ -159,7 +160,7 @@
       "basicInfoDescription": "Provide basic information about your argument diagram.",
       "loadSampleTooltip": "Load sample argument",
       "useSample": "Use Sample",
-      "argumentName": "Toulmin Argument Name",
+      "argumentName": "Argument Title",
       "argumentNamePlaceholder": "e.g., Climate Change Policy Toulmin Argument",
       "authorPlaceholder": "Your name",
       "argumentStructure": "Toulmin Argument Structure",
@@ -200,4 +201,4 @@
       "deleteConfirmation": "Are you sure you want to delete \"{name}\"? All of the argument data will be permanently removed. This action cannot be undone."
     }
   }
-} 
+}
