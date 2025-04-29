@@ -65,7 +65,7 @@ export function SignInForm({ error, isLoading, onSubmit }: Readonly<SignInFormPr
         />
 
         <div className="text-sm/6">
-          <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+          <a href="#" className="font-semibold text-primary-600 hover:text-primary-500">
             {t('forgotPassword')}
           </a>
         </div>
@@ -81,7 +81,7 @@ export function SignInForm({ error, isLoading, onSubmit }: Readonly<SignInFormPr
         <button
           type="submit"
           disabled={isLoading}
-          className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
+          className="flex w-full justify-center rounded-md bg-primary-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:opacity-50"
         >
           {isLoading ? t('signingIn') : t('signIn')}
         </button>

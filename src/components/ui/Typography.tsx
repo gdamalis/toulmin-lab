@@ -25,7 +25,7 @@ const typographyVariants = cva("", {
       default: "text-gray-900",
       muted: "text-gray-500",
       white: "text-white",
-      primary: "text-indigo-600",
+      primary: "text-primary-600",
       success: "text-green-600",
       warning: "text-yellow-600",
       danger: "text-red-600",

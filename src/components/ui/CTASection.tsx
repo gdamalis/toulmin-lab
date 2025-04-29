@@ -16,10 +16,10 @@ export function CTASection({
   description,
   buttonText,
   buttonHref,
-  backgroundColor = 'bg-blue-600',
+  backgroundColor = 'bg-primary-600',
   textColor = 'text-white',
   buttonColor = 'bg-white',
-  buttonTextColor = 'text-blue-600',
+  buttonTextColor = 'text-primary-600',
 }: CTASectionProps) {
   return (
     <div className={backgroundColor}>
@@ -27,7 +27,7 @@ export function CTASection({
         <h2 className={`text-3xl font-bold tracking-tight ${textColor} sm:text-4xl`}>
           {title}
         </h2>
-        <p className={`mt-6 text-lg leading-8 ${textColor === 'text-white' ? 'text-blue-100' : 'text-gray-600'}`}>
+        <p className={`mt-6 text-lg leading-8 ${textColor === 'text-white' ? 'text-primary-100' : 'text-gray-600'}`}>
           {description}
         </p>
         <div className="mt-10 flex items-center gap-x-6">

@@ -57,7 +57,7 @@ export function StatCard({
       )}
     >
       <dt>
-        <div className="absolute rounded-md bg-indigo-500 p-3">
+        <div className="absolute rounded-md bg-primary-500 p-3">
           <Icon className="h-6 w-6 text-white" aria-hidden="true" />
         </div>
         <p className="ml-16 truncate text-sm font-medium text-gray-500">
@@ -89,7 +89,7 @@ export function StatCard({
             <div className="text-sm">
               <Link
                 href={href}
-                className="font-medium text-indigo-600 hover:text-indigo-500"
+                className="font-medium text-primary-600 hover:text-primary-500"
               >
                 {linkText}
                 <span className="sr-only"> {name} {commonT('stats')}</span>

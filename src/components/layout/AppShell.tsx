@@ -57,7 +57,7 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
     ...item,
     current:
       item.href === pathname ||
-      (item.href !== "/dashboard" && pathname.startsWith(item.href)),
+      (item.href !== "/dashboard" && pathname.endsWith(item.href)),
   }));
 
   return (
@@ -103,7 +103,7 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
                     {/* Mobile New Argument Button */}
                     <Link 
                       href="/argument/create"
-                      className="md:hidden flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-white hover:bg-indigo-500"
+                      className="md:hidden flex items-center justify-center rounded-md bg-primary-600 px-3 py-2 text-white hover:bg-primary-500"
                       aria-label={t("nav.newArgument")}
                     >
                       <PlusIcon className="w-5 h-5" />

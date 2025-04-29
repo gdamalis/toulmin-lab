@@ -29,11 +29,11 @@ export function DiagramPreview({
       <div className="px-6 pt-6 pb-14 relative bg-white">
         <div className="aspect-[16/10] w-full bg-gray-100 rounded-md overflow-hidden relative">
           <div className="p-4 flex flex-col h-full">
-            <div className="bg-blue-100 rounded p-3 mb-3 w-2/3 mx-auto text-center">
+            <div className="bg-primary-100 rounded p-3 mb-3 w-2/3 mx-auto text-center">
               {claim}
             </div>
             <div className="flex justify-center items-center space-x-4">
-              <ArrowDownIcon className="h-8 w-8 text-blue-600" />
+              <ArrowDownIcon className="h-8 w-8 text-primary-600" />
             </div>
             <div className="flex justify-between mt-3">
               {grounds.map((ground, index) => (

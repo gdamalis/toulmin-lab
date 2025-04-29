@@ -17,7 +17,7 @@ export function FeatureSection({ heading, subheading, description, features }: F
   return (
     <div className="mx-auto max-w-7xl px-6 lg:px-8 py-24 sm:py-32">
       <div className="mx-auto max-w-2xl lg:text-center">
-        <h2 className="text-base font-semibold leading-7 text-blue-600">{heading}</h2>
+        <h2 className="text-base font-semibold leading-7 text-primary-600">{heading}</h2>
         <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
           {subheading}
         </p>
@@ -30,7 +30,7 @@ export function FeatureSection({ heading, subheading, description, features }: F
           {features.map((feature, index) => (
             <div key={index} className="relative pl-16">
               <dt className="text-base font-semibold leading-7 text-gray-900">
-                <div className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
+                <div className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-primary-600">
                   {feature.icon}
                 </div>
                 {feature.title}

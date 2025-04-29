@@ -92,7 +92,7 @@ export function AuthForm({ redirectPath = '/dashboard' }: Readonly<AuthFormProps
         <button 
           type="button"
           onClick={toggleMode} 
-          className="font-semibold text-indigo-600 hover:text-indigo-500"
+          className="font-semibold text-primary-600 hover:text-primary-500"
         >
           {mode === 'signin' 
             ? t('signUp')
