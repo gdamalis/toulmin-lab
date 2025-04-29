@@ -27,7 +27,7 @@ interface ToulminDiagramProps {
 
 const snapGrid: [number, number] = [6, 6];
 
-function ToulminDiagram({ data, showExportButtons = false }: Readonly<ToulminDiagramProps>) {
+function ToulminDiagram({ data, showExportButtons = true }: Readonly<ToulminDiagramProps>) {
   const diagramRef = useRef<HTMLDivElement>(null);
   const { initialNodes, initialEdges, nodeTypes } = useToulminGraph(data);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
