@@ -15,14 +15,12 @@ interface ToulminFormProps {
   readonly onSubmit: (data: ToulminArgument) => void;
   readonly onChange?: (data: ToulminArgument) => void;
   readonly initialData?: ToulminArgument;
-  readonly buttonText?: string;
 }
 
 export function ToulminForm({
   onSubmit,
   onChange,
   initialData = emptyToulminArgument,
-  buttonText = "Generate Diagram",
 }: Readonly<ToulminFormProps>) {
   const t = useTranslations("pages.argument");
   const commonT = useTranslations("common");
@@ -96,9 +94,9 @@ export function ToulminForm({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="p-2" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-8">
-        <div className="flex p-2">
+        <div className="flex gap-2">
           <button
             type="button"
             onClick={() => {
@@ -111,6 +109,17 @@ export function ToulminForm({
           >
             <DocumentDuplicateIcon className="w-4 h-4" />
             <span>{t("useSample")}</span>
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            onClick={() => {
+              const emptyData = emptyToulminArgument;
+              setFormData(emptyData);
+              onChange?.(emptyData);
+            }}
+          >
+            <span>{commonT("clear")}</span>
           </button>
         </div>
         <div className="border-b border-gray-900/10 pb-8">
@@ -317,7 +326,7 @@ export function ToulminForm({
                   name="qualifier"
                   value={formData.parts.qualifier}
                   onChange={handleInputChange}
-                  rows={2}
+                  rows={3}
                   placeholder={t("qualifierPlaceholder")}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6"
                 />
@@ -337,7 +346,7 @@ export function ToulminForm({
                   name="rebuttal"
                   value={formData.parts.rebuttal}
                   onChange={handleInputChange}
-                  rows={2}
+                  rows={3}
                   placeholder={t("rebuttalPlaceholder")}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6"
                 />
@@ -348,23 +357,6 @@ export function ToulminForm({
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
-        <button
-          type="button"
-          className="text-sm/6 font-semibold text-gray-900"
-          onClick={() => {
-            const emptyData = emptyToulminArgument;
-            setFormData(emptyData);
-            onChange?.(emptyData);
-          }}
-        >
-          {commonT("clear")}
-        </button>
-        <button
-          type="submit"
-          className="rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
-        >
-          {buttonText}
-        </button>
       </div>
     </form>
   );

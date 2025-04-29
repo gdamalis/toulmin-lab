@@ -110,11 +110,14 @@ export default function ToulminArgumentViewPage({
     <AppShell title={toulminArgument?.name || t("toulminArgumentDiagram")}>
       <div className="mx-auto max-w-8xl pb-12">
         <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <Button variant="outline" onClick={handleBack} className="mb-4">
+          <div className="flex flex-col gap-4 mb-6">
+            <div className="flex gap-2 w-full">
+              <Button variant="outline" onClick={handleBack}>
                 ← {t("backToDashboard")}
               </Button>
+              <Button onClick={handleEdit}>{t("editDiagram")}</Button>
+            </div>
+            <div>
               <Typography variant="h2">
                 {toulminArgument?.name ||
                   `${t("diagram")} ${toulminArgumentId.substring(0, 8)}`}
@@ -126,7 +129,6 @@ export default function ToulminArgumentViewPage({
                 </Typography>
               )}
             </div>
-            <Button onClick={handleEdit}>{t("editDiagram")}</Button>
           </div>
 
           {renderContent()}

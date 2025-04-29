@@ -181,42 +181,38 @@ export default function ToulminArgumentEditor({
     >
       <div className="mx-auto max-w-8xl pb-12">
         <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
-          <div className="space-y-4 md:space-y-0">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <Button
-                  variant="outline"
-                  onClick={handleCancel}
-                  className="mb-4"
-                >
-                  ← {t("backToView")}
-                </Button>
-                <h2 className="text-xl font-semibold">
-                  {t("editToulminArgument")}
-                </h2>
-              </div>
-              <div className="flex space-x-3">
-                {isSaving && (
-                  <span className="text-sm text-gray-500 self-center">
-                    {commonT("saving")}
-                  </span>
-                )}
-                <button
-                  onClick={handleSave}
-                  disabled={isSaving || isLoading || !toulminArgument}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {t("saveAndView")}
-                </button>
-              </div>
+          <div className="flex flex-col gap-4 mb-6">
+            <div className="flex gap-2 w-full">
+              <Button variant="outline" onClick={handleCancel}>
+                ← {t("backToView")}
+              </Button>
+              <Button 
+                onClick={handleSave}
+                disabled={isSaving || isLoading || !toulminArgument}
+              >
+                {t("saveAndView")}
+              </Button>
             </div>
-
-            {!user && (
-              <p className="text-sm text-amber-600 mb-4">{t("signInToSave")}</p>
-            )}
-
-            {renderContent()}
+            <div>
+              <Typography variant="h2">
+                {toulminArgument?.name
+                  ? `${commonT("edit")}: ${toulminArgument.name}`
+                  : t("editToulminArgument")}
+              </Typography>
+              {isSaving && (
+                <Typography textColor="muted" className="mt-1">
+                  {commonT("saving")}
+                </Typography>
+              )}
+              {!user && (
+                <Typography textColor="warning" className="mt-1">
+                  {t("signInToSave")}
+                </Typography>
+              )}
+            </div>
           </div>
+
+          {renderContent()}
         </div>
       </div>
     </AppShell>
