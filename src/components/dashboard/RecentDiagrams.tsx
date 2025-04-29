@@ -1,16 +1,15 @@
 "use client";
 
 import { Typography } from "@/components/ui/Typography";
-import { Button } from "@/components/ui/Button";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { format } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
-import { ToulminArgument } from "@/types/client";
 import { useToulminArguments } from "@/hooks/useArguments";
+import { ToulminArgument } from "@/types/client";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import { format } from "date-fns";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { DeleteArgumentModal } from "./DeleteArgumentModal";
-import { useTranslations } from "next-intl";
 
 interface RecentDiagramsProps {
   limit?: number;
@@ -206,7 +205,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
         isOpen={isDeleteModalOpen}
         onClose={handleCloseDeleteModal}
         onDelete={handleDeleteArgument}
-        argumentName={argumentToDelete?.name || 'this diagram'}
+        argumentName={argumentToDelete?.name ?? 'this diagram'}
         isDeleting={isDeleting}
       />
     </div>

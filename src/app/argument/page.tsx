@@ -1,17 +1,16 @@
 "use client";
 
+import { DeleteArgumentModal } from "@/components/dashboard/DeleteArgumentModal";
 import AppShell from "@/components/layout/AppShell";
 import { Typography } from "@/components/ui/Typography";
-import { Button } from "@/components/ui/Button";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { format } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
-import { ToulminArgument } from "@/types/client";
 import { useToulminArguments } from "@/hooks/useArguments";
-import { useState } from "react";
-import { DeleteArgumentModal } from "@/components/dashboard/DeleteArgumentModal";
+import { ToulminArgument } from "@/types/client";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import { format } from "date-fns";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
