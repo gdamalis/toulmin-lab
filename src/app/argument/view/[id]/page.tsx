@@ -15,9 +15,9 @@ export default function ToulminArgumentViewPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const t = useTranslations('pages.argument');
-  const commonT = useTranslations('common');
-  
+  const t = useTranslations("pages.argument");
+  const commonT = useTranslations("common");
+
   const [toulminArgument, setToulminArgument] =
     useState<ToulminArgument | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,7 +42,7 @@ export default function ToulminArgumentViewPage({
         const response = await fetch(`/api/argument/${toulminArgumentId}`, {
           headers: {
             "user-id": user.uid,
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -53,9 +53,7 @@ export default function ToulminArgumentViewPage({
         const data = await response.json();
         setToulminArgument(data);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : t("unknownError")
-        );
+        setError(err instanceof Error ? err.message : t("unknownError"));
         console.error("Error fetching diagram:", err);
       } finally {
         setIsLoading(false);
@@ -86,7 +84,9 @@ export default function ToulminArgumentViewPage({
     if (error) {
       return (
         <div className="bg-red-50 p-6 rounded-lg text-center text-red-600">
-          <Typography>{commonT("error")}: {error}</Typography>
+          <Typography>
+            {commonT("error")}: {error}
+          </Typography>
         </div>
       );
     }
@@ -101,39 +101,35 @@ export default function ToulminArgumentViewPage({
 
     return (
       <div className="bg-gray-50 p-6 rounded-lg text-center text-gray-500">
-        <Typography textColor="muted">
-          {t("diagramNotFound")}
-        </Typography>
+        <Typography textColor="muted">{t("diagramNotFound")}</Typography>
       </div>
     );
   };
 
   return (
     <AppShell title={toulminArgument?.name || t("toulminArgumentDiagram")}>
-      <div className="-mt-32">
-        <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-          <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <Button variant="outline" onClick={handleBack} className="mb-4">
-                  ← {t("backToDashboard")}
-                </Button>
-                <Typography variant="h2">
-                  {toulminArgument?.name ||
-                    `${t("diagram")} ${toulminArgumentId.substring(0, 8)}`}
+      <div className="mx-auto max-w-8xl pb-12">
+        <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <Button variant="outline" onClick={handleBack} className="mb-4">
+                ← {t("backToDashboard")}
+              </Button>
+              <Typography variant="h2">
+                {toulminArgument?.name ||
+                  `${t("diagram")} ${toulminArgumentId.substring(0, 8)}`}
+              </Typography>
+              {toulminArgument && (
+                <Typography textColor="muted" className="mt-1">
+                  {t("lastUpdated")}:{" "}
+                  {new Date(toulminArgument.updatedAt).toLocaleString()}
                 </Typography>
-                {toulminArgument && (
-                  <Typography textColor="muted" className="mt-1">
-                    {t("lastUpdated")}:{" "}
-                    {new Date(toulminArgument.updatedAt).toLocaleString()}
-                  </Typography>
-                )}
-              </div>
-              <Button onClick={handleEdit}>{t("editDiagram")}</Button>
+              )}
             </div>
-
-            {renderContent()}
+            <Button onClick={handleEdit}>{t("editDiagram")}</Button>
           </div>
+
+          {renderContent()}
         </div>
       </div>
     </AppShell>

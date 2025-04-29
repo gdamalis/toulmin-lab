@@ -74,51 +74,47 @@ export default function ToulminArgumentBuilder() {
 
   return (
     <AppShell title={t("createYourArgument")}>
-      <div className="-mt-32">
-        <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-          <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
-            <div className="space-y-4 md:space-y-0">
-              <div className="flex justify-start md:justify-end md:items-center flex-col md:flex-row gap-4 mb-6">
-                {/* <h2 className="text-xl font-semibold">
+      <div className="mx-auto max-w-8xl pb-12">
+        <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
+          <div className="space-y-4 md:space-y-0">
+            <div className="flex justify-start md:justify-end md:items-center flex-col md:flex-row gap-4 mb-6">
+              {/* <h2 className="text-xl font-semibold">
                   {t("createYourArgument")}
                 </h2> */}
-                <div className="flex space-x-3">
-                  {isSaving && (
-                    <span className="text-sm text-gray-500 self-center">
-                      {commonT("saving")}
-                    </span>
-                  )}
-                  <button
-                    onClick={handleSave}
-                    disabled={isSaving}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {t("saveAndView")}
-                  </button>
-                </div>
+              <div className="flex space-x-3">
+                {isSaving && (
+                  <span className="text-sm text-gray-500 self-center">
+                    {commonT("saving")}
+                  </span>
+                )}
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {t("saveAndView")}
+                </button>
               </div>
+            </div>
 
-              {!user && (
-                <p className="text-sm text-amber-600 mb-4">
-                  {t("signInToSave")}
-                </p>
-              )}
+            {!user && (
+              <p className="text-sm text-amber-600 mb-4">{t("signInToSave")}</p>
+            )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="md:overflow-y-auto">
-                  <ToulminForm
-                    onSubmit={handleSave}
-                    onChange={handleFormChange}
-                    initialData={toulminArgument}
-                    buttonText={t("saveAndView")}
-                  />
-                </div>
-                <div>
-                  <ToulminDiagram
-                    data={toulminArgument}
-                    showExportButtons={false}
-                  />
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="md:overflow-y-auto">
+                <ToulminForm
+                  onSubmit={handleSave}
+                  onChange={handleFormChange}
+                  initialData={toulminArgument}
+                  buttonText={t("saveAndView")}
+                />
+              </div>
+              <div>
+                <ToulminDiagram
+                  data={toulminArgument}
+                  showExportButtons={false}
+                />
               </div>
             </div>
           </div>

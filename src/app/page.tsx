@@ -38,7 +38,7 @@ export default function Home() {
 
   return (
     <div className="bg-white">
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-8 py-8">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8 pt-6">
         <div className="flex justify-end">
           <LanguageSwitcher />
         </div>

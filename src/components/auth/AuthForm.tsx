@@ -53,7 +53,7 @@ export function AuthForm({ redirectPath = '/dashboard' }: Readonly<AuthFormProps
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-y-6">
       <h2 className="mt-6 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
         {mode === 'signin' ? t('signInHeading') : t('signUpHeading')}
       </h2>
@@ -99,6 +99,6 @@ export function AuthForm({ redirectPath = '/dashboard' }: Readonly<AuthFormProps
             : t('signIn')}
         </button>
       </p>
-    </>
+    </div>
   );
 } 

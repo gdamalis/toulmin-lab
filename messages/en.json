@@ -23,7 +23,8 @@
     "stats": "stats",
     "openOptions": "Open options",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "settings": "Settings"
   },
   "nav": {
     "dashboard": "Dashboard",

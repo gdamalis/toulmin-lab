@@ -16,11 +16,11 @@ export default function Auth() {
           src="/logo.png"
           width={320}
           height={320}
-          className="mx-auto w-auto h-10"
+          className="mx-auto w-auto h-12"
         />
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
+      <div className="mt-10 px-4 sm:mx-auto sm:w-full sm:max-w-[480px]">
         <AuthForm />
         <div className="text-center mt-6">
           <Link
