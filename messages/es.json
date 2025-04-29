@@ -24,7 +24,9 @@
     "openOptions": "Abrir opciones",
     "previous": "Anterior",
     "next": "Siguiente",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "madeWith": "Hecho por Gabriel Damalis con ♥️ desde Buenos Aires, Argentina",
+    "email": "gabrieldamalis@gmail.com"
   },
   "nav": {
     "dashboard": "Tablero",
@@ -44,7 +46,7 @@
       "invalidEmail": "Formato de correo electrónico inválido",
       "invalidCredentials": "Correo electrónico o contraseña inválidos",
       "signInFailed": "Error al iniciar sesión",
-      "signUpFailed": "Error al crear la cuenta", 
+      "signUpFailed": "Error al crear la cuenta",
       "unexpected": "Ocurrió un error inesperado",
       "nameMissing": "El nombre es obligatorio",
       "passwordMismatch": "Las contraseñas no coinciden",
@@ -201,4 +203,4 @@
       "deleteConfirmation": "¿Estás seguro de que deseas eliminar \"{name}\"? Todos los datos del argumento se eliminarán permanentemente. Esta acción no se puede deshacer."
     }
   }
-} 
+}

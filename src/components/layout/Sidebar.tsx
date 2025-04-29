@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import pkg from "../../../package.json";
 
 // Helper function to conditionally join class names
 function classNames(...classes: (string | boolean)[]) {
@@ -93,6 +94,11 @@ export function Sidebar() {
           </li> */}
         </ul>
       </nav>
+      <div className="text-xs text-gray-400 text-center py-2 border-t border-gray-100">
+        v{pkg.version}
+        <div className="mt-1">{t("common.madeWith")}</div>
+        <div>{t("common.email")}</div>
+      </div>
     </div>
   );
 }

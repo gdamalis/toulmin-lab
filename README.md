@@ -81,6 +81,43 @@ Start the production server:
 npm start
 ```
 
+### Conventional Commits
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) to automate versioning and changelog generation. Each commit message should follow this format:
+
+```
+<type>(<optional scope>): <description>
+
+<optional body>
+
+<optional footer>
+```
+
+Types:
+- `feat`: A new feature
+- `fix`: A bug fix
+- `docs`: Documentation changes
+- `style`: Changes that don't affect the code's meaning (formatting, missing semi-colons, etc.)
+- `refactor`: Code changes that neither fix a bug nor add a feature
+- `perf`: Performance improvements
+- `test`: Adding or correcting tests
+- `chore`: Changes to the build process or auxiliary tools
+
+Examples:
+- `feat: add user authentication`
+- `fix(sidebar): correct navigation item highlighting`
+- `docs: update installation instructions`
+
+### Versioning
+
+The versioning follows [Semantic Versioning](https://semver.org/) and is automatically handled by GitHub Actions:
+
+- Commits with `fix:` will increment the patch version (1.0.0 -> 1.0.1)
+- Commits with `feat:` will increment the minor version (1.0.0 -> 1.1.0)
+- Commits with `BREAKING CHANGE:` in the body or footer will increment the major version (1.0.0 -> 2.0.0)
+
+The current version is displayed in the sidebar footer.
+
 ## Usage
 
 1. Create an account or sign in
@@ -103,3 +140,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - The Toulmin Model was developed by philosopher Stephen Toulmin
 - This project uses the @xyflow/react library for diagram visualization
 - Thanks to the Next.js team for their excellent framework
+
+## Author
+
+- Gabriel Damalis (gabrieldamalis@gmail.com)
+- Made with love ♥️ from Buenos Aires, Argentina

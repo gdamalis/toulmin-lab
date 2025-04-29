@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Generate version and changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          git-message: "chore(release): {version}"
+          tag-prefix: "v"
+          skip-commit: "false"
+          skip-version-file: "false"
+          skip-on-empty: "false"
+          output-file: "CHANGELOG.md"
+
+      - name: Create Github Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: v${{ steps.changelog.outputs.version }}
+          name: v${{ steps.changelog.outputs.version }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+          draft: false
+          prerelease: false 

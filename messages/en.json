@@ -24,7 +24,9 @@
     "openOptions": "Open options",
     "previous": "Previous",
     "next": "Next",
-    "settings": "Settings"
+    "settings": "Settings",
+    "madeWith": "Made with ♥️ from Buenos Aires, Argentina by Gabriel Damalis",
+    "email": "gabrieldamalis@gmail.com"
   },
   "nav": {
     "dashboard": "Dashboard",
