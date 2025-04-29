@@ -1,4 +1,8 @@
-# 0.10.0 (2025-04-29)
+## [0.10.1](https://github.com/gdamalis/toulmin-lab/compare/v0.10.0...v0.10.1) (2025-04-29)
+
+
+
+# [0.10.0](https://github.com/gdamalis/toulmin-lab/compare/e4eabc53cf5f422bde536c5bd35ac2cc59b1e8e5...v0.10.0) (2025-04-29)
 
 
 ### Bug Fixes
