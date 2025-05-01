@@ -23,11 +23,18 @@ import { useCallback, useEffect, useRef } from "react";
 interface ToulminDiagramProps {
   readonly data: ToulminArgument;
   readonly showExportButtons?: boolean;
+  readonly showControls?: boolean;
+  readonly showTitle?: boolean;
 }
 
 const snapGrid: [number, number] = [6, 6];
 
-function ToulminDiagram({ data, showExportButtons = true }: Readonly<ToulminDiagramProps>) {
+function ToulminDiagram({
+  data,
+  showExportButtons = true,
+  showControls = true,
+  showTitle = true,
+}: Readonly<ToulminDiagramProps>) {
   const diagramRef = useRef<HTMLDivElement>(null);
   const { initialNodes, initialEdges, nodeTypes } = useToulminGraph(data);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -89,8 +96,8 @@ function ToulminDiagram({ data, showExportButtons = true }: Readonly<ToulminDiag
           minZoom={0.2}
           maxZoom={3}
         >
-          <TitlePanel data={data} />
-          <Controls />
+          {showTitle && <TitlePanel data={data} />}
+          {showControls && <Controls />}
           <Background variant={BackgroundVariant.Dots} gap={12} />
         </ReactFlow>
       </div>
@@ -98,10 +105,20 @@ function ToulminDiagram({ data, showExportButtons = true }: Readonly<ToulminDiag
   );
 }
 
-function ToulminDiagramWithProvider({ data, showExportButtons }: Readonly<ToulminDiagramProps>) {
+function ToulminDiagramWithProvider({
+  data,
+  showExportButtons,
+  showControls,
+  showTitle,
+}: Readonly<ToulminDiagramProps>) {
   return (
     <ReactFlowProvider>
-      <ToulminDiagram data={data} showExportButtons={showExportButtons} />
+      <ToulminDiagram
+        data={data}
+        showExportButtons={showExportButtons}
+        showControls={showControls}
+        showTitle={showTitle}
+      />
     </ReactFlowProvider>
   );
 }

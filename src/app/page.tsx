@@ -1,4 +1,4 @@
-import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { Header } from "@/components/layout";
 import {
   ChartIcon,
   CheckBadgeIcon,
@@ -70,11 +70,7 @@ export default function Home() {
 
   return (
     <div className="bg-white">
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-8 pt-6">
-        <div className="flex justify-end">
-          <LanguageSwitcher />
-        </div>
-      </div>
+      <Header />
 
       <HeroSection
         title={t("hero.title")}

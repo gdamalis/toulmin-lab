@@ -44,21 +44,19 @@ export function LanguageSwitcher() {
 
   return (
     <Menu as="div" className="relative">
-      <div>
-        <MenuButton
-          disabled={isLoading}
-          className="relative flex cursor-pointer items-center gap-x-1 rounded-md text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden"
-        >
-          <span className="sr-only">{t("language")}</span>
-          <Image
-            src={flagImages[locale as keyof typeof flagImages]}
-            alt={locale}
-            width={40}
-            height={30}
-            className="h-auto w-7 rounded-sm"
-          />
-        </MenuButton>
-      </div>
+      <MenuButton
+        disabled={isLoading}
+        className="relative flex cursor-pointer items-center gap-x-1 rounded-sm text-sm focus:ring-1 focus:ring-white focus:ring-offset-1 focus:ring-offset-gray-800 focus:outline-hidden"
+      >
+        <span className="sr-only">{t("language")}</span>
+        <Image
+          src={flagImages[locale as keyof typeof flagImages]}
+          alt={locale}
+          width={40}
+          height={30}
+          className="h-auto w-7 rounded-sm"
+        />
+      </MenuButton>
       <MenuItems className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden">
         {locales.map((lang) => (
           <MenuItem key={lang}>

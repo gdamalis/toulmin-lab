@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { DiagramPreview } from './DiagramPreview';
-import { useTranslations } from 'next-intl';
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { DiagramPreview } from "./DiagramPreview";
 
 interface HeroSectionProps {
   readonly title: string;
@@ -25,15 +25,15 @@ export function HeroSection({
   primaryCta,
   secondaryCta,
 }: HeroSectionProps) {
-  const t = useTranslations('pages.home');
-  
+  const t = useTranslations("pages.home");
+
   // Use provided values or fallback to translations
-  const badgeTextValue = badgeText ?? t('hero.badge.text');
-  const badgeLabelValue = badgeLabel ?? t('hero.badge.label');
-  
+  const badgeTextValue = badgeText ?? t("hero.badge.text");
+  const badgeLabelValue = badgeLabel ?? t("hero.badge.label");
+
   return (
     <div className="relative isolate overflow-hidden bg-gradient-to-b from-primary-100/20">
-      <div className="mx-auto max-w-7xl pt-8 pb-12 sm:pb-32 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:px-8 lg:py-40">
+      <div className="mx-auto max-w-7xl pt-16 pb-12 sm:pb-32 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:px-8 lg:py-36">
         <div className="px-6 lg:px-0 lg:pt-4">
           <div className="mx-auto max-w-2xl">
             <div className="max-w-lg">
@@ -62,7 +62,10 @@ export function HeroSection({
                   {primaryCta.text}
                 </Link>
                 {secondaryCta && (
-                  <a href={secondaryCta.href} className="text-sm/6 font-semibold text-gray-900">
+                  <a
+                    href={secondaryCta.href}
+                    className="text-sm/6 font-semibold text-gray-900"
+                  >
                     {secondaryCta.text} <span aria-hidden="true">→</span>
                   </a>
                 )}
@@ -97,4 +100,4 @@ export function HeroSection({
       <div className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-white sm:h-32" />
     </div>
   );
-} 
+}
