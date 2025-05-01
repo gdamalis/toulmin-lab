@@ -1,3 +1,12 @@
+# [0.12.0](https://github.com/gdamalis/toulmin-lab/compare/v0.11.0...v0.12.0) (2025-05-01)
+
+
+### Features
+
+* refactor home page layout and enhance ToulminDiagram component ([694c879](https://github.com/gdamalis/toulmin-lab/commit/694c87940a264139fc3faaee31bab91b3e0e0e07))
+
+
+
 # [0.11.0](https://github.com/gdamalis/toulmin-lab/compare/v0.10.1...v0.11.0) (2025-04-29)
 
 
