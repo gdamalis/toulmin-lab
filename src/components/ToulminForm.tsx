@@ -10,13 +10,84 @@ import {
   sampleToulminArgument,
   sampleToulminArgumentES,
 } from "@/data/toulminTemplates";
+import { useIsOnline } from "../hooks/useIsOnline";
 import { ToulminArgument } from "@/types/client";
 import {
   ArrowPathIcon,
+  CloudArrowUpIcon,
   DocumentDuplicateIcon,
 } from "@heroicons/react/24/outline";
 import { useLocale, useTranslations } from "next-intl";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
+
+const STORAGE_KEY = "toulmin-form-draft";
+
+// Custom hook for form persistence
+function useFormPersistence(key: string, initialValue: ToulminArgument) {
+  // Load data from localStorage if available
+  const loadSavedData = useCallback(() => {
+    if (typeof window === "undefined") return initialValue;
+    
+    try {
+      const savedItem = localStorage.getItem(key);
+      if (savedItem) {
+        return JSON.parse(savedItem) as ToulminArgument;
+      }
+    } catch (error) {
+      console.error("Failed to load saved form data:", error);
+    }
+    return initialValue;
+  }, [key, initialValue]);
+
+  // Save data to localStorage
+  const saveData = useCallback((data: ToulminArgument) => {
+    if (typeof window === "undefined") return;
+    
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+      console.error("Failed to save form data:", error);
+    }
+  }, [key]);
+
+  // Clear saved data
+  const clearSavedData = useCallback(() => {
+    if (typeof window === "undefined") return;
+    
+    try {
+      localStorage.removeItem(key);
+    } catch (error) {
+      console.error("Failed to clear saved form data:", error);
+    }
+  }, [key]);
+
+  return { loadSavedData, saveData, clearSavedData };
+}
+
+// Debounce helper function for ToulminArgument changes
+function useDebounce(
+  callback: (data: ToulminArgument) => void,
+  delay: number
+) {
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+
+  const debouncedFn = useCallback(
+    (data: ToulminArgument) => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      
+      const id = setTimeout(() => {
+        callback(data);
+      }, delay);
+      
+      setTimeoutId(id);
+    },
+    [callback, delay, timeoutId]
+  );
+
+  return debouncedFn;
+}
 
 export function ToulminForm({
   onSubmit,
@@ -27,18 +98,39 @@ export function ToulminForm({
   const commonT = useTranslations("common");
   const locale = useLocale();
   const { user } = useAuth();
+  const isOnline = useIsOnline();
   const [formData, setFormData] = useState<ToulminArgument>(initialData);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
+  // Initialize form persistence utilities
+  const { loadSavedData, saveData, clearSavedData } = useFormPersistence(
+    STORAGE_KEY,
+    initialData
+  );
+
+  // Create debounced save function
+  const debouncedSave = useDebounce((data: ToulminArgument) => {
+    saveData(data);
+    setLastSaved(new Date());
+  }, 1000);
 
   // Get the appropriate sample data based on the current locale
   const getSampleData = () => {
     return locale === "es" ? sampleToulminArgumentES : sampleToulminArgument;
   };
 
-  // Update form data if initialData changes externally
+  // Initialize form with saved data or initialData
   useEffect(() => {
-    setFormData(initialData);
-  }, [initialData]);
+    // Only run on mount or when initialData/loadSavedData changes
+    // Priority: initialData (if not empty) > saved data
+    if (JSON.stringify(initialData) !== JSON.stringify(emptyToulminArgument)) {
+      setFormData(initialData);
+    } else {
+      const savedData = loadSavedData();
+      setFormData(savedData);
+    }
+  }, [initialData, loadSavedData]);
 
   // Autopopulate author field with user's name when user data is available
   useEffect(() => {
@@ -55,8 +147,9 @@ export function ToulminForm({
       };
       setFormData(updatedData);
       onChange?.(updatedData);
+      debouncedSave(updatedData);
     }
-  }, [user, formData.author.name, onChange]);
+  }, [user, formData, onChange, debouncedSave]);
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -88,19 +181,21 @@ export function ToulminForm({
     setFormData(updatedData);
     // Call onChange handler if provided to update parent's state
     onChange?.(updatedData);
+    // Auto-save to localStorage
+    debouncedSave(updatedData);
   };
 
   const validateForm = (): boolean => {
     return (
-      !!formData.name &&
-      !!formData.author.name &&
-      !!formData.parts.claim &&
-      !!formData.parts.grounds &&
-      !!formData.parts.warrant &&
-      !!formData.parts.qualifier &&
-      !!formData.parts.groundsBacking &&
-      !!formData.parts.warrantBacking &&
-      !!formData.parts.rebuttal
+      !!formData.name.trim() &&
+      !!formData.author.name.trim() &&
+      !!formData.parts.claim.trim() &&
+      !!formData.parts.grounds.trim() &&
+      !!formData.parts.warrant.trim() &&
+      !!formData.parts.qualifier.trim() &&
+      !!formData.parts.groundsBacking.trim() &&
+      !!formData.parts.warrantBacking.trim() &&
+      !!formData.parts.rebuttal.trim()
     );
   };
 
@@ -115,6 +210,8 @@ export function ToulminForm({
 
     try {
       await onSubmit(formData);
+      // Clear saved draft after successful submission
+      clearSavedData();
     } finally {
       setIsSubmitting(false);
     }
@@ -126,6 +223,7 @@ export function ToulminForm({
     const sampleData = getSampleData();
     setFormData(sampleData);
     onChange?.(sampleData);
+    debouncedSave(sampleData);
   };
 
   const handleClearForm = (e: React.MouseEvent) => {
@@ -134,32 +232,50 @@ export function ToulminForm({
     const emptyData = emptyToulminArgument;
     setFormData(emptyData);
     onChange?.(emptyData);
+    // Clear from localStorage
+    clearSavedData();
+    setLastSaved(null);
   };
 
   return (
     <form className="p-2" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-8">
-        <div className="flex gap-2">
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={handleSampleData}
-            title={t("loadSampleTooltip")}
-          >
-            <DocumentDuplicateIcon className="w-4 h-4 mr-1.5" />
-            <span>{t("useSample")}</span>
-          </Button>
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={handleSampleData}
+              title={t("loadSampleTooltip")}
+            >
+              <DocumentDuplicateIcon className="w-4 h-4 mr-1.5" />
+              <span>{t("useSample")}</span>
+            </Button>
 
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={handleClearForm}
-          >
-            <ArrowPathIcon className="w-4 h-4 mr-1.5" />
-            <span>{commonT("clear")}</span>
-          </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={handleClearForm}
+            >
+              <ArrowPathIcon className="w-4 h-4 mr-1.5" />
+              <span>{commonT("clear")}</span>
+            </Button>
+          </div>
+          
+          {lastSaved && (
+            <div className="flex items-center mt-2 text-xs text-gray-500">
+              <CloudArrowUpIcon className="w-4 h-4 mr-1" />
+              <span>
+                {isOnline 
+                  ? commonT("lastSaved", { 
+                      time: lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+                    })
+                  : commonT("offlineDraftSaved")}
+              </span>
+            </div>
+          )}
         </div>
 
         <Divider>
@@ -237,6 +353,7 @@ export function ToulminForm({
             value={formData.parts.groundsBacking}
             onChange={handleInputChange}
             placeholder={t("evidenceBackingPlaceholder")}
+            required
           />
         </FormSection>
 
@@ -263,6 +380,7 @@ export function ToulminForm({
             value={formData.parts.warrantBacking}
             onChange={handleInputChange}
             placeholder={t("backingPlaceholder")}
+            required
           />
         </FormSection>
 
@@ -280,6 +398,7 @@ export function ToulminForm({
             placeholder={t("qualifierPlaceholder")}
             rows={3}
             className="sm:col-span-3"
+            required
           />
 
           <FormInput
@@ -292,12 +411,18 @@ export function ToulminForm({
             placeholder={t("rebuttalPlaceholder")}
             rows={3}
             className="sm:col-span-3"
+            required
           />
         </FormSection>
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
-        <Button type="submit" isLoading={isSubmitting}>
+        {!isOnline && (
+          <Typography variant="body-sm" textColor="warning" className="mr-auto">
+            {commonT("offlineWarning")}
+          </Typography>
+        )}
+        <Button type="submit" isLoading={isSubmitting} disabled={!isOnline}>
           {commonT("save")}
         </Button>
       </div>

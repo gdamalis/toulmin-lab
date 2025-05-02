@@ -26,7 +26,10 @@
     "next": "Siguiente",
     "settings": "Configuración",
     "madeWith": "Hecho por Gabriel Damalis con ♥️ desde Buenos Aires, Argentina",
-    "email": "gabrieldamalis@gmail.com"
+    "email": "gabrieldamalis@gmail.com",
+    "lastSaved": "Guardado a las {time}",
+    "offlineDraftSaved": "Borrador guardado localmente (sin conexión)",
+    "offlineWarning": "Estás sin conexión. Los cambios se guardarán localmente."
   },
   "nav": {
     "dashboard": "Tablero",
