@@ -35,7 +35,7 @@ Before responding to any request, follow these steps:
 - Implement early returns for better readability
 - Structure components logically: exports, subcomponents, helpers, types
 - Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator
-- Git commit message: header must not be longer than 100 characters
+- Git commit message: header must not be longer than 100 characters and body's lines must not be longer than 100 characters
 ### Naming Conventions
 
 - Use descriptive names with auxiliary verbs (isLoading, hasError)

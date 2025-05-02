@@ -179,7 +179,7 @@ export default function ArgumentsPage() {
                               "block px-3 py-1 text-sm leading-6 text-gray-900"
                             )}
                           >
-                            <span>{commonT("edit")}</span>
+                            <span>{commonT("edit", { title: toulminArgument.name })}</span>
                             <span className="sr-only">
                               ,{" "}
                               {toulminArgument.name ||

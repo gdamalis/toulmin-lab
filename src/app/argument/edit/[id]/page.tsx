@@ -189,7 +189,7 @@ export default function ToulminArgumentEditor({
             </div>
             <div>
               <Typography variant="h2">
-                {commonT("edit", { title: toulminArgument?.name ?? "" })}
+                {t("edit", { title: toulminArgument?.name ?? "" })}
               </Typography>
               {isSaving && (
                 <Typography textColor="muted" className="mt-1">
