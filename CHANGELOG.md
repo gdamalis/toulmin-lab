@@ -1,3 +1,12 @@
+## [0.13.1](https://github.com/gdamalis/toulmin-lab/compare/v0.13.0...v0.13.1) (2025-05-02)
+
+
+### Bug Fixes
+
+* update edit message formatting in translations and UI components ([c1d9ac5](https://github.com/gdamalis/toulmin-lab/commit/c1d9ac5b848ee1a329087b1c98b846d5278a46ff))
+
+
+
 # [0.13.0](https://github.com/gdamalis/toulmin-lab/compare/v0.12.3...v0.13.0) (2025-05-02)
 
 
@@ -16,15 +25,6 @@
 
 
 ## [0.12.1](https://github.com/gdamalis/toulmin-lab/compare/v0.12.0...v0.12.1) (2025-05-01)
-
-
-
-# [0.12.0](https://github.com/gdamalis/toulmin-lab/compare/v0.11.0...v0.12.0) (2025-05-01)
-
-
-### Features
-
-* refactor home page layout and enhance ToulminDiagram component ([694c879](https://github.com/gdamalis/toulmin-lab/commit/694c87940a264139fc3faaee31bab91b3e0e0e07))
 
 
 
