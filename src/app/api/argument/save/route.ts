@@ -1,5 +1,5 @@
 import { getToken } from "@/lib/firebase/auth-admin";
-import { createOrUpdateUser, saveToulminArgument } from "@/lib/mongodb/service";
+import { saveToulminArgument } from "@/lib/mongodb/service";
 import { ToulminArgument } from "@/types/client";
 
 export async function POST(request: Request) {
@@ -26,16 +26,6 @@ export async function POST(request: Request) {
 
     if (!data) {
       return Response.json({ error: "Missing argument data" }, { status: 400 });
-    }
-
-    // Save user info if it exists in the token
-    if (decodedToken.name || decodedToken.email || decodedToken.picture) {
-      await createOrUpdateUser({
-        userId,
-        name: decodedToken.name ?? "",
-        email: decodedToken.email ?? "",
-        picture: decodedToken.picture,
-      });
     }
 
     // Save the argument to the database
