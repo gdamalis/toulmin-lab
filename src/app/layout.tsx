@@ -5,7 +5,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@/components/Analytics";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
