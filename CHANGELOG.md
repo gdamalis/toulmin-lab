@@ -1,3 +1,12 @@
+## [0.14.1](https://github.com/gdamalis/toulmin-lab/compare/v0.14.0...v0.14.1) (2025-05-09)
+
+
+### Bug Fixes
+
+* update API endpoint for user authentication ([dfe06aa](https://github.com/gdamalis/toulmin-lab/commit/dfe06aace1891d9d3c38b9b58558fa5b83bbdcda))
+
+
+
 # [0.14.0](https://github.com/gdamalis/toulmin-lab/compare/v0.13.1...v0.14.0) (2025-05-09)
 
 
@@ -26,10 +35,6 @@
 
 
 ## [0.12.3](https://github.com/gdamalis/toulmin-lab/compare/v0.12.2...v0.12.3) (2025-05-02)
-
-
-
-## [0.12.2](https://github.com/gdamalis/toulmin-lab/compare/v0.12.1...v0.12.2) (2025-05-02)
 
 
 
