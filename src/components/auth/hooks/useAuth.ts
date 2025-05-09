@@ -55,7 +55,7 @@ export function useAuth(redirectPath = "/dashboard") {
         return;
       }
 
-      const response = await fetch("/api/auth/user", {
+      const response = await fetch("/api/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
