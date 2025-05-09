@@ -1,3 +1,12 @@
+# [0.14.0](https://github.com/gdamalis/toulmin-lab/compare/v0.13.1...v0.14.0) (2025-05-09)
+
+
+### Features
+
+* enhance ToulminForm validation and error handling ([81bb8e7](https://github.com/gdamalis/toulmin-lab/commit/81bb8e74d982ff7f45473fc0e0313a728cd18012))
+
+
+
 ## [0.13.1](https://github.com/gdamalis/toulmin-lab/compare/v0.13.0...v0.13.1) (2025-05-02)
 
 
@@ -21,10 +30,6 @@
 
 
 ## [0.12.2](https://github.com/gdamalis/toulmin-lab/compare/v0.12.1...v0.12.2) (2025-05-02)
-
-
-
-## [0.12.1](https://github.com/gdamalis/toulmin-lab/compare/v0.12.0...v0.12.1) (2025-05-01)
 
 
 
