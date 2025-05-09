@@ -181,9 +181,12 @@
       "evidencePlaceholder": "¿Qué evidencia respalda tu afirmación?",
       "warrantPlaceholder": "¿Cómo se conecta tu evidencia con tu afirmación?",
       "backingPlaceholder": "¿Por qué esta conexión lógica es válida?",
-      "qualifierPlaceholder": "¿Bajo qué circunstancias es cierta tu afirmación? (ej., 'usualmente', 'a veces')",
+      "qualifierPlaceholder": "¿En qué circunstancias es cierta tu afirmación? (ej., 'usualmente', 'a veces')",
       "rebuttalPlaceholder": "¿Cuándo no sería válida tu afirmación?",
-      "editToulminArgument": "Editar Tu Argumento Toulmin",
+      "validation": {
+        "required": "Este campo es obligatorio"
+      },
+      "editToulminArgument": "Editar tu Argumento Toulmin",
       "backToView": "Volver a Vista",
       "backToDashboard": "Volver al Tablero",
       "editDiagram": "Editar Diagrama",

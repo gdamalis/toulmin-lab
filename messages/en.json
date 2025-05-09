@@ -183,6 +183,9 @@
       "backingPlaceholder": "Why is this logical connection valid?",
       "qualifierPlaceholder": "Under what circumstances is your claim true? (e.g., 'usually', 'sometimes')",
       "rebuttalPlaceholder": "When would your claim not hold true?",
+      "validation": {
+        "required": "This field is required"
+      },
       "editToulminArgument": "Edit Your Toulmin Argument",
       "backToView": "Back to View",
       "backToDashboard": "Back to Dashboard",

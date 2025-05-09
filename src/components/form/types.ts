@@ -12,10 +12,16 @@ export type BaseInputProps = {
   readonly name: string;
   readonly label: string;
   readonly value: string;
-  readonly onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  readonly onChange: (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  readonly onBlur?: () => void;
   readonly placeholder: string;
   readonly required?: boolean;
   readonly className?: string;
+  readonly error?: string;
+  readonly ariaInvalid?: boolean;
+  readonly ariaDescribedby?: string;
 };
 
 export type TextInputProps = BaseInputProps & {
@@ -34,4 +40,4 @@ export interface ToulminFormProps {
   readonly onSubmit: (data: ToulminArgument) => void | Promise<void>;
   readonly onChange?: (data: ToulminArgument) => void;
   readonly initialData?: ToulminArgument;
-} 
+}

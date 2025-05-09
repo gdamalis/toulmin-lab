@@ -102,6 +102,8 @@ export function ToulminForm({
   const [formData, setFormData] = useState<ToulminArgument>(initialData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
+  const [showValidation, setShowValidation] = useState(false);
 
   // Initialize form persistence utilities
   const { loadSavedData, saveData, clearSavedData } = useFormPersistence(
@@ -157,6 +159,12 @@ export function ToulminForm({
     const { name, value } = e.target;
     let updatedData: ToulminArgument;
 
+    // Mark field as touched
+    setTouchedFields(prev => ({
+      ...prev,
+      [name]: true
+    }));
+
     if (name === "name") {
       updatedData = { ...formData, name: value };
     } else if (name === "author") {
@@ -185,6 +193,41 @@ export function ToulminForm({
     debouncedSave(updatedData);
   };
 
+  const handleBlur = (name: string) => {
+    setTouchedFields(prev => ({
+      ...prev,
+      [name]: true
+    }));
+  };
+
+  const getFieldErrors = () => {
+    const errors: Record<string, string> = {};
+    
+    if (showValidation || touchedFields["name"]) {
+      if (!formData.name.trim()) errors["name"] = t("validation.required");
+    }
+    
+    if (showValidation || touchedFields["author"]) {
+      if (!formData.author.name.trim()) errors["author"] = t("validation.required");
+    }
+    
+    const partFields = [
+      "claim", "grounds", "groundsBacking", 
+      "warrant", "warrantBacking", 
+      "qualifier", "rebuttal"
+    ];
+    
+    partFields.forEach(field => {
+      if (showValidation || touchedFields[field]) {
+        if (!formData.parts[field as keyof typeof formData.parts].trim()) {
+          errors[field] = t("validation.required");
+        }
+      }
+    });
+    
+    return errors;
+  };
+
   const validateForm = (): boolean => {
     return (
       !!formData.name.trim() &&
@@ -201,6 +244,8 @@ export function ToulminForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    setShowValidation(true);
     
     if (!validateForm()) {
       return;
@@ -237,8 +282,10 @@ export function ToulminForm({
     setLastSaved(null);
   };
 
+  const errors = getFieldErrors();
+
   return (
-    <form className="p-2" onSubmit={handleSubmit}>
+    <form className="p-2" onSubmit={handleSubmit} noValidate>
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
           <div className="flex flex-wrap gap-2">
@@ -302,8 +349,12 @@ export function ToulminForm({
               label={t("argumentName")}
               value={formData.name}
               onChange={handleInputChange}
+              onBlur={() => handleBlur("name")}
               placeholder={t("argumentNamePlaceholder")}
               required
+              error={errors["name"]}
+              ariaInvalid={!!errors["name"]}
+              ariaDescribedby={errors["name"] ? "name-error" : undefined}
             />
 
             <FormInput
@@ -313,8 +364,12 @@ export function ToulminForm({
               label={t("author")}
               value={formData.author.name}
               onChange={handleInputChange}
+              onBlur={() => handleBlur("author")}
               placeholder={t("authorPlaceholder")}
               required
+              error={errors["author"]}
+              ariaInvalid={!!errors["author"]}
+              ariaDescribedby={errors["author"] ? "author-error" : undefined}
             />
           </div>
         </Divider>
@@ -330,8 +385,12 @@ export function ToulminForm({
             label={t("claim")}
             value={formData.parts.claim}
             onChange={handleInputChange}
+            onBlur={() => handleBlur("claim")}
             placeholder={t("claimPlaceholder")}
             required
+            error={errors["claim"]}
+            ariaInvalid={!!errors["claim"]}
+            ariaDescribedby={errors["claim"] ? "claim-error" : undefined}
           />
 
           <FormInput
@@ -341,8 +400,12 @@ export function ToulminForm({
             label={t("evidence")}
             value={formData.parts.grounds}
             onChange={handleInputChange}
+            onBlur={() => handleBlur("grounds")}
             placeholder={t("evidencePlaceholder")}
             required
+            error={errors["grounds"]}
+            ariaInvalid={!!errors["grounds"]}
+            ariaDescribedby={errors["grounds"] ? "grounds-error" : undefined}
           />
 
           <FormInput
@@ -352,8 +415,12 @@ export function ToulminForm({
             label={t("evidenceBacking")}
             value={formData.parts.groundsBacking}
             onChange={handleInputChange}
+            onBlur={() => handleBlur("groundsBacking")}
             placeholder={t("evidenceBackingPlaceholder")}
             required
+            error={errors["groundsBacking"]}
+            ariaInvalid={!!errors["groundsBacking"]}
+            ariaDescribedby={errors["groundsBacking"] ? "groundsBacking-error" : undefined}
           />
         </FormSection>
 
@@ -368,8 +435,12 @@ export function ToulminForm({
             label={t("warrant")}
             value={formData.parts.warrant}
             onChange={handleInputChange}
+            onBlur={() => handleBlur("warrant")}
             placeholder={t("warrantPlaceholder")}
             required
+            error={errors["warrant"]}
+            ariaInvalid={!!errors["warrant"]}
+            ariaDescribedby={errors["warrant"] ? "warrant-error" : undefined}
           />
 
           <FormInput
@@ -379,8 +450,12 @@ export function ToulminForm({
             label={t("backing")}
             value={formData.parts.warrantBacking}
             onChange={handleInputChange}
+            onBlur={() => handleBlur("warrantBacking")}
             placeholder={t("backingPlaceholder")}
             required
+            error={errors["warrantBacking"]}
+            ariaInvalid={!!errors["warrantBacking"]}
+            ariaDescribedby={errors["warrantBacking"] ? "warrantBacking-error" : undefined}
           />
         </FormSection>
 
@@ -395,10 +470,14 @@ export function ToulminForm({
             label={t("qualifier")}
             value={formData.parts.qualifier}
             onChange={handleInputChange}
+            onBlur={() => handleBlur("qualifier")}
             placeholder={t("qualifierPlaceholder")}
             rows={3}
             className="sm:col-span-3"
             required
+            error={errors["qualifier"]}
+            ariaInvalid={!!errors["qualifier"]}
+            ariaDescribedby={errors["qualifier"] ? "qualifier-error" : undefined}
           />
 
           <FormInput
@@ -408,10 +487,14 @@ export function ToulminForm({
             label={t("rebuttal")}
             value={formData.parts.rebuttal}
             onChange={handleInputChange}
+            onBlur={() => handleBlur("rebuttal")}
             placeholder={t("rebuttalPlaceholder")}
             rows={3}
             className="sm:col-span-3"
             required
+            error={errors["rebuttal"]}
+            ariaInvalid={!!errors["rebuttal"]}
+            ariaDescribedby={errors["rebuttal"] ? "rebuttal-error" : undefined}
           />
         </FormSection>
       </div>
