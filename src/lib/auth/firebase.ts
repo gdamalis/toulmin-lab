@@ -13,16 +13,45 @@ if (!getApps().length) {
   });
 }
 
-// Verify Firebase ID token
-export async function getToken(token: string) {
+/**
+ * Firebase decoded token interface
+ */
+export interface FirebaseToken {
+  uid: string;
+  role?: Role;
+  [key: string]: unknown;
+}
+
+/**
+ * Result of Firebase token verification
+ */
+export interface TokenVerificationResult {
+  success: boolean;
+  token?: FirebaseToken;
+  error?: string;
+}
+
+/**
+ * Verifies a Firebase authentication token
+ */
+export async function verifyToken(token: string): Promise<TokenVerificationResult> {
   try {
-    return await getAuth().verifyIdToken(token);
+    const decodedToken = await getAuth().verifyIdToken(token) as FirebaseToken;
+    
+    if (!decodedToken?.uid) {
+      return { success: false, error: "Invalid token claims" };
+    }
+    
+    return { success: true, token: decodedToken };
   } catch (error) {
     console.error("Error verifying token:", error);
-    return null;
+    return { success: false, error: "Invalid token" };
   }
 }
 
+/**
+ * Sets a user's role in Firebase custom claims
+ */
 export async function setUserRole(uid: string, role: Role): Promise<void> {
   try {
     await getAuth().setCustomUserClaims(uid, { role });
@@ -32,6 +61,9 @@ export async function setUserRole(uid: string, role: Role): Promise<void> {
   }
 }
 
+/**
+ * Gets a user's role from Firebase
+ */
 export async function getUserRole(uid: string): Promise<Role | null> {
   try {
     const user = await getAuth().getUser(uid);

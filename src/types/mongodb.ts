@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { BaseAuthor, BaseEntity, BaseToulminArgument } from "./base";
+import { Role } from "./roles";
 
 // MongoDB collection types - only for server-side code
 export interface UserCollection extends BaseEntity {
@@ -8,6 +9,7 @@ export interface UserCollection extends BaseEntity {
   name: string;
   email: string;
   picture?: string;
+  role: Role;
 }
 
 export interface AuthorCollection extends BaseAuthor {

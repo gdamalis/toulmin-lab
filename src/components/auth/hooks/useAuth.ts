@@ -29,6 +29,12 @@ export function useAuth(redirectPath = "/dashboard") {
         const result = await getRedirectResult(auth);
         if (result) {
           // User successfully authenticated
+          await createUserInDatabase(
+            result.user.uid,
+            result.user.displayName ?? "",
+            result.user.email ?? "",
+            result.user.photoURL ?? undefined
+          );
           router.push(redirectPath);
         }
       } catch (err) {
@@ -45,10 +51,18 @@ export function useAuth(redirectPath = "/dashboard") {
   const createUserInDatabase = async (
     userId: string,
     name: string,
-    email: string
+    email: string,
+    picture?: string
   ) => {
     try {
-      const token = await auth.currentUser?.getIdToken();
+      // Wait for auth state to be fully established
+      if (!auth.currentUser) {
+        console.warn("Auth user not available yet, waiting...");
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+
+      // Get a fresh token
+      const token = await auth.currentUser?.getIdToken(true);
 
       if (!token) {
         console.error("Failed to get authentication token");
@@ -65,14 +79,23 @@ export function useAuth(redirectPath = "/dashboard") {
           userId,
           name,
           email,
+          picture,
         }),
       });
 
       if (!response.ok) {
-        console.error("Failed to create user in database");
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Error creating user:", response.status, errorData);
+        throw new Error(`Failed to create user in database: ${response.status}`);
       }
+      
+      // Force token refresh to get the newly set claims
+      await auth.currentUser?.getIdToken(true);
+      
+      return await response.json();
     } catch (err) {
       console.error("Error creating user in database:", err);
+      throw err;
     }
   };
 
@@ -86,22 +109,26 @@ export function useAuth(redirectPath = "/dashboard") {
       // Use signInWithPopup for all environments
       const result = await signInWithPopup(auth, provider);
       if (result.user) {
-        // Create user in database after Google auth
+        // Create or update user in database after Google auth to ensure role claims are set
         await createUserInDatabase(
           result.user.uid,
           result.user.displayName ?? "",
-          result.user.email ?? ""
+          result.user.email ?? "",
+          result.user.photoURL ?? undefined
         );
+        // Add a small delay to ensure Firebase has time to process the token refresh
+        await new Promise(resolve => setTimeout(resolve, 500));
         router.push(redirectPath);
       }
     } catch (err) {
-      setIsGoogleLoading(false);
       if (err instanceof FirebaseError) {
         setError(`Authentication failed: ${err.code}`);
       } else {
         setError(t("googleFailed"));
       }
       console.error(err);
+    } finally {
+      setIsGoogleLoading(false);
     }
   };
 
@@ -112,7 +139,21 @@ export function useAuth(redirectPath = "/dashboard") {
 
     try {
       if (mode === "signin") {
-        await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        
+        // Always create/update the user in the database after sign-in
+        // This ensures roles are properly set in Firebase custom claims
+        if (userCredential.user) {
+          await createUserInDatabase(
+            userCredential.user.uid,
+            userCredential.user.displayName ?? name ?? email.split("@")[0],
+            userCredential.user.email ?? email,
+            userCredential.user.photoURL ?? undefined
+          );
+        }
+        
+        // Add a small delay to ensure Firebase has time to process the token refresh
+        await new Promise(resolve => setTimeout(resolve, 500));
         router.push(redirectPath);
       } else {
         const userCredential = await createUserWithEmailAndPassword(
@@ -125,9 +166,15 @@ export function useAuth(redirectPath = "/dashboard") {
           displayName: name.trim(),
         });
 
-        // Create user in database immediately after signup
-        await createUserInDatabase(userCredential.user.uid, name.trim(), email);
+        // Create or update user in database immediately after signup
+        await createUserInDatabase(
+          userCredential.user.uid, 
+          name.trim(), 
+          email
+        );
 
+        // Add a small delay to ensure Firebase has time to process the token refresh
+        await new Promise(resolve => setTimeout(resolve, 500));
         router.push(redirectPath);
       }
     } catch (err: unknown) {

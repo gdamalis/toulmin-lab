@@ -1,78 +1,106 @@
-import { getToken } from "@/lib/firebase/auth-admin";
+import { NextRequest, NextResponse } from "next/server";
 import {
+  getUser,
   createOrUpdateUser,
-  getToulminArgumentsByUserId,
-} from "@/lib/mongodb/service";
+  updateUserRole,
+  deleteUser
+} from "./actions";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const userId = searchParams.get("userId");
+
+  if (!userId) {
+    return NextResponse.json(
+      { success: false, error: "User ID is required" },
+      { status: 400 }
+    );
+  }
+
+  const result = await getUser(userId);
+
+  if (!result.success) {
+    return NextResponse.json(
+      { success: false, error: result.error ?? "User not found" },
+      { status: 404 }
+    );
+  }
+
+  return NextResponse.json(result);
+}
+
+export async function POST(request: NextRequest) {
   try {
-    // Extract the authorization header
-    const authHeader = request.headers.get("Authorization");
+    const body = await request.json();
+    const token = request.headers.get("Authorization")?.split("Bearer ")[1] ?? "";
 
-    if (!authHeader?.startsWith("Bearer ")) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    if (!token) {
+      return NextResponse.json(
+        { success: false, error: "Authentication required" },
+        { status: 401 }
+      );
     }
 
-    const token = authHeader.split("Bearer ")[1];
+    const result = await createOrUpdateUser(body, token);
 
-    // Verify the token
-    const decodedToken = await getToken(token);
-    if (!decodedToken) {
-      return Response.json({ error: "Invalid token" }, { status: 401 });
+    if (!result.success) {
+      return NextResponse.json(
+        { success: false, error: "error" in result ? result.error : "Failed to create user" },
+        { status: 400 }
+      );
     }
 
-    const userId = decodedToken.uid;
-
-    // Get arguments for this user
-    const userToulminArguments = await getToulminArgumentsByUserId(userId);
-
-    // Return the arguments
-    return Response.json({
-      success: true,
-      arguments: userToulminArguments,
-    });
+    return NextResponse.json(result);
   } catch (error) {
-    console.error("Error retrieving user diagrams:", error);
-    return Response.json(
-      { error: "Failed to retrieve diagrams" },
-      { status: 500 }
+    console.error("Error in POST /api/user:", error);
+    return NextResponse.json(
+      { success: false, error: "Invalid request" },
+      { status: 400 }
     );
   }
 }
 
-export async function POST(request: Request) {
+export async function PATCH(request: NextRequest) {
   try {
-    // Verify authentication
-    const authHeader = request.headers.get("Authorization");
+    const body = await request.json();
+    const result = await updateUserRole(body);
 
-    if (!authHeader?.startsWith("Bearer ")) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    if (!result.success) {
+      return NextResponse.json(
+        { success: false, error: "error" in result ? result.error : "Failed to update user role" },
+        { status: 400 }
+      );
     }
 
-    const token = authHeader.split("Bearer ")[1];
-
-    // Verify the token
-    const decodedToken = await getToken(token);
-    if (!decodedToken) {
-      return Response.json({ error: "Invalid token" }, { status: 401 });
-    }
-
-    const userId = decodedToken.uid;
-
-    // Parse the request body
-    const { name, email } = await request.json();
-
-    // Create or update user in the database
-    await createOrUpdateUser({
-      userId,
-      name: name ?? decodedToken.name ?? "",
-      email: email ?? decodedToken.email ?? "",
-      picture: decodedToken.picture,
-    });
-
-    return Response.json({ success: true });
+    return NextResponse.json(result);
   } catch (error) {
-    console.error("Error creating user:", error);
-    return Response.json({ error: "Failed to create user" }, { status: 500 });
+    console.error("Error in PATCH /api/user:", error);
+    return NextResponse.json(
+      { success: false, error: "Invalid request" },
+      { status: 400 }
+    );
   }
+}
+
+export async function DELETE(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const userId = searchParams.get("userId");
+
+  if (!userId) {
+    return NextResponse.json(
+      { success: false, error: "User ID is required" },
+      { status: 400 }
+    );
+  }
+
+  const result = await deleteUser(userId);
+
+  if (!result.success) {
+    return NextResponse.json(
+      { success: false, error: "error" in result ? result.error : "User not found" },
+      { status: 404 }
+    );
+  }
+
+  return NextResponse.json(result);
 }

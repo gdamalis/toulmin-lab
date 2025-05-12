@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { getAnalyticsData } from "@/lib/mongodb/service";
 import { getToken } from "@/lib/firebase/auth-admin";
-
+import { getUserAnalytics } from "@/lib/mongodb/users";
+import { getToulminArgumentAnalytics } from "@/lib/mongodb/toulmin-arguments";
 export async function GET(request: Request) {
   try {
     // Extract the authorization header
@@ -19,9 +19,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    const analyticsData = await getAnalyticsData();
+    const userAnalytics = await getUserAnalytics();
+    const argumentAnalytics = await getToulminArgumentAnalytics();
     
-    return NextResponse.json(analyticsData);
+    return NextResponse.json({
+      ...userAnalytics,
+      ...argumentAnalytics,
+    });
   } catch (error) {
     console.error("Error fetching analytics data:", error);
     return NextResponse.json(

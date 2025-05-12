@@ -1,8 +1,15 @@
 {
-  "name": "toulmin-diagram",
+  "name": "toulmin-lab",
+  "description": "Toulmin Lab is a tool for creating and analyzing Toulmin diagrams.",
   "version": "0.14.1",
   "private": true,
   "author": "Gabriel Damalis <gabrieldamalis@gmail.com>",
+  "contributors": [
+    {
+      "name": "Gabriel Damalis",
+      "email": "gabrieldamalis@gmail.com"
+    }
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
