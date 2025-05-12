@@ -1,3 +1,12 @@
+# [0.15.0](https://github.com/gdamalis/toulmin-lab/compare/v0.14.1...v0.15.0) (2025-05-12)
+
+
+### Features
+
+* add role for users and improved api for user management ([b742373](https://github.com/gdamalis/toulmin-lab/commit/b7423736cf611c0fcf4c5e79c1ddeb2b153c9535))
+
+
+
 ## [0.14.1](https://github.com/gdamalis/toulmin-lab/compare/v0.14.0...v0.14.1) (2025-05-09)
 
 
@@ -31,10 +40,6 @@
 ### Features
 
 * add auto-save on argument form and online status tracking. Fix form requirements ([c80447a](https://github.com/gdamalis/toulmin-lab/commit/c80447a0595fe38f946978bbe62dd7b14aca6543))
-
-
-
-## [0.12.3](https://github.com/gdamalis/toulmin-lab/compare/v0.12.2...v0.12.3) (2025-05-02)
 
 
 
