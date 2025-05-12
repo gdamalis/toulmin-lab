@@ -10,13 +10,13 @@ export interface ValidationResult {
 /**
  * Type for validation functions
  */
-export type Validator<T = unknown> = (value: unknown) => ValidationResult;
+export type Validator<T> = (value: T) => ValidationResult;
 
 /**
  * Combines multiple validators into a single validator
  */
-export function combineValidators(...validators: Validator[]): Validator {
-  return (value: unknown) => {
+export function combineValidators<T>(...validators: Validator<T>[]): Validator<T> {
+  return (value: T) => {
     for (const validator of validators) {
       const result = validator(value);
       if (!result.isValid) return result;
@@ -26,18 +26,21 @@ export function combineValidators(...validators: Validator[]): Validator {
 }
 
 /**
- * Validates that a value is a non-empty string
+ * Type-safe field validator for any object type
  */
-export function validateNonEmptyString(field: string): Validator {
-  return (value: unknown) => {
-    const record = value as Record<string, unknown>;
-    const fieldValue = record[field];
+export function createFieldValidator<T extends Record<string, unknown>, K extends keyof T>(
+  field: K,
+  validationFn: (value: T[K]) => boolean,
+  errorMessage: string
+): Validator<T> {
+  return (value: T) => {
+    const fieldValue = value[field];
     
-    if (!fieldValue || typeof fieldValue !== "string" || !fieldValue.trim()) {
+    if (!validationFn(fieldValue)) {
       return { 
         isValid: false, 
-        error: `${field} is required`,
-        fieldErrors: { [field]: `${field} is required` }
+        error: errorMessage,
+        fieldErrors: { [field as string]: errorMessage }
       };
     }
     
@@ -46,41 +49,42 @@ export function validateNonEmptyString(field: string): Validator {
 }
 
 /**
- * Validates that a field exists
+ * Validates that a field is a non-empty string
  */
-export function validateRequired(field: string): Validator {
-  return (value: unknown) => {
-    const record = value as Record<string, unknown>;
-    const fieldValue = record[field];
-    
-    if (fieldValue === undefined || fieldValue === null) {
-      return { 
-        isValid: false, 
-        error: `${field} is required`,
-        fieldErrors: { [field]: `${field} is required` }
-      };
-    }
-    
-    return { isValid: true };
-  };
+export function validateNonEmptyString<T extends Record<string, unknown>>(
+  field: keyof T & string
+): Validator<T> {
+  return createFieldValidator(
+    field, 
+    (value): boolean => 
+      typeof value === 'string' && value.trim().length > 0,
+    `${field} is required`
+  );
 }
 
 /**
- * Validates that a value matches a given type
+ * Validates that a field exists (not undefined or null)
  */
-export function validateType(field: string, type: string): Validator {
-  return (value: unknown) => {
-    const record = value as Record<string, unknown>;
-    const fieldValue = record[field];
-    
-    if (typeof fieldValue !== type) {
-      return { 
-        isValid: false, 
-        error: `${field} must be a ${type}`,
-        fieldErrors: { [field]: `${field} must be a ${type}` }
-      };
-    }
-    
-    return { isValid: true };
-  };
+export function validateRequired<T extends Record<string, unknown>>(
+  field: keyof T & string
+): Validator<T> {
+  return createFieldValidator(
+    field,
+    (value): boolean => value !== undefined && value !== null,
+    `${field} is required`
+  );
+}
+
+/**
+ * Validates that a field matches a specific type
+ */
+export function validateType<T extends Record<string, unknown>>(
+  field: keyof T & string, 
+  type: string
+): Validator<T> {
+  return createFieldValidator(
+    field,
+    (value): boolean => typeof value === type,
+    `${field} must be a ${type}`
+  );
 } 
