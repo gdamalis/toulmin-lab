@@ -41,6 +41,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           git-message: "chore(release): {version}"
           tag-prefix: "v"
+          preset: "conventionalcommits"
           skip-commit: "false"
           skip-version-file: "false"
           skip-on-empty: "false"
