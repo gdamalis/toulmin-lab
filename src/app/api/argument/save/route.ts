@@ -1,5 +1,5 @@
 import { getToken } from "@/lib/firebase/auth-admin";
-import { saveToulminArgument } from "@/lib/mongodb/service";
+import { createToulminArgument } from "@/lib/mongodb/service";
 import { ToulminArgument } from "@/types/client";
 
 export async function POST(request: Request) {
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     }
 
     // Save the argument to the database
-    const toulminArgumentId = await saveToulminArgument(data, userId);
+    const toulminArgumentId = await createToulminArgument(data, userId);
 
     return Response.json({ success: true, toulminArgumentId });
   } catch (error) {
