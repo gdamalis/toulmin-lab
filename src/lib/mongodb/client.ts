@@ -5,9 +5,7 @@ import clientPromise from './config';
 let client: MongoClient | null = null;
 
 export async function getMongoClient() {
-  if (!client) {
-    client = await clientPromise;
-  }
+  client ??= await clientPromise;
   return client;
 }
 

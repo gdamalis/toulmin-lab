@@ -1,8 +1,8 @@
-import { FirebaseToken, verifyToken } from "./firebase";
-import { extractBearerToken } from "./utils";
-import { Role, isAdmin } from "@/types/roles";
 import { createErrorResponse } from "@/lib/api/responses";
+import { Role, isAdmin } from "@/types/roles";
 import { NextResponse } from "next/server";
+import { verifyToken } from "./firebase";
+import { extractBearerToken } from "./utils";
 
 export type AuthenticatedRequest = Request & {
   user: {
@@ -34,7 +34,7 @@ export async function verifyAuth(
     return null;
   }
 
-  const decodedToken = result.token as FirebaseToken;
+  const decodedToken = result.token;
   
   if (!decodedToken.role) {
     return null;
@@ -42,7 +42,7 @@ export async function verifyAuth(
 
   return {
     userId: decodedToken.uid,
-    role: decodedToken.role as Role,
+    role: decodedToken.role,
   };
 }
 

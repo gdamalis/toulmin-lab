@@ -1,0 +1,1 @@
+export { ToulminDiagramWithProvider as ToulminDiagram } from './ToulminDiagram'; 

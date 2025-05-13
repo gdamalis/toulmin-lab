@@ -1,16 +1,16 @@
 "use client";
 
+import { ToulminDiagram } from "@/components/diagram";
 import AppShell from "@/components/layout/AppShell";
-import ToulminDiagram from "@/components/ToulminDiagram";
 import { ToulminForm } from "@/components/ToulminForm";
-import { ToulminArgument } from "@/types/client";
-import { use, useEffect, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import useNotification from "@/hooks/useNotification";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Typography } from "@/components/ui/Typography";
+import { useAuth } from "@/contexts/AuthContext";
+import useNotification from "@/hooks/useNotification";
+import { ToulminArgument } from "@/types/client";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
 
 export default function ToulminArgumentEditor({
   params,

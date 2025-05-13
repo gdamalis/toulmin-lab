@@ -1,7 +1,7 @@
 "use client";
 
+import { ToulminDiagram } from "@/components/diagram";
 import AppShell from "@/components/layout/AppShell";
-import ToulminDiagram from "@/components/ToulminDiagram";
 import { ToulminForm } from "@/components/ToulminForm";
 import { Typography } from "@/components/ui/Typography";
 import { useAuth } from "@/contexts/AuthContext";

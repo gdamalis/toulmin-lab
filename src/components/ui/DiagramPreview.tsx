@@ -1,9 +1,9 @@
+import { ToulminDiagram } from "@/components/diagram";
 import {
   sampleToulminArgument,
   sampleToulminArgumentES,
 } from "@/data/toulminTemplates";
 import { useLocale } from "next-intl";
-import ToulminDiagram from "../ToulminDiagram";
 
 export function DiagramPreview() {
   const locale = useLocale();

@@ -1,14 +1,14 @@
 "use client";
 
+import { ToulminDiagram } from "@/components/diagram";
 import AppShell from "@/components/layout/AppShell";
-import ToulminDiagram from "@/components/ToulminDiagram";
 import { Button } from "@/components/ui/Button";
 import { Typography } from "@/components/ui/Typography";
 import { useAuth } from "@/contexts/AuthContext";
 import { ToulminArgument } from "@/types/client";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
 
 export default function ToulminArgumentViewPage({
   params,
