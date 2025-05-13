@@ -95,9 +95,10 @@ function ToulminDiagram({
           onInit={onInit}
           minZoom={0.2}
           maxZoom={3}
+          nodesDraggable={false}
         >
           {showTitle && <TitlePanel data={data} />}
-          {showControls && <Controls />}
+          {showControls && <Controls showInteractive={false} />}
           <Background variant={BackgroundVariant.Dots} gap={12} />
         </ReactFlow>
       </div>
@@ -106,10 +107,12 @@ function ToulminDiagram({
 }
 
 // Component with provider wrapper for easier use
-export function ToulminDiagramWithProvider(props: Readonly<ToulminDiagramProps>) {
+export function ToulminDiagramWithProvider(
+  props: Readonly<ToulminDiagramProps>
+) {
   return (
     <ReactFlowProvider>
       <ToulminDiagram {...props} />
     </ReactFlowProvider>
   );
-} 
+}
