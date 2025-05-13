@@ -49,21 +49,19 @@ export function getAllRoles(): Role[] {
 }
 
 /**
- * Get role badge styling
+ * Get role badge variant based on role
  */
-export function getRoleBadgeClasses(role: string): string {
-  const baseClasses = "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium";
-  
+export function getRoleBadgeVariant(role: string): "gray" | "purple" | "blue" | "green" | "yellow" {
   switch (role) {
     case Role.ADMINISTRATOR:
-      return `${baseClasses} bg-purple-100 text-purple-700`;
+      return "purple";
     case Role.PROFESSOR:
-      return `${baseClasses} bg-blue-100 text-blue-700`;
+      return "blue";
     case Role.STUDENT:
-      return `${baseClasses} bg-green-100 text-green-700`;
+      return "green";
     case Role.BETA_TESTER:
-      return `${baseClasses} bg-yellow-100 text-yellow-700`;
+      return "yellow";
     default:
-      return `${baseClasses} bg-gray-100 text-gray-700`;
+      return "gray";
   }
-} 
+}
