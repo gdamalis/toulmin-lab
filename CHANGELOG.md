@@ -1,3 +1,10 @@
+## [0.19.0](https://github.com/gdamalis/toulmin-lab/compare/v0.18.0...v0.19.0) (2025-05-16)
+
+
+### Features
+
+* **layout:** update font from Inter to Lato for improved typography ([64a2ef6](https://github.com/gdamalis/toulmin-lab/commit/64a2ef624a5e882ac5c1e8bd1f8f183e8856b661))
+
 ## [0.18.0](https://github.com/gdamalis/toulmin-lab/compare/v0.17.0...v0.18.0) (2025-05-16)
 
 
@@ -25,6 +32,4 @@
 ### Features
 
 * **profile menu:** add Role Badge ([47f0401](https://github.com/gdamalis/toulmin-lab/commit/47f0401e9ba5b6ff81b43a25ec47a8126dfe53b2))
-
-## [0.15.4](https://github.com/gdamalis/toulmin-lab/compare/v0.15.3...v0.15.4) (2025-05-13)
 
