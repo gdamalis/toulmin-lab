@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { AnalyticsOverview } from "@/components/dashboard";
 
 export default function AdminDashboard() {
   const t = useTranslations("pages.admin");
@@ -48,8 +49,8 @@ export default function AdminDashboard() {
               <CardDescription>{t("analytics.description")}</CardDescription>
             </CardHeader>
             <CardContent>
-              {/* Platform analytics will go here */}
-              <p className="text-gray-500 italic">{t("analytics.comingSoon")}</p>
+              {/* Platform analytics */}
+              <AnalyticsOverview />
             </CardContent>
           </Card>
         </TabsContent>
