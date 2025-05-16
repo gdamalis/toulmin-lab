@@ -34,7 +34,8 @@
   "nav": {
     "dashboard": "Dashboard",
     "newArgument": "New",
-    "myArguments": "My Arguments"
+    "myArguments": "My Arguments",
+    "adminPanel": "Admin Panel"
   },
   "stats": {
     "increased": "Increased",
@@ -120,7 +121,9 @@
       "orContinueWith": "Or continue with",
       "noAccount": "Don't have an account?",
       "haveAccount": "Already have an account?",
-      "untitledArgument": "Untitled Argument"
+      "untitledArgument": "Untitled Argument",
+      "signInWithGoogle": "Sign in with Google",
+      "signingInWithGoogle": "Signing in with Google..."
     },
     "dashboard": {
       "title": "Dashboard",
@@ -141,6 +144,31 @@
       "viewDiagram": "View diagram",
       "totalDiagrams": "Total Diagrams",
       "activeUsers": "Active Users"
+    },
+    "admin": {
+      "title": "Admin Panel",
+      "adminPanel": "Administration Panel",
+      "adminDescription": "Manage users, view analytics, and configure platform settings",
+      "tabs": {
+        "users": "Users",
+        "analytics": "Analytics",
+        "settings": "Settings"
+      },
+      "userManagement": {
+        "title": "User Management",
+        "description": "View, edit, and manage platform users",
+        "comingSoon": "User management features coming soon"
+      },
+      "analytics": {
+        "title": "Platform Analytics",
+        "description": "View detailed usage statistics and platform metrics",
+        "comingSoon": "Advanced analytics features coming soon"
+      },
+      "settings": {
+        "title": "Platform Settings",
+        "description": "Configure global platform settings and defaults",
+        "comingSoon": "Platform settings features coming soon"
+      }
     },
     "argument": {
       "save": "Save",

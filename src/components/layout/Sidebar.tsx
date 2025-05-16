@@ -2,13 +2,15 @@
 
 import {
   ChatBubbleLeftRightIcon,
-  HomeIcon
+  HomeIcon,
+  Cog6ToothIcon
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import pkg from "../../../package.json";
+import { useUserRole } from "@/hooks/useUserRole";
 
 // Helper function to conditionally join class names
 function classNames(...classes: (string | boolean)[]) {
@@ -18,6 +20,7 @@ function classNames(...classes: (string | boolean)[]) {
 export function Sidebar() {
   const pathname = usePathname();
   const t = useTranslations();
+  const { isAdmin } = useUserRole();
 
   // Define navigation items with icons
   const navigation = [
@@ -36,6 +39,16 @@ export function Sidebar() {
         (pathname.startsWith("/argument/") && !pathname.includes("/create")),
     },
   ];
+  
+  // Admin-only navigation items
+  const adminNavigation = isAdmin ? [
+    {
+      name: t("nav.adminPanel"),
+      href: "/admin",
+      icon: Cog6ToothIcon,
+      current: pathname.startsWith("/admin"),
+    }
+  ] : [];
 
   return (
     <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 py-4">
@@ -55,6 +68,32 @@ export function Sidebar() {
           <li>
             <ul role="list" className="-mx-2 space-y-1">
               {navigation.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    className={classNames(
+                      item.current
+                        ? "bg-gray-50 text-primary-600"
+                        : "text-gray-700 hover:bg-gray-50 hover:text-primary-600",
+                      "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
+                    )}
+                  >
+                    <item.icon
+                      aria-hidden="true"
+                      className={classNames(
+                        item.current
+                          ? "text-primary-600"
+                          : "text-gray-400 group-hover:text-primary-600",
+                        "size-6 shrink-0"
+                      )}
+                    />
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+              
+              {/* Admin navigation items */}
+              {adminNavigation.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}

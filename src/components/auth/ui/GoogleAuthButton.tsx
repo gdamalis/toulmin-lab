@@ -1,11 +1,15 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 interface GoogleAuthButtonProps {
   readonly isLoading: boolean;
   readonly onClick: () => void;
 }
 
 export function GoogleAuthButton({ isLoading, onClick }: Readonly<GoogleAuthButtonProps>) {
+  const t = useTranslations('pages.auth');
+  
   return (
     <button
       type="button"
@@ -14,7 +18,7 @@ export function GoogleAuthButton({ isLoading, onClick }: Readonly<GoogleAuthButt
       className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:ring-transparent disabled:opacity-50"
     >
       {isLoading ? (
-        'Processing...'
+        t('signingInWithGoogle')
       ) : (
         <>
           <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">

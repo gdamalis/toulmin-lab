@@ -13,3 +13,6 @@ export {
   ArrowDownIcon 
 } from './Icon';
 export { default as Toast } from './Toast'; 
+export { Alert, AlertTitle, AlertDescription } from './Alert';
+export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './Card';
+export { Tabs, TabsContent, TabsList, TabsTrigger } from './Tabs'; 

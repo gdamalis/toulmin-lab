@@ -1,11 +1,11 @@
 import "@/app/globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { NotificationProvider } from "@/contexts/NotificationContext";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { Analytics } from "@/components/Analytics";
+import ClientProviders from "@/components/providers/ClientProviders";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -33,9 +33,9 @@ export default async function RootLayout({
     <html lang={locale}>
       <body className={inter.className}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <AuthProvider>
-            <NotificationProvider>{children}</NotificationProvider>
-          </AuthProvider>
+          <ClientProviders>
+            {children}
+          </ClientProviders>
         </NextIntlClientProvider>
         <Analytics />
       </body>

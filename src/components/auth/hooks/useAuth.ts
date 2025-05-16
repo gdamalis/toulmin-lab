@@ -2,18 +2,18 @@
 
 import { useState, useEffect } from "react";
 import {
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   getRedirectResult,
-  signInWithPopup,
-  GoogleAuthProvider,
   updateProfile,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { auth } from "@/lib/firebase/config";
 import { useRouter } from "next/navigation";
 import { AuthMode, FormState } from "../types";
 import { useTranslations } from "next-intl";
+import { signIn } from "next-auth/react";
+import { signInWithGoogle } from "@/lib/auth/google";
 
 export function useAuth(redirectPath = "/dashboard") {
   const [error, setError] = useState<string>("");
@@ -29,7 +29,7 @@ export function useAuth(redirectPath = "/dashboard") {
         const result = await getRedirectResult(auth);
         if (result) {
           // User successfully authenticated
-          await createUserInDatabase(
+          await createUserViaApi(
             result.user.uid,
             result.user.displayName ?? "",
             result.user.email ?? "",
@@ -48,7 +48,7 @@ export function useAuth(redirectPath = "/dashboard") {
     checkRedirectResult();
   }, [router, redirectPath]);
 
-  const createUserInDatabase = async (
+  const createUserViaApi = async (
     userId: string,
     name: string,
     email: string,
@@ -89,12 +89,9 @@ export function useAuth(redirectPath = "/dashboard") {
         throw new Error(`Failed to create user in database: ${response.status}`);
       }
       
-      // Force token refresh to get the newly set claims
-      await auth.currentUser?.getIdToken(true);
-      
       return await response.json();
     } catch (err) {
-      console.error("Error creating user in database:", err);
+      console.error("Error creating user via API:", err);
       throw err;
     }
   };
@@ -104,29 +101,30 @@ export function useAuth(redirectPath = "/dashboard") {
     setIsGoogleLoading(true);
 
     try {
-      const provider = new GoogleAuthProvider();
+      const googleResult = await signInWithGoogle();
 
-      // Use signInWithPopup for all environments
-      const result = await signInWithPopup(auth, provider);
-      if (result.user) {
-        // Create or update user in database after Google auth to ensure role claims are set
-        await createUserInDatabase(
-          result.user.uid,
-          result.user.displayName ?? "",
-          result.user.email ?? "",
-          result.user.photoURL ?? undefined
-        );
-        // Add a small delay to ensure Firebase has time to process the token refresh
-        await new Promise(resolve => setTimeout(resolve, 500));
-        router.push(redirectPath);
+      if (!googleResult.success || !googleResult.user) {
+        throw new Error("Google sign-in failed");
+      }
+
+      const idToken = await googleResult.user.getIdToken();
+
+      const nextAuthResult = await signIn("firebase", {
+        redirect: false,
+        idToken,
+        callbackUrl: redirectPath,
+      });
+
+      if (nextAuthResult?.error) {
+        throw new Error(nextAuthResult.error);
+      }
+
+      if (nextAuthResult?.url) {
+        router.push(nextAuthResult.url);
       }
     } catch (err) {
-      if (err instanceof FirebaseError) {
-        setError(`Authentication failed: ${err.code}`);
-      } else {
-        setError(t("googleFailed"));
-      }
-      console.error(err);
+      console.error("Google authentication error:", err);
+      setError(t("googleFailed"));
     } finally {
       setIsGoogleLoading(false);
     }
@@ -139,23 +137,26 @@ export function useAuth(redirectPath = "/dashboard") {
 
     try {
       if (mode === "signin") {
+        // Sign in with Firebase email/password first
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        
-        // Always create/update the user in the database after sign-in
-        // This ensures roles are properly set in Firebase custom claims
-        if (userCredential.user) {
-          await createUserInDatabase(
-            userCredential.user.uid,
-            userCredential.user.displayName ?? name ?? email.split("@")[0],
-            userCredential.user.email ?? email,
-            userCredential.user.photoURL ?? undefined
-          );
+
+        const idToken = await userCredential.user.getIdToken();
+
+        const nextAuthResult = await signIn("firebase", {
+          redirect: false,
+          idToken,
+          callbackUrl: redirectPath,
+        });
+
+        if (nextAuthResult?.error) {
+          throw new Error(nextAuthResult.error);
         }
-        
-        // Add a small delay to ensure Firebase has time to process the token refresh
-        await new Promise(resolve => setTimeout(resolve, 500));
-        router.push(redirectPath);
+
+        if (nextAuthResult?.url) {
+          router.push(nextAuthResult.url);
+        }
       } else {
+        // For sign-up, we still use Firebase directly since we need to create the user first
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           email,
@@ -166,16 +167,29 @@ export function useAuth(redirectPath = "/dashboard") {
           displayName: name.trim(),
         });
 
-        // Create or update user in database immediately after signup
-        await createUserInDatabase(
+        // Create or update user via API
+        await createUserViaApi(
           userCredential.user.uid, 
           name.trim(), 
           email
         );
 
-        // Add a small delay to ensure Firebase has time to process the token refresh
-        await new Promise(resolve => setTimeout(resolve, 500));
-        router.push(redirectPath);
+        // After signup, create a Next-Auth session using the freshly created ID token
+        const idToken = await userCredential.user.getIdToken();
+
+        const nextAuthResult = await signIn("firebase", {
+          redirect: false,
+          idToken,
+          callbackUrl: redirectPath,
+        });
+
+        if (nextAuthResult?.error) {
+          throw new Error(nextAuthResult.error);
+        }
+
+        if (nextAuthResult?.url) {
+          router.push(nextAuthResult.url);
+        }
       }
     } catch (err: unknown) {
       if (err instanceof FirebaseError) {

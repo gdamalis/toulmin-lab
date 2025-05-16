@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode, useMemo, use
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
 import { Role } from '@/types/roles';
+import { useSession, signOut as nextAuthSignOut } from 'next-auth/react';
 
 interface AuthContextType {
   user: User | null;
@@ -12,14 +13,15 @@ interface AuthContextType {
   signOutUser: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType>({
-  user: null,
-  userRole: null,
-  isLoading: true,
-  signOutUser: async () => {},
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => useContext(AuthContext);
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -29,6 +31,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
   const [user, setUser] = useState<User | null>(null);
   const [userRole, setUserRole] = useState<Role | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -56,9 +59,20 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
     return () => unsubscribe();
   }, []);
 
+  // Update user role if available from NextAuth session
+  useEffect(() => {
+    if (session?.user?.role) {
+      setUserRole(session.user.role as Role);
+    }
+  }, [session]);
+
   const signOutUser = useCallback(async () => {
     try {
-      await signOut(auth);
+      // Sign out from both auth systems
+      await Promise.all([
+        signOut(auth),
+        nextAuthSignOut()
+      ]);
     } catch (error) {
       console.error('Error signing out:', error);
     }

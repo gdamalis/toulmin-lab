@@ -74,4 +74,34 @@ export function CardHeader({
       )}
     </div>
   );
+}
+
+interface CardTitleProps extends HTMLAttributes<HTMLHeadingElement> {
+  children: ReactNode;
+}
+
+export function CardTitle({ className, children, ...props }: Readonly<CardTitleProps>) {
+  return (
+    <h3 
+      className={cn("text-lg font-medium text-gray-900", className)}
+      {...props}
+    >
+      {children}
+    </h3>
+  );
+}
+
+interface CardDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {
+  children: ReactNode;
+}
+
+export function CardDescription({ className, children, ...props }: Readonly<CardDescriptionProps>) {
+  return (
+    <p 
+      className={cn("mt-1 text-sm text-gray-500", className)}
+      {...props}
+    >
+      {children}
+    </p>
+  );
 } 

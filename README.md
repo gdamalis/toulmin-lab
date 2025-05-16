@@ -1,6 +1,95 @@
-# Toulmin Diagram Builder
+# Toulmin Lab
 
-A web application for creating, visualizing, and exporting Toulmin argument diagrams.
+Toulmin Lab is a tool for creating and analyzing Toulmin diagrams.
+
+## Project Architecture
+
+This application is built using Next.js 15 with the App Router architecture. It follows modern React patterns including React Server Components where applicable, and client-side interactivity where needed.
+
+### Key Technologies
+
+- **Next.js 15 (App Router)**: The foundation of the application
+- **React 19**: For building the user interface
+- **TypeScript**: For type safety throughout the application
+- **Tailwind CSS**: For styling
+- **Headless UI**: For accessible UI components
+- **Next-Auth**: For authentication and session management
+- **Firebase**: For backend services
+- **MongoDB**: For data storage
+- **xyflow**: For diagram creation and interaction
+
+## Authentication
+
+The application uses a dual authentication approach:
+
+1. **NextAuth.js**: For session management and standardized authentication
+2. **Firebase Auth**: For the underlying authentication provider
+
+This setup allows the application to leverage Firebase's authentication capabilities while having a unified session experience through NextAuth.js.
+
+### Critical Environment Variables for Auth
+
+The following environment variables are essential for proper authentication:
+
+```
+# NextAuth.js Configuration
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-nextauth-secret-at-least-32-chars
+
+# Firebase Configuration
+NEXT_PUBLIC_FIREBASE_API_KEY=your-firebase-api-key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
+```
+
+> **Important**: The `NEXTAUTH_SECRET` must be set to a secure random string (at least 32 characters) and must be the same across all environments (development, staging, production) to ensure token verification works properly.
+
+### Role-Based Access Control
+
+The application implements role-based access control through custom claims in Firebase tokens, which are then passed to NextAuth.js sessions. Available roles are defined in `src/types/roles.ts` and include:
+
+- User
+- Student
+- Beta Tester
+- Professor
+- Administrator
+
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+```
+
+## Firebase Emulator
+
+For local development, you can use Firebase Emulators:
+
+```bash
+npm run emulators
+```
+
+## Contributing
+
+When contributing to this project, please follow these best practices:
+
+1. Write type-safe code with proper TypeScript types
+2. Use React Server Components where possible
+3. Follow the established project structure
+4. Add appropriate tests for new features
+5. Update documentation when making significant changes
 
 ## Features
 

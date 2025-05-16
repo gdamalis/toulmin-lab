@@ -32,9 +32,10 @@
     "offlineWarning": "Estás sin conexión. Los cambios se guardarán localmente."
   },
   "nav": {
-    "dashboard": "Tablero",
+    "dashboard": "Panel de Control",
     "newArgument": "Nuevo",
-    "myArguments": "Mis Argumentos"
+    "myArguments": "Mis Argumentos",
+    "adminPanel": "Panel de Administración"
   },
   "stats": {
     "increased": "Aumentado",
@@ -120,7 +121,9 @@
       "orContinueWith": "O continuar con",
       "noAccount": "¿No tienes una cuenta?",
       "haveAccount": "¿Ya tienes una cuenta?",
-      "untitledArgument": "Argumento sin título"
+      "untitledArgument": "Argumento sin título",
+      "signInWithGoogle": "Iniciar sesión con Google",
+      "signingInWithGoogle": "Iniciando sesión con Google..."
     },
     "dashboard": {
       "title": "Tablero",
@@ -141,6 +144,31 @@
       "viewDiagram": "Ver diagrama",
       "totalDiagrams": "Total de Diagramas",
       "activeUsers": "Usuarios Activos"
+    },
+    "admin": {
+      "title": "Panel de Administración",
+      "adminPanel": "Panel de Administración",
+      "adminDescription": "Gestiona usuarios, visualiza analíticas y configura ajustes de la plataforma",
+      "tabs": {
+        "users": "Usuarios",
+        "analytics": "Analíticas",
+        "settings": "Configuración"
+      },
+      "userManagement": {
+        "title": "Gestión de Usuarios",
+        "description": "Ver, editar y gestionar usuarios de la plataforma",
+        "comingSoon": "Funciones de gestión de usuarios próximamente"
+      },
+      "analytics": {
+        "title": "Analíticas de la Plataforma",
+        "description": "Ver estadísticas detalladas de uso y métricas de la plataforma",
+        "comingSoon": "Funciones avanzadas de analíticas próximamente"
+      },
+      "settings": {
+        "title": "Configuración de la Plataforma",
+        "description": "Configurar ajustes globales y valores predeterminados de la plataforma",
+        "comingSoon": "Funciones de configuración de la plataforma próximamente"
+      }
     },
     "argument": {
       "save": "Guardar",
