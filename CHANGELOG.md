@@ -1,3 +1,10 @@
+## [0.20.0](https://github.com/gdamalis/toulmin-lab/compare/v0.19.0...v0.20.0) (2025-05-16)
+
+
+### Features
+
+* **admin:** integrate AnalyticsOverview component into AdminDashboard ([d90c1f6](https://github.com/gdamalis/toulmin-lab/commit/d90c1f664c6d43e6638f170550f380bd6e724367))
+
 ## [0.19.0](https://github.com/gdamalis/toulmin-lab/compare/v0.18.0...v0.19.0) (2025-05-16)
 
 
@@ -25,11 +32,4 @@
 ### Bug Fixes
 
 * **toulmin diagram:** lock interactivity of nodes in diagram ([d9aeef8](https://github.com/gdamalis/toulmin-lab/commit/d9aeef8fb2da3e272c12589da35757b8fe657560))
-
-## [0.16.0](https://github.com/gdamalis/toulmin-lab/compare/v0.15.4...v0.16.0) (2025-05-13)
-
-
-### Features
-
-* **profile menu:** add Role Badge ([47f0401](https://github.com/gdamalis/toulmin-lab/commit/47f0401e9ba5b6ff81b43a25ec47a8126dfe53b2))
 
