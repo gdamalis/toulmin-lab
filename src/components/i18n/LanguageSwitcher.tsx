@@ -9,8 +9,8 @@ import { useState, useTransition } from "react";
 
 // Flag images for languages
 const flagImages = {
-  en: "/images/flags/us.svg",
-  es: "/images/flags/es.svg",
+  en: "/images/us-flag.svg",
+  es: "/images/es-flag.svg",
 };
 
 // Function to set cookie
