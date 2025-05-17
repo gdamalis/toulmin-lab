@@ -1,3 +1,10 @@
+## [0.23.0](https://github.com/gdamalis/toulmin-lab/compare/v0.22.1...v0.23.0) (2025-05-17)
+
+
+### Features
+
+* **auth:** enhance authentication flow with loading state ([42b0846](https://github.com/gdamalis/toulmin-lab/commit/42b0846fe05f05b51dffa4b301199815a971c455))
+
 ## [0.22.1](https://github.com/gdamalis/toulmin-lab/compare/v0.22.0...v0.22.1) (2025-05-17)
 
 ## [0.22.0](https://github.com/gdamalis/toulmin-lab/compare/v0.21.2...v0.22.0) (2025-05-17)
@@ -10,11 +17,4 @@
 ## [0.21.2](https://github.com/gdamalis/toulmin-lab/compare/v0.21.1...v0.21.2) (2025-05-17)
 
 ## [0.21.1](https://github.com/gdamalis/toulmin-lab/compare/v0.21.0...v0.21.1) (2025-05-17)
-
-## [0.21.0](https://github.com/gdamalis/toulmin-lab/compare/v0.20.0...v0.21.0) (2025-05-17)
-
-
-### Features
-
-* **admin:** implement user management and analytics pages. UI improvements ([99a571f](https://github.com/gdamalis/toulmin-lab/commit/99a571f11d914d796b2e379b205bdf5d41e4f8c9))
 
