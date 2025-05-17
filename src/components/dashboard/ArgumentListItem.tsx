@@ -32,7 +32,7 @@ export function ArgumentListItem({
   ];
 
   return (
-    <li className="flex items-center justify-between gap-x-6 p-4 hover:bg-gray-50 rounded-md">
+    <li className="flex items-center justify-between gap-x-6 p-4 hover:bg-gray-100 rounded-md">
       <Link href={`/argument/view/${argument._id}`}>
         <div className="min-w-0">
           <Typography variant="body" bold className="leading-6">

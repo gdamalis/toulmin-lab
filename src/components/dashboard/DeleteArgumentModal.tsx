@@ -11,6 +11,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/Button";
 
 interface DeleteArgumentModalProps {
   isOpen: boolean;
@@ -47,7 +48,7 @@ export function DeleteArgumentModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:outline-hidden"
+                className="rounded-md bg-white text-gray-400 cursor-pointer hover:text-gray-500 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:outline-hidden"
                 disabled={isDeleting}
               >
                 <span className="sr-only">{commonT("close")}</span>
@@ -76,22 +77,23 @@ export function DeleteArgumentModal({
               </div>
             </div>
             <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-              <button
-                type="button"
+              <Button
+                variant="danger"
                 onClick={onDelete}
-                className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto disabled:bg-red-400"
                 disabled={isDeleting}
+                isLoading={isDeleting}
+                className="sm:ml-3 sm:w-auto w-full"
               >
-                {isDeleting ? commonT("deleting") : commonT("delete")}
-              </button>
-              <button
-                type="button"
+                {commonT("delete")}
+              </Button>
+              <Button
+                variant="secondary"
                 onClick={onClose}
-                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto disabled:bg-gray-100"
                 disabled={isDeleting}
+                className="mt-3 sm:mt-0 sm:w-auto w-full"
               >
                 {commonT("cancel")}
-              </button>
+              </Button>
             </div>
           </DialogPanel>
         </div>

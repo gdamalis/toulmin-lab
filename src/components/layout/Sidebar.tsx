@@ -1,12 +1,12 @@
 "use client";
 
+import { useUserRole } from "@/hooks/useUserRole";
+import { Role } from "@/types/roles";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
 import pkg from "../../../package.json";
-import { useUserRole } from "@/hooks/useUserRole";
-import { Role } from "@/types/roles";
 import { NAV_ITEMS, NavItem } from "./navItems";
 
 // Helper function to conditionally join class names
@@ -26,13 +26,13 @@ export function Sidebar() {
   });
 
   const rootClass = classNames(
-    "flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 px-6 py-4",
-    isAdmin ? "bg-primary-50" : "bg-white"
+    "flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 px-3 py-2",
+    isAdmin ? "bg-primary-100" : "bg-white"
   );
 
   return (
     <div className={rootClass}>
-      <div className="flex h-16 shrink-0 items-center">
+      <div className="flex shrink-0 p-2 items-center">
         <Link href="/dashboard">
           <Image
             alt="Toulmin Lab"
@@ -44,9 +44,9 @@ export function Sidebar() {
         </Link>
       </div>
       <nav className="flex flex-1 flex-col">
-        <ul role="list" className="flex flex-1 flex-col gap-y-7">
+        <ul className="flex flex-1 flex-col gap-y-7">
           <li>
-            <ul role="list" className="-mx-2 space-y-1">
+            <ul className="flex flex-col gap-y-1">
               {navigation.map((item) => {
                 const isCurrent =
                   pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -67,7 +67,7 @@ export function Sidebar() {
                         className={classNames(
                           isCurrent
                             ? "text-primary-600"
-                            : "text-gray-400 group-hover:text-primary-600",
+                            : "text-gray-700 group-hover:text-primary-600",
                           "size-6 shrink-0"
                         )}
                       />
@@ -78,18 +78,6 @@ export function Sidebar() {
               })}
             </ul>
           </li>
-          {/* <li className="mt-auto">
-            <Link
-              href="/settings"
-              className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-700 hover:bg-gray-50 hover:text-primary-600"
-            >
-              <Cog6ToothIcon
-                aria-hidden="true"
-                className="size-6 shrink-0 text-gray-400 group-hover:text-primary-600"
-              />
-              {commonT("settings")}
-            </Link>
-          </li> */}
         </ul>
       </nav>
       <div className="text-xs text-gray-400 text-center py-2 border-t border-gray-100">

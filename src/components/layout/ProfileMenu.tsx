@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { getRoleBadgeVariant } from "@/types/roles";
 import { Badge } from "@/components/ui/Badge";
 
@@ -25,35 +24,24 @@ export function ProfileMenu() {
 
   return (
     <Menu as="div" className="relative">
-      <div>
-        <MenuButton className="relative flex items-center p-1.5 cursor-pointer">
-          <span className="sr-only">{t("common.openUserMenu")}</span>
-          <div className="flex items-center">
-            {user?.photoURL ? (
-              <Image
-                src={user.photoURL}
-                alt="Profile picture"
-                width={32}
-                height={32}
-                className="size-8 rounded-full bg-gray-50"
-              />
-            ) : (
-              <div className="size-8 rounded-full bg-gray-500 flex items-center justify-center text-white">
-                {displayName.charAt(0).toUpperCase()}
-              </div>
-            )}
-            <span className="hidden lg:flex lg:items-center">
-              <span className="ml-4 text-sm/6 font-semibold text-gray-900">
-                {displayName}
-              </span>
-              <ChevronDownIcon
-                className="ml-2 size-5 text-gray-400"
-                aria-hidden="true"
-              />
-            </span>
-          </div>
-        </MenuButton>
-      </div>
+      <MenuButton className="relative min-h-10 min-w-10 flex items-center p-1 cursor-pointer hover:bg-gray-100 rounded-md focus:outline-hidden">
+        <span className="sr-only">{t("common.openUserMenu")}</span>
+        <div className="flex items-center">
+          {user?.photoURL ? (
+            <Image
+              src={user.photoURL}
+              alt="Profile picture"
+              width={32}
+              height={32}
+              className="size-8 rounded-full bg-gray-50"
+            />
+          ) : (
+            <div className="size-8 rounded-full bg-gray-500 flex items-center justify-center text-white">
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
+      </MenuButton>
       <MenuItems
         transition
         className="absolute right-0 z-10 mt-2.5 w-48 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"

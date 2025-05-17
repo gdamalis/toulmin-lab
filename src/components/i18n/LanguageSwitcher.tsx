@@ -46,7 +46,7 @@ export function LanguageSwitcher() {
     <Menu as="div" className="relative">
       <MenuButton
         disabled={isLoading}
-        className="relative flex cursor-pointer items-center gap-x-1 rounded-sm text-sm focus:ring-1 focus:ring-white focus:ring-offset-1 focus:ring-offset-gray-800 focus:outline-hidden"
+        className="relative min-h-10 min-w-10 flex justify-center cursor-pointer items-center p-1 rounded-md text-sm hover:bg-gray-100 focus:ring-1 focus:ring-white focus:outline-hidden"
       >
         <span className="sr-only">{t("language")}</span>
         <Image
@@ -54,10 +54,13 @@ export function LanguageSwitcher() {
           alt={locale}
           width={40}
           height={30}
-          className="h-auto w-7 rounded-sm"
+          className="h-auto w-6 rounded-xs"
         />
       </MenuButton>
-      <MenuItems className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden">
+      <MenuItems
+        transition
+        className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+      >
         {locales.map((lang) => (
           <MenuItem key={lang}>
             {({ active }) => (
@@ -69,11 +72,11 @@ export function LanguageSwitcher() {
                 disabled={isLoading || locale === lang}
               >
                 <Image
-                  src={flagImages[lang as keyof typeof flagImages]}
+                  src={flagImages[lang]}
                   alt={lang}
                   width={40}
                   height={30}
-                  className="h-auto w-7 mr-2 rounded-sm"
+                  className="h-auto w-7 mr-2 rounded-xs"
                 />
                 {lang === "en" ? "English" : "Español"}
               </button>

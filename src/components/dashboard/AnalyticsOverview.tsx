@@ -86,13 +86,9 @@ export function AnalyticsOverview({
     }
   ] : stats;
 
-  return (
-    <div>
-      <Typography variant="h3" className="mb-6">
-        {t('analyticsOverview')}
-      </Typography>
-
-      {loading ? (
+  const renderContent = () => {
+    if (loading) {
+      return (
         <div className="animate-pulse space-y-4">
           <StatCardGrid>
             {[1, 2].map((i) => (
@@ -103,23 +99,37 @@ export function AnalyticsOverview({
             ))}
           </StatCardGrid>
         </div>
-      ) : error ? (
-        <div className="text-red-500">{error}</div>
-      ) : (
-        <StatCardGrid>
-          {displayStats?.map((item) => (
-            <StatCard
-              key={item.id}
-              id={item.id}
-              name={item.name}
-              stat={item.stat}
-              icon={item.icon}
-              change={item.change}
-              changeType={item.changeType}
-            />
-          ))}
-        </StatCardGrid>
-      )}
+      );
+    }
+    
+    if (error) {
+      return <div className="text-red-500">{error}</div>;
+    }
+    
+    return (
+      <StatCardGrid>
+        {displayStats?.map((item) => (
+          <StatCard
+            key={item.id}
+            id={item.id}
+            name={item.name}
+            stat={item.stat}
+            icon={item.icon}
+            change={item.change}
+            changeType={item.changeType}
+          />
+        ))}
+      </StatCardGrid>
+    );
+  };
+
+  return (
+    <div>
+      <Typography variant="h3" className="mb-6">
+        {t('analyticsOverview')}
+      </Typography>
+
+      {renderContent()}
     </div>
   );
 }
