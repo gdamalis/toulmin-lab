@@ -2,8 +2,6 @@
 export { AuthForm } from './AuthForm';
 export { SignInForm } from './SignInForm';
 export { SignUpForm } from './SignUpForm';
-export { ProtectedRoute } from './ProtectedRoute';
-export { PublicRoute } from './PublicRoute';
 
 // UI components
 export { GoogleAuthButton } from './ui/GoogleAuthButton';

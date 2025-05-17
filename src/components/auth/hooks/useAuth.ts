@@ -9,7 +9,7 @@ import {
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { auth } from "@/lib/firebase/config";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AuthMode, FormState } from "../types";
 import { useTranslations } from "next-intl";
 import { signIn } from "next-auth/react";
@@ -20,6 +20,8 @@ export function useAuth(redirectPath = "/dashboard") {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || redirectPath;
   const t = useTranslations("errors.auth");
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export function useAuth(redirectPath = "/dashboard") {
             result.user.email ?? "",
             result.user.photoURL ?? undefined
           );
-          router.push(redirectPath);
+          router.push(callbackUrl);
         }
       } catch (err) {
         if (err instanceof FirebaseError) {
@@ -46,7 +48,7 @@ export function useAuth(redirectPath = "/dashboard") {
     };
 
     checkRedirectResult();
-  }, [router, redirectPath]);
+  }, [router, callbackUrl]);
 
   const createUserViaApi = async (
     userId: string,
@@ -112,7 +114,7 @@ export function useAuth(redirectPath = "/dashboard") {
       const nextAuthResult = await signIn("firebase", {
         redirect: false,
         idToken,
-        callbackUrl: redirectPath,
+        callbackUrl,
       });
 
       if (nextAuthResult?.error) {
@@ -145,7 +147,7 @@ export function useAuth(redirectPath = "/dashboard") {
         const nextAuthResult = await signIn("firebase", {
           redirect: false,
           idToken,
-          callbackUrl: redirectPath,
+          callbackUrl,
         });
 
         if (nextAuthResult?.error) {
@@ -180,7 +182,7 @@ export function useAuth(redirectPath = "/dashboard") {
         const nextAuthResult = await signIn("firebase", {
           redirect: false,
           idToken,
-          callbackUrl: redirectPath,
+          callbackUrl,
         });
 
         if (nextAuthResult?.error) {

@@ -62,7 +62,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
   // Update user role if available from NextAuth session
   useEffect(() => {
     if (session?.user?.role) {
-      setUserRole(session.user.role as Role);
+      setUserRole(session.user.role);
     }
   }, [session]);
 
