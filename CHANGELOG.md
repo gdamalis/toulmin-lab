@@ -1,3 +1,5 @@
+## [0.22.1](https://github.com/gdamalis/toulmin-lab/compare/v0.22.0...v0.22.1) (2025-05-17)
+
 ## [0.22.0](https://github.com/gdamalis/toulmin-lab/compare/v0.21.2...v0.22.0) (2025-05-17)
 
 
@@ -15,11 +17,4 @@
 ### Features
 
 * **admin:** implement user management and analytics pages. UI improvements ([99a571f](https://github.com/gdamalis/toulmin-lab/commit/99a571f11d914d796b2e379b205bdf5d41e4f8c9))
-
-## [0.20.0](https://github.com/gdamalis/toulmin-lab/compare/v0.19.0...v0.20.0) (2025-05-16)
-
-
-### Features
-
-* **admin:** integrate AnalyticsOverview component into AdminDashboard ([d90c1f6](https://github.com/gdamalis/toulmin-lab/commit/d90c1f664c6d43e6638f170550f380bd6e724367))
 
