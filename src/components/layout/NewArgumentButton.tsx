@@ -13,7 +13,7 @@ export function NewArgumentButton({ className = "" }: NewArgumentButtonProps) {
   
   return (
     <Link
-      href="/argument/create"
+      href="/arguments/create"
       className={`inline-flex items-center rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 ${className}`}
     >
       <PlusIcon className="mr-1.5 -ml-0.5 h-5 w-5" aria-hidden="true" />

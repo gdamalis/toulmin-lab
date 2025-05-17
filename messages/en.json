@@ -32,10 +32,12 @@
     "offlineWarning": "You're currently offline. Changes will be saved locally."
   },
   "nav": {
-    "dashboard": "Dashboard",
+    "dashboard": "Home",
     "newArgument": "New",
     "myArguments": "My Arguments",
-    "adminPanel": "Admin Panel"
+    "adminPanel": "Admin Panel",
+    "users": "Users",
+    "analytics": "Analytics"
   },
   "stats": {
     "increased": "Increased",
@@ -195,7 +197,7 @@
       "loadSampleTooltip": "Load sample argument",
       "useSample": "Use Sample",
       "argumentName": "Argument Title",
-      "argumentNamePlaceholder": "e.g., Climate Change Policy Toulmin Argument",
+      "argumentNamePlaceholder": "Argument title",
       "authorPlaceholder": "Your name",
       "argumentStructure": "Toulmin Argument Structure",
       "argumentStructureDescription": "Complete the fields below to build your logical argument using the Toulmin model.",

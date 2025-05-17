@@ -1,16 +1,13 @@
 "use client";
 
-import {
-  ChatBubbleLeftRightIcon,
-  HomeIcon,
-  Cog6ToothIcon
-} from "@heroicons/react/24/outline";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import pkg from "../../../package.json";
 import { useUserRole } from "@/hooks/useUserRole";
+import { Role } from "@/types/roles";
+import { NAV_ITEMS, NavItem } from "./navItems";
 
 // Helper function to conditionally join class names
 function classNames(...classes: (string | boolean)[]) {
@@ -20,38 +17,21 @@ function classNames(...classes: (string | boolean)[]) {
 export function Sidebar() {
   const pathname = usePathname();
   const t = useTranslations();
-  const { isAdmin } = useUserRole();
+  const { role, isAdmin } = useUserRole();
 
-  // Define navigation items with icons
-  const navigation = [
-    {
-      name: t("nav.dashboard"),
-      href: "/dashboard",
-      icon: HomeIcon,
-      current: pathname === "/dashboard",
-    },
-    {
-      name: t("nav.myArguments"),
-      href: "/argument",
-      icon: ChatBubbleLeftRightIcon,
-      current:
-        pathname === "/argument" ||
-        (pathname.startsWith("/argument/") && !pathname.includes("/create")),
-    },
-  ];
-  
-  // Admin-only navigation items
-  const adminNavigation = isAdmin ? [
-    {
-      name: t("nav.adminPanel"),
-      href: "/admin",
-      icon: Cog6ToothIcon,
-      current: pathname.startsWith("/admin"),
-    }
-  ] : [];
+  // Filter nav items based on current role
+  const navigation: NavItem[] = NAV_ITEMS.filter((item) => {
+    const currentRole = role ?? Role.USER;
+    return item.roles.includes(currentRole);
+  });
+
+  const rootClass = classNames(
+    "flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 px-6 py-4",
+    isAdmin ? "bg-primary-50" : "bg-white"
+  );
 
   return (
-    <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 py-4">
+    <div className={rootClass}>
       <div className="flex h-16 shrink-0 items-center">
         <Link href="/dashboard">
           <Image
@@ -67,56 +47,35 @@ export function Sidebar() {
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
           <li>
             <ul role="list" className="-mx-2 space-y-1">
-              {navigation.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className={classNames(
-                      item.current
-                        ? "bg-gray-50 text-primary-600"
-                        : "text-gray-700 hover:bg-gray-50 hover:text-primary-600",
-                      "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
-                    )}
-                  >
-                    <item.icon
-                      aria-hidden="true"
+              {navigation.map((item) => {
+                const isCurrent =
+                  pathname === item.href || pathname.startsWith(`${item.href}/`);
+                const Icon = item.icon;
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
                       className={classNames(
-                        item.current
-                          ? "text-primary-600"
-                          : "text-gray-400 group-hover:text-primary-600",
-                        "size-6 shrink-0"
+                        isCurrent
+                          ? "bg-gray-50 text-primary-600"
+                          : "text-gray-700 hover:bg-gray-50 hover:text-primary-600",
+                        "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
                       )}
-                    />
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-              
-              {/* Admin navigation items */}
-              {adminNavigation.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className={classNames(
-                      item.current
-                        ? "bg-gray-50 text-primary-600"
-                        : "text-gray-700 hover:bg-gray-50 hover:text-primary-600",
-                      "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
-                    )}
-                  >
-                    <item.icon
-                      aria-hidden="true"
-                      className={classNames(
-                        item.current
-                          ? "text-primary-600"
-                          : "text-gray-400 group-hover:text-primary-600",
-                        "size-6 shrink-0"
-                      )}
-                    />
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
+                    >
+                      <Icon
+                        aria-hidden="true"
+                        className={classNames(
+                          isCurrent
+                            ? "text-primary-600"
+                            : "text-gray-400 group-hover:text-primary-600",
+                          "size-6 shrink-0"
+                        )}
+                      />
+                      {t(item.labelKey)}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </li>
           {/* <li className="mt-auto">

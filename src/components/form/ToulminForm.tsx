@@ -2,10 +2,10 @@
 
 import { FormActions } from "@/components/form/FormActions";
 import { FormSubmit } from "@/components/form/FormSubmit";
+import { FormInput } from "@/components/form";
 import { 
   ArgumentStructureSection,
   LimitationsSection,
-  MetadataSection,
   ReasoningSection 
 } from "@/components/form/sections";
 import { useIsOnline } from "@/hooks/useIsOnline";
@@ -22,8 +22,10 @@ import {
   sampleToulminArgumentES 
 } from "@/data/toulminTemplates";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ChangeEvent, useEffect, useState } from "react";
+import { Typography } from "@/components/ui/Typography";
+import { Divider } from "@/components/ui/Divider";
 
 const STORAGE_KEY = "toulmin-form-draft";
 
@@ -33,6 +35,7 @@ export function ToulminForm({
   initialData = emptyToulminArgument,
 }: Readonly<ToulminFormProps>) {
   const locale = useLocale();
+  const t = useTranslations("pages.argument");
   const { user } = useAuth();
   const isOnline = useIsOnline();
   const [formData, setFormData] = useState<ToulminArgument>(initialData);
@@ -187,19 +190,71 @@ export function ToulminForm({
   return (
     <form className="p-2" onSubmit={handleSubmit} noValidate>
       <div className="flex flex-col gap-8">
+        {/* Title input (large, prominent at the top) */}
+        <div className="mb-2">
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            onBlur={() => handleBlur("name")}
+            placeholder={t("argumentNamePlaceholder")}
+            className={`w-full text-2xl font-semibold border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-primary-600 outline-none py-2 px-1 ${errors["name"] ? "border-red-500" : ""}`}
+            aria-required="true"
+            aria-invalid={!!errors["name"]}
+            aria-describedby={errors["name"] ? "name-error" : undefined}
+          />
+          {errors["name"] && (
+            <p id="name-error" className="mt-1 text-sm text-red-600">
+              {errors["name"]}
+            </p>
+          )}
+        </div>
+        
+        {/* Form actions moved below the title */}
         <FormActions
           onSampleData={handleSampleData}
           onClearForm={handleClearForm}
           lastSaved={lastSaved}
           isOnline={isOnline}
+          isUserSignedIn={!!user}
         />
 
-        <MetadataSection
-          formData={formData}
-          errors={errors}
-          onChange={handleInputChange}
-          onBlur={handleBlur}
-        />
+        {/* Author field (moved from MetadataSection) */}
+        <Divider>
+          <div className="flex justify-between items-center">
+            <div>
+              <Typography variant="h2" className="text-base/7 font-semibold">
+                {t("diagramDetails")}
+              </Typography>
+              <Typography
+                variant="body-sm"
+                textColor="muted"
+                className="mt-1 text-sm/6"
+              >
+                {t("basicInfoDescription")}
+              </Typography>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+            <FormInput
+              inputComponent="input"
+              id="author"
+              name="author"
+              label={t("author")}
+              value={formData.author.name}
+              onChange={handleInputChange}
+              onBlur={() => handleBlur("author")}
+              placeholder={t("authorPlaceholder")}
+              required
+              error={errors["author"]}
+              ariaInvalid={!!errors["author"]}
+              ariaDescribedby={errors["author"] ? "author-error" : undefined}
+            />
+          </div>
+        </Divider>
 
         <ArgumentStructureSection
           formData={formData}

@@ -127,7 +127,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
               </div>
               <div className="flex flex-none items-center gap-x-4">
                 <a
-                  href={`/argument/view/${toulminArgument._id}`}
+                  href={`/arguments/view/${toulminArgument._id}`}
                   className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
                 >
                   <span>{t('viewDiagram')}</span>
@@ -145,7 +145,7 @@ export function RecentDiagrams({ limit = 4 }: Readonly<RecentDiagramsProps>) {
                     <MenuItem>
                       {({ active }) => (
                         <a
-                          href={`/argument/edit/${toulminArgument._id}`}
+                          href={`/arguments/edit/${toulminArgument._id}`}
                           className={classNames(
                             active ? "bg-gray-50" : "",
                             "block px-3 py-1 text-sm leading-6 text-gray-900"

@@ -1,9 +1,7 @@
 "use client";
 
 import { ToulminDiagram } from "@/components/diagram";
-import AppShell from "@/components/layout/AppShell";
 import { ToulminForm } from "@/components/ToulminForm";
-import { Button } from "@/components/ui/Button";
 import { Typography } from "@/components/ui/Typography";
 import { useAuth } from "@/contexts/AuthContext";
 import useNotification from "@/hooks/useNotification";
@@ -22,7 +20,6 @@ export default function ToulminArgumentEditor({
 
   const [toulminArgument, setToulminArgument] =
     useState<ToulminArgument | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
@@ -86,8 +83,6 @@ export default function ToulminArgumentEditor({
     }
 
     try {
-      setIsSaving(true);
-
       // Get the current user's ID token
       const token = await user.getIdToken();
 
@@ -117,96 +112,47 @@ export default function ToulminArgumentEditor({
         t("saveFailed"),
         error instanceof Error ? error.message : t("saveFailed")
       );
-    } finally {
-      setIsSaving(false);
     }
   };
 
-  const handleCancel = () => {
-    router.push(`/argument/view/${toulminArgumentId}`);
-  };
-
-  // Function to render content based on state
-  const renderContent = () => {
-    if (isLoading) {
-      return (
-        <div className="flex justify-center items-center h-64">
-          <Typography textColor="muted">{commonT("loading")}</Typography>
-        </div>
-      );
-    }
-
-    if (error) {
-      return (
-        <div className="bg-red-50 p-6 rounded-lg text-center text-red-600">
-          <Typography>
-            {commonT("error")}: {error}
-          </Typography>
-        </div>
-      );
-    }
-
-    if (!toulminArgument) {
-      return (
-        <div className="bg-gray-50 p-6 rounded-lg text-center text-gray-500">
-          <Typography textColor="muted">{t("diagramNotFound")}</Typography>
-        </div>
-      );
-    }
-
+  if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="md:overflow-y-auto">
-          <ToulminForm
-            onSubmit={handleSave}
-            onChange={handleFormChange}
-            initialData={toulminArgument}
-          />
-        </div>
-        <div>
-          <ToulminDiagram data={toulminArgument} showExportButtons={false} />
-        </div>
+      <div className="flex justify-center items-center h-64">
+        <Typography textColor="muted">{commonT("loading")}</Typography>
       </div>
     );
-  };
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 p-6 rounded-lg text-center text-red-600">
+        <Typography>
+          {commonT("error")}: {error}
+        </Typography>
+      </div>
+    );
+  }
+
+  if (!toulminArgument) {
+    return (
+      <div className="bg-gray-50 p-6 rounded-lg text-center text-gray-500">
+        <Typography textColor="muted">{t("diagramNotFound")}</Typography>
+      </div>
+    );
+  }
 
   return (
-    <AppShell title={t("editToulminArgument")}>
-      <div className="mx-auto max-w-8xl pb-12">
-        <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
-          <div className="flex flex-col gap-4 mb-6">
-            <div className="flex gap-2 w-full">
-              <Button variant="outline" onClick={handleCancel}>
-                ← {t("backToView")}
-              </Button>
-              <Button
-                variant="primary"
-                onClick={handleSave}
-                disabled={isSaving || isLoading || !toulminArgument}
-              >
-                {t("saveAndView")}
-              </Button>
-            </div>
-            <div>
-              <Typography variant="h2">
-                {t("edit", { title: toulminArgument?.name ?? "" })}
-              </Typography>
-              {isSaving && (
-                <Typography textColor="muted" className="mt-1">
-                  {commonT("saving")}
-                </Typography>
-              )}
-              {!user && (
-                <Typography textColor="warning" className="mt-1">
-                  {t("signInToSave")}
-                </Typography>
-              )}
-            </div>
-          </div>
-
-          {renderContent()}
-        </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="md:overflow-y-auto">
+        <ToulminForm
+          onSubmit={handleSave}
+          onChange={handleFormChange}
+          initialData={toulminArgument}
+        />
       </div>
-    </AppShell>
+      <div>
+        <ToulminDiagram data={toulminArgument} showExportButtons={false} />
+      </div>
+    </div>
   );
 }

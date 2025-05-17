@@ -47,7 +47,7 @@ export function DeleteArgumentModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
+                className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:outline-hidden"
                 disabled={isDeleting}
               >
                 <span className="sr-only">{commonT("close")}</span>

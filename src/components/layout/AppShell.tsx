@@ -1,17 +1,15 @@
 "use client";
 
-import { useState, ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { MobileNav } from "./MobileNav";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
-import { PageHeader } from "./PageHeader";
 
 interface AppShellProps {
   readonly children: ReactNode;
-  readonly title: string;
 }
 
-export default function AppShell({ children, title }: Readonly<AppShellProps>) {
+export default function AppShell({ children }: Readonly<AppShellProps>) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -29,15 +27,10 @@ export default function AppShell({ children, title }: Readonly<AppShellProps>) {
         <TopBar setSidebarOpen={setSidebarOpen} />
 
         {/* Main content */}
-        <main className="py-10">
-          <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
-            {/* Page header */}
-            <PageHeader title={title} />
-            
+        <main className="py-6">
+          <div className="mx-auto max-w-8xl px-4 sm:px-6">
             {/* Page content */}
-            <div className="mt-6">
-              {children}
-            </div>
+            {children}
           </div>
         </main>
       </div>

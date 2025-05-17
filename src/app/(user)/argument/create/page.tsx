@@ -1,9 +1,7 @@
 "use client";
 
 import { ToulminDiagram } from "@/components/diagram";
-import AppShell from "@/components/layout/AppShell";
 import { ToulminForm } from "@/components/ToulminForm";
-import { Typography } from "@/components/ui/Typography";
 import { useAuth } from "@/contexts/AuthContext";
 import { emptyToulminArgument } from "@/data/toulminTemplates";
 import useNotification from "@/hooks/useNotification";
@@ -18,7 +16,6 @@ export default function ToulminArgumentBuilder() {
 
   const [toulminArgument, setToulminArgument] =
     useState<ToulminArgument>(emptyToulminArgument);
-  const [isSaving, setIsSaving] = useState(false);
   const { user } = useAuth();
   const { showSuccess, showError } = useNotification();
   const router = useRouter();
@@ -35,8 +32,6 @@ export default function ToulminArgumentBuilder() {
     }
 
     try {
-      setIsSaving(true);
-
       // Get the current user's ID token
       const token = await user.getIdToken();
 
@@ -68,50 +63,23 @@ export default function ToulminArgumentBuilder() {
         t("saveFailed"),
         error instanceof Error ? error.message : "Failed to save diagram"
       );
-    } finally {
-      setIsSaving(false);
     }
   };
 
   return (
-    <AppShell title={t("createYourArgument")}>
-      <div className="mx-auto max-w-8xl pb-12">
-        <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
-          <div className="flex flex-col gap-4 mb-6">
-            <div>
-              <Typography variant="h2">
-                {t("title", { title: toulminArgument.name })}
-              </Typography>
-              {isSaving && (
-                <Typography textColor="muted" className="mt-1">
-                  {commonT("saving")}
-                </Typography>
-              )}
-              {!user && (
-                <Typography textColor="warning" className="mt-1">
-                  {t("signInToSave")}
-                </Typography>
-              )}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="md:overflow-y-auto">
-              <ToulminForm
-                onSubmit={handleSave}
-                onChange={handleFormChange}
-                initialData={toulminArgument}
-              />
-            </div>
-            <div>
-              <ToulminDiagram
-                data={toulminArgument}
-                showExportButtons={false}
-              />
-            </div>
-          </div>
+    <div className="mx-auto max-w-8xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="md:overflow-y-auto">
+          <ToulminForm
+            onSubmit={handleSave}
+            onChange={handleFormChange}
+            initialData={toulminArgument}
+          />
+        </div>
+        <div>
+          <ToulminDiagram data={toulminArgument} showExportButtons={false} />
         </div>
       </div>
-    </AppShell>
+    </div>
   );
 }

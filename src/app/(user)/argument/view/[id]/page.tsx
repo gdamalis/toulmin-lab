@@ -1,8 +1,7 @@
 "use client";
 
 import { ToulminDiagram } from "@/components/diagram";
-import AppShell from "@/components/layout/AppShell";
-import { Button } from "@/components/ui/Button";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { Typography } from "@/components/ui/Typography";
 import { useAuth } from "@/contexts/AuthContext";
 import { ToulminArgument } from "@/types/client";
@@ -36,7 +35,6 @@ export default function ToulminArgumentViewPage({
       }
 
       try {
-        // Get the current user's ID token
         const token = await user.getIdToken();
 
         const response = await fetch(`/api/argument/${toulminArgumentId}`, {
@@ -67,11 +65,6 @@ export default function ToulminArgumentViewPage({
     router.push(`/argument/edit/${toulminArgumentId}`);
   };
 
-  const handleBack = () => {
-    router.push("/dashboard");
-  };
-
-  // Function to render content based on state
   const renderContent = () => {
     if (isLoading) {
       return (
@@ -92,11 +85,7 @@ export default function ToulminArgumentViewPage({
     }
 
     if (toulminArgument) {
-      return (
-        <div className="mt-6">
-          <ToulminDiagram data={toulminArgument} />
-        </div>
-      );
+      return <ToulminDiagram data={toulminArgument} />;
     }
 
     return (
@@ -106,34 +95,32 @@ export default function ToulminArgumentViewPage({
     );
   };
 
-  return (
-    <AppShell title={toulminArgument?.name || t("toulminArgumentDiagram")}>
-      <div className="mx-auto max-w-8xl pb-12">
-        <div className="rounded-lg bg-white px-5 py-6 shadow-sm sm:px-6">
-          <div className="flex flex-col gap-4 mb-6">
-            <div className="flex gap-2 w-full">
-              <Button variant="outline" onClick={handleBack}>
-                ← {t("backToDashboard")}
-              </Button>
-              <Button onClick={handleEdit}>{t("editDiagram")}</Button>
-            </div>
-            <div>
-              <Typography variant="h2">
-                {toulminArgument?.name ||
-                  `${t("diagram")} ${toulminArgumentId.substring(0, 8)}`}
-              </Typography>
-              {toulminArgument && (
-                <Typography textColor="muted" className="mt-1">
-                  {t("lastUpdated")}:{" "}
-                  {new Date(toulminArgument.updatedAt).toLocaleString()}
-                </Typography>
-              )}
-            </div>
-          </div>
+  const pageTitle =
+    toulminArgument?.name ||
+    `${t("diagram")} ${toulminArgumentId.substring(0, 8)}`;
 
-          {renderContent()}
-        </div>
+  const headerButtons = [
+    {
+      text: t("editDiagram"),
+      onClick: handleEdit,
+      variant: "primary" as const,
+    },
+  ];
+
+  return (
+    <div className="mx-auto max-w-8xl pb-12">
+      <div className="flex flex-col gap-4 mb-6">
+        <PageHeader title={pageTitle} buttons={headerButtons}>
+          {toulminArgument && (
+            <Typography textColor="muted" className="mt-1">
+              {t("lastUpdated")}:{" "}
+              {new Date(toulminArgument.updatedAt).toLocaleString()}
+            </Typography>
+          )}
+        </PageHeader>
       </div>
-    </AppShell>
+
+      {renderContent()}
+    </div>
   );
 }
