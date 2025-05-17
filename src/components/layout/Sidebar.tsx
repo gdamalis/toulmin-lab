@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import pkg from "../../../package.json";
+import { Typography } from "../ui/Typography";
 import { NAV_ITEMS, NavItem } from "./navItems";
 
 // Helper function to conditionally join class names
@@ -49,7 +50,8 @@ export function Sidebar() {
             <ul className="flex flex-col gap-y-1">
               {navigation.map((item) => {
                 const isCurrent =
-                  pathname === item.href || pathname.startsWith(`${item.href}/`);
+                  pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`);
                 const Icon = item.icon;
                 return (
                   <li key={item.href}>
@@ -80,10 +82,33 @@ export function Sidebar() {
           </li>
         </ul>
       </nav>
-      <div className="text-xs text-gray-400 text-center py-2 border-t border-gray-100">
-        v{pkg.version}
-        <div className="mt-1">{t("common.madeWith")}</div>
-        <div>{t("common.email")}</div>
+      <div className="flex flex-col gap-y-1 justify-center text-center py-2">
+        <Typography
+          variant="caption"
+          className="w-fit mx-auto rounded-md py-1 px-2 bg-gray-100 text-gray-700"
+        >
+          v{pkg.version}
+        </Typography>
+        <Typography variant="caption" className="mt-1">
+          {t("common.madeWith")}
+        </Typography>
+        {pkg.contributors.map((contributor) => (
+          <Typography
+            as="span"
+            key={contributor.name}
+            variant="caption"
+            className="flex gap-x-1 justify-center"
+          >
+            {t("common.by")}
+            <Link
+              key={contributor.name}
+              href={`mailto:${contributor.email}`}
+              className="text-xs text-gray-700 hover:underline hover:text-primary-600"
+            >
+              {contributor.name}
+            </Link>
+          </Typography>
+        ))}
       </div>
     </div>
   );
