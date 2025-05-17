@@ -1,3 +1,10 @@
+## [0.21.0](https://github.com/gdamalis/toulmin-lab/compare/v0.20.0...v0.21.0) (2025-05-17)
+
+
+### Features
+
+* **admin:** implement user management and analytics pages. UI improvements ([99a571f](https://github.com/gdamalis/toulmin-lab/commit/99a571f11d914d796b2e379b205bdf5d41e4f8c9))
+
 ## [0.20.0](https://github.com/gdamalis/toulmin-lab/compare/v0.19.0...v0.20.0) (2025-05-16)
 
 
@@ -25,11 +32,4 @@
 ### Features
 
 * **auth:**  improved authentication and role management. Add basic admin panel ([9d54c4c](https://github.com/gdamalis/toulmin-lab/commit/9d54c4cf10cc0ef361bd45697b932dd70576ba25))
-
-## [0.16.1](https://github.com/gdamalis/toulmin-lab/compare/v0.16.0...v0.16.1) (2025-05-13)
-
-
-### Bug Fixes
-
-* **toulmin diagram:** lock interactivity of nodes in diagram ([d9aeef8](https://github.com/gdamalis/toulmin-lab/commit/d9aeef8fb2da3e272c12589da35757b8fe657560))
 
