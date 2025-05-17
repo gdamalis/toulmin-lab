@@ -8,9 +8,11 @@ import { GoogleAuthButton } from './ui/GoogleAuthButton';
 import { FormDivider } from './ui/FormDivider';
 import { AuthMode, AuthFormProps, FormState } from './types';
 import { useTranslations } from 'next-intl';
+import { Loader } from '@/components/ui/Loader';
 
 export function AuthForm({ redirectPath = '/dashboard' }: Readonly<AuthFormProps>) {
   const t = useTranslations('pages.auth');
+  const commonT = useTranslations('common');
   const errorT = useTranslations('errors.auth');
   const [mode, setMode] = useState<AuthMode>('signin');
   const { 
@@ -18,6 +20,7 @@ export function AuthForm({ redirectPath = '/dashboard' }: Readonly<AuthFormProps
     setError,
     isLoading, 
     isGoogleLoading, 
+    isAuthenticating,
     handleGoogleAuth, 
     handleEmailAuth 
   } = useAuth(redirectPath);
@@ -51,6 +54,10 @@ export function AuthForm({ redirectPath = '/dashboard' }: Readonly<AuthFormProps
 
     handleEmailAuth(mode, formData);
   };
+
+  if (isAuthenticating) {
+    return <Loader fullScreen text={commonT('loading')} />;
+  }
 
   return (
     <div className="flex flex-col gap-y-6">

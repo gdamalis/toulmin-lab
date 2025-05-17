@@ -19,6 +19,7 @@ export function useAuth(redirectPath = "/dashboard") {
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || redirectPath;
@@ -31,6 +32,7 @@ export function useAuth(redirectPath = "/dashboard") {
         const result = await getRedirectResult(auth);
         if (result) {
           // User successfully authenticated
+          setIsAuthenticating(true);
           await createUserViaApi(
             result.user.uid,
             result.user.displayName ?? "",
@@ -43,6 +45,7 @@ export function useAuth(redirectPath = "/dashboard") {
         if (err instanceof FirebaseError) {
           console.error("Redirect authentication error:", err);
           setError(`Authentication error: ${err.code}`);
+          setIsAuthenticating(false);
         }
       }
     };
@@ -110,6 +113,7 @@ export function useAuth(redirectPath = "/dashboard") {
       }
 
       const idToken = await googleResult.user.getIdToken();
+      setIsAuthenticating(true);
 
       const nextAuthResult = await signIn("firebase", {
         redirect: false,
@@ -127,6 +131,7 @@ export function useAuth(redirectPath = "/dashboard") {
     } catch (err) {
       console.error("Google authentication error:", err);
       setError(t("googleFailed"));
+      setIsAuthenticating(false);
     } finally {
       setIsGoogleLoading(false);
     }
@@ -143,6 +148,7 @@ export function useAuth(redirectPath = "/dashboard") {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
         const idToken = await userCredential.user.getIdToken();
+        setIsAuthenticating(true);
 
         const nextAuthResult = await signIn("firebase", {
           redirect: false,
@@ -178,6 +184,7 @@ export function useAuth(redirectPath = "/dashboard") {
 
         // After signup, create a Next-Auth session using the freshly created ID token
         const idToken = await userCredential.user.getIdToken();
+        setIsAuthenticating(true);
 
         const nextAuthResult = await signIn("firebase", {
           redirect: false,
@@ -212,6 +219,7 @@ export function useAuth(redirectPath = "/dashboard") {
         setError(t("unexpected"));
         console.error(err);
       }
+      setIsAuthenticating(false);
     } finally {
       setIsLoading(false);
     }
@@ -222,6 +230,7 @@ export function useAuth(redirectPath = "/dashboard") {
     setError,
     isLoading,
     isGoogleLoading,
+    isAuthenticating,
     handleGoogleAuth,
     handleEmailAuth,
   };
