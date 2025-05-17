@@ -1,3 +1,5 @@
+## [0.21.1](https://github.com/gdamalis/toulmin-lab/compare/v0.21.0...v0.21.1) (2025-05-17)
+
 ## [0.21.0](https://github.com/gdamalis/toulmin-lab/compare/v0.20.0...v0.21.0) (2025-05-17)
 
 
@@ -25,11 +27,4 @@
 ### Features
 
 * **flags:** replace old flag SVGs with new optimized versions ([1017028](https://github.com/gdamalis/toulmin-lab/commit/1017028dc8c50f5127ecbd14ca7a45f43569daf4))
-
-## [0.17.0](https://github.com/gdamalis/toulmin-lab/compare/v0.16.1...v0.17.0) (2025-05-16)
-
-
-### Features
-
-* **auth:**  improved authentication and role management. Add basic admin panel ([9d54c4c](https://github.com/gdamalis/toulmin-lab/commit/9d54c4cf10cc0ef361bd45697b932dd70576ba25))
 
