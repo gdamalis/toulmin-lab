@@ -1,3 +1,10 @@
+## [0.22.0](https://github.com/gdamalis/toulmin-lab/compare/v0.21.2...v0.22.0) (2025-05-17)
+
+
+### Features
+
+* **auth:** redirect user to dashboard page if their authentication has not expired ([fa326fa](https://github.com/gdamalis/toulmin-lab/commit/fa326fac76b5a5512e9e73a5b6309ebe8cfe26e1))
+
 ## [0.21.2](https://github.com/gdamalis/toulmin-lab/compare/v0.21.1...v0.21.2) (2025-05-17)
 
 ## [0.21.1](https://github.com/gdamalis/toulmin-lab/compare/v0.21.0...v0.21.1) (2025-05-17)
@@ -15,11 +22,4 @@
 ### Features
 
 * **admin:** integrate AnalyticsOverview component into AdminDashboard ([d90c1f6](https://github.com/gdamalis/toulmin-lab/commit/d90c1f664c6d43e6638f170550f380bd6e724367))
-
-## [0.19.0](https://github.com/gdamalis/toulmin-lab/compare/v0.18.0...v0.19.0) (2025-05-16)
-
-
-### Features
-
-* **layout:** update font from Inter to Lato for improved typography ([64a2ef6](https://github.com/gdamalis/toulmin-lab/commit/64a2ef624a5e882ac5c1e8bd1f8f183e8856b661))
 
