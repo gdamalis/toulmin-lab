@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { forwardRef, ButtonHTMLAttributes, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { useNavigation } from '@/contexts/NavigationContext';
 
 const buttonVariants = cva(
   "inline-flex cursor-pointer items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
@@ -57,6 +58,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
+    const { startNavigation } = useNavigation();
     const buttonClasses = cn(
       buttonVariants({ variant, size, className }),
       isLoading && 'opacity-70 cursor-wait',
@@ -80,6 +82,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         <Link
           href={href}
           className={buttonClasses}
+          onClick={() => startNavigation()}
         >
           {children}
         </Link>

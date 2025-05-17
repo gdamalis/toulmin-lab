@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import pkg from "../../../package.json";
 import { Typography } from "../ui/Typography";
 import { NAV_ITEMS, NavItem } from "./navItems";
+import { useNavigation } from "@/contexts/NavigationContext";
 
 // Helper function to conditionally join class names
 function classNames(...classes: (string | boolean)[]) {
@@ -19,6 +20,7 @@ export function Sidebar() {
   const pathname = usePathname();
   const t = useTranslations();
   const { role, isAdmin } = useUserRole();
+  const { startNavigation } = useNavigation();
 
   // Filter nav items based on current role
   const navigation: NavItem[] = NAV_ITEMS.filter((item) => {
@@ -34,7 +36,7 @@ export function Sidebar() {
   return (
     <div className={rootClass}>
       <div className="flex shrink-0 p-2 items-center">
-        <Link href="/dashboard">
+        <Link href="/dashboard" onClick={startNavigation}>
           <Image
             alt="Toulmin Lab"
             src="/logo.png"
@@ -57,6 +59,7 @@ export function Sidebar() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
+                      onClick={startNavigation}
                       className={classNames(
                         isCurrent
                           ? "bg-gray-50 text-primary-600"
