@@ -1,6 +1,6 @@
 "use client";
 
-import { AnalyticsOverview } from "@/components/dashboard";
+import { AnalyticsOverview } from "@/components/admin";
 import { useTranslations } from "next-intl";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { PageHeader } from "@/components/layout/PageHeader";
