@@ -1,3 +1,10 @@
+## [0.25.0](https://github.com/gdamalis/toulmin-lab/compare/v0.24.0...v0.25.0) (2025-05-21)
+
+
+### Features
+
+* **admin:** implement user managemnt features and API integration. Includes refactors on api routes ([74980f0](https://github.com/gdamalis/toulmin-lab/commit/74980f018449599250e51e8f938707f88aac7a1e))
+
 ## [0.24.0](https://github.com/gdamalis/toulmin-lab/compare/v0.23.0...v0.24.0) (2025-05-17)
 
 
@@ -20,6 +27,4 @@
 ### Features
 
 * **auth:** redirect user to dashboard page if their authentication has not expired ([fa326fa](https://github.com/gdamalis/toulmin-lab/commit/fa326fac76b5a5512e9e73a5b6309ebe8cfe26e1))
-
-## [0.21.2](https://github.com/gdamalis/toulmin-lab/compare/v0.21.1...v0.21.2) (2025-05-17)
 
