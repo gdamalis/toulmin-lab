@@ -1,10 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { FormInput } from './ui/FormInput';
-import { Checkbox } from './ui/Checkbox';
-import { FormState } from './types';
-import { useTranslations } from 'next-intl';
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { FormState } from "./types";
+import { FormInput } from "./ui/FormInput";
 
 interface SignInFormProps {
   readonly error: string;
@@ -12,27 +11,30 @@ interface SignInFormProps {
   readonly onSubmit: (formData: FormState) => void;
 }
 
-export function SignInForm({ error, isLoading, onSubmit }: Readonly<SignInFormProps>) {
-  const t = useTranslations('pages.auth');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+export function SignInForm({
+  error,
+  isLoading,
+  onSubmit,
+}: Readonly<SignInFormProps>) {
+  const t = useTranslations("pages.auth");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  // const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit({
       email,
       password,
-      name: '',
-      confirmPassword: '',
-      rememberMe
+      name: "",
+      confirmPassword: "",
     });
   };
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
       <FormInput
-        label={t('emailAddress')}
+        label={t("emailAddress")}
         id="email-address"
         name="email"
         type="email"
@@ -40,11 +42,11 @@ export function SignInForm({ error, isLoading, onSubmit }: Readonly<SignInFormPr
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder={t('emailPlaceholder')}
+        placeholder={t("emailPlaceholder")}
       />
 
       <FormInput
-        label={t('password')}
+        label={t("password")}
         id="password"
         name="password"
         type="password"
@@ -52,10 +54,10 @@ export function SignInForm({ error, isLoading, onSubmit }: Readonly<SignInFormPr
         required
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder={t('passwordPlaceholder')}
+        placeholder={t("passwordPlaceholder")}
       />
 
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <Checkbox
           id="remember-me"
           name="remember-me"
@@ -69,13 +71,9 @@ export function SignInForm({ error, isLoading, onSubmit }: Readonly<SignInFormPr
             {t('forgotPassword')}
           </a>
         </div>
-      </div>
+      </div> */}
 
-      {error && (
-        <div className="text-red-500 text-sm text-center">
-          {error}
-        </div>
-      )}
+      {error && <div className="text-red-500 text-sm text-center">{error}</div>}
 
       <div>
         <button
@@ -83,9 +81,9 @@ export function SignInForm({ error, isLoading, onSubmit }: Readonly<SignInFormPr
           disabled={isLoading}
           className="flex w-full justify-center rounded-md bg-primary-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:opacity-50"
         >
-          {isLoading ? t('signingIn') : t('signIn')}
+          {isLoading ? t("signingIn") : t("signIn")}
         </button>
       </div>
     </form>
   );
-} 
+}

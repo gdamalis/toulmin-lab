@@ -31,7 +31,6 @@ export async function middleware(request: NextRequest) {
   // PUBLIC ROUTES
   // If user is authenticated on public routes, redirect to dashboard
   if (path.startsWith("/auth")) {
-    console.log({ token, callbackUrl, path });
     if (token) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }

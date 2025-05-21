@@ -15,5 +15,4 @@ export interface FormState {
   readonly email: string;
   readonly password: string;
   readonly confirmPassword: string;
-  readonly rememberMe: boolean;
 } 

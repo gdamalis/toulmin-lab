@@ -15,7 +15,7 @@ export const NAV_ITEMS: NavItem[] = [
     labelKey: "nav.dashboard",
     href: "/dashboard",
     icon: HomeIcon,
-    roles: [Role.USER, Role.ADMINISTRATOR],
+    roles: [Role.USER, Role.ADMINISTRATOR, Role.BETA_TESTER, Role.PROFESSOR, Role.STUDENT],
   },
   {
     labelKey: "nav.users",

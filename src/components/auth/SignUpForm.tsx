@@ -25,7 +25,6 @@ export function SignUpForm({ error, isLoading, onSubmit }: SignUpFormProps) {
       email,
       password,
       confirmPassword,
-      rememberMe: false
     });
   };
 
