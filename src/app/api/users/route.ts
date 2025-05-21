@@ -4,10 +4,12 @@ import { findAllUsers, createOrUpdateUser } from "@/lib/services/users";
 import { UserInput } from "@/types/users";
 import { NextRequest } from "next/server";
 import { withAdminAuth, withAuth } from "@/lib/api/auth";
+import { Role } from "@/types/roles";
 
 // User create/update request body interface
 interface UserRequestBody extends UserInput {
   userId: string;
+  role?: Role;
 }
 
 // GET /api/users - Get all users (admin only)

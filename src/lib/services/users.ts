@@ -57,7 +57,7 @@ export async function findAllUsers(): Promise<ApiResponse<{ users: UserData[] }>
 /**
  * Creates or updates a user
  */
-export async function createOrUpdateUser(userData: UserInput & { userId: string }): Promise<ApiResponse<{ user: UserData }>> {
+export async function createOrUpdateUser(userData: UserInput & { userId: string, role?: Role }): Promise<ApiResponse<{ user: UserData }>> {
   try {
     const existingUser = await findUserById(userData.userId);
     
@@ -66,7 +66,7 @@ export async function createOrUpdateUser(userData: UserInput & { userId: string 
       name: userData.name,
       email: userData.email,
       picture: userData.picture,
-      role: existingUser?.role,
+      role: userData.role ?? existingUser?.role,
     });
 
     return { 

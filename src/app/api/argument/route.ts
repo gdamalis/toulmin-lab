@@ -20,7 +20,7 @@ export async function GET(
       const result = await getUserArguments(auth.userId);
 
       if (!result.success) {
-        return createErrorResponse(result.error || "Failed to fetch arguments", 500);
+        return createErrorResponse(result.error ?? "Failed to fetch arguments", 500);
       }
 
       return createSuccessResponse(result.data);
@@ -47,7 +47,7 @@ export async function POST(
       const result = await createArgument(data.diagram, auth.userId);
 
       if (!result.success || !result.data) {
-        return createErrorResponse(result.error || "Failed to create argument", 500);
+        return createErrorResponse(result.error ?? "Failed to create argument", 500);
       }
 
       return createSuccessResponse({

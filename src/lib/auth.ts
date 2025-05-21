@@ -49,30 +49,13 @@ export const authOptions: NextAuthOptions = {
 
         const decoded = verification.token as DecodedToken;
 
+        // The role should already be set as a custom claim by this point
+        // If it's not set for any reason, default to USER
+        const role = decoded.role ?? Role.USER;
         const uid = decoded.uid;
         const email = decoded.email ?? "";
         const name = decoded.name ?? email.split("@")[0] ?? "User";
         const picture = decoded.picture;
-        const role = decoded.role ?? Role.USER;
-
-        // Ensure the user exists / is updated in our DB
-        try {
-          await fetch(`${process.env.NEXTAUTH_URL ?? ""}/api/user`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${idToken}`,
-            },
-            body: JSON.stringify({
-              userId: uid,
-              name,
-              email,
-              picture,
-            }),
-          });
-        } catch (err) {
-          console.error("Error syncing user in authorize:", err);
-        }
 
         return {
           id: uid,
