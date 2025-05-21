@@ -1,3 +1,5 @@
+## [0.25.3](https://github.com/gdamalis/toulmin-lab/compare/v0.25.2...v0.25.3) (2025-05-21)
+
 ## [0.25.2](https://github.com/gdamalis/toulmin-lab/compare/v0.25.1...v0.25.2) (2025-05-21)
 
 ## [0.25.1](https://github.com/gdamalis/toulmin-lab/compare/v0.25.0...v0.25.1) (2025-05-21)
@@ -15,11 +17,4 @@
 ### Features
 
 * **navigation:** implement navigation context and loader for improved UX ([257dc6e](https://github.com/gdamalis/toulmin-lab/commit/257dc6e5735f487cecd5cc60e64109a039e1db7f))
-
-## [0.23.0](https://github.com/gdamalis/toulmin-lab/compare/v0.22.1...v0.23.0) (2025-05-17)
-
-
-### Features
-
-* **auth:** enhance authentication flow with loading state ([42b0846](https://github.com/gdamalis/toulmin-lab/commit/42b0846fe05f05b51dffa4b301199815a971c455))
 
