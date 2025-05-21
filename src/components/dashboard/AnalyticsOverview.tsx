@@ -1,72 +1,33 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { StatCard, StatCardGrid, StatCardProps } from "@/components/dashboard";
+import { StatCard, StatCardGrid } from "@/components/dashboard";
 import { Typography } from "@/components/ui/Typography";
 import {
   ChartBarIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
-import { useAuth } from "@/contexts/AuthContext";
 import { useTranslations } from "next-intl";
 
-interface AnalyticsOverviewProps {
-  stats?: Array<Omit<StatCardProps, "icon"> & { icon: StatCardProps["icon"] }>;
-}
-
-interface AnalyticsData {
+export interface AnalyticsData {
   totalDiagrams: number;
   totalDiagramsChange: number;
   totalUsers: number;
   totalUsersChange: number;
 }
 
-export function AnalyticsOverview({
-  stats,
-}: Readonly<AnalyticsOverviewProps>) {
-  const t = useTranslations('pages.dashboard');
-  const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+interface AnalyticsOverviewProps {
+  analyticsData: AnalyticsData | null;
+  isLoading: boolean;
+  error: string | null;
+}
 
-  useEffect(() => {
-    async function fetchAnalyticsData() {
-      try {
-        setLoading(true);
-        
-        if (!user) {
-          setError("Not authenticated");
-          setLoading(false);
-          return;
-        }
-        
-        const token = await user.getIdToken();
-        
-        const response = await fetch("/api/analytics", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        
-        if (!response.ok) {
-          throw new Error("Failed to fetch analytics");
-        }
-        
-        const data: AnalyticsData = await response.json();
-        setAnalyticsData(data);
-      } catch (err) {
-        console.error("Error fetching analytics:", err);
-        setError("Could not load analytics data");
-      } finally {
-        setLoading(false);
-      }
-    }
-    
-    fetchAnalyticsData();
-  }, [user]);
-  
-  // Prepare stats from API data
+export function AnalyticsOverview({
+  analyticsData,
+  isLoading,
+  error,
+}: Readonly<AnalyticsOverviewProps>) {
+  const t = useTranslations('pages.admin.analytics');
+
   const displayStats = analyticsData ? [
     {
       id: 1,
@@ -84,10 +45,10 @@ export function AnalyticsOverview({
       change: Math.abs(analyticsData.totalUsersChange).toString(),
       changeType: analyticsData.totalUsersChange >= 0 ? "increase" as const : "decrease" as const,
     }
-  ] : stats;
+  ] : [];
 
   const renderContent = () => {
-    if (loading) {
+    if (isLoading) {
       return (
         <div className="animate-pulse space-y-4">
           <StatCardGrid>

@@ -17,6 +17,7 @@
     "save": "Save",
     "close": "Close",
     "clear": "Clear",
+    "refresh": "Refresh",
     "by": "by",
     "openUserMenu": "Open user menu",
     "openMainMenu": "Open main menu",
@@ -132,7 +133,6 @@
       "myArguments": "My Arguments",
       "noArguments": "You haven't created any arguments yet.",
       "loading": "Loading your arguments...",
-      "analyticsOverview": "Analytics Overview",
       "recentActivity": "Recent Activity",
       "createNewDiagram": "Create New Diagram",
       "loadingDiagrams": "Loading diagrams...",
@@ -142,9 +142,7 @@
       "updatedOn": "Updated on",
       "author": "Author",
       "anonymous": "Anonymous",
-      "viewDiagram": "View diagram",
-      "totalDiagrams": "Total Diagrams",
-      "activeUsers": "Active Users"
+      "viewDiagram": "View diagram"
     },
     "admin": {
       "title": "Admin Panel",
@@ -163,7 +161,10 @@
       "analytics": {
         "title": "Platform Analytics",
         "description": "View detailed usage statistics and platform metrics",
-        "comingSoon": "Advanced analytics features coming soon"
+        "comingSoon": "Advanced analytics features coming soon",
+        "analyticsOverview": "Overview",
+        "totalDiagrams": "Total Diagrams",
+        "activeUsers": "Active Users"
       },
       "settings": {
         "title": "Platform Settings",

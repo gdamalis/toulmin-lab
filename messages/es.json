@@ -17,6 +17,7 @@
     "save": "Guardar",
     "close": "Cerrar",
     "clear": "Limpiar",
+    "refresh": "Actualizar",
     "by": "por",
     "openUserMenu": "Abrir menú de usuario",
     "openMainMenu": "Abrir menú principal",
@@ -132,7 +133,6 @@
       "myArguments": "Mis Argumentos",
       "noArguments": "Aún no has creado ningún argumento.",
       "loading": "Cargando tus argumentos...",
-      "analyticsOverview": "Resumen Analítico",
       "recentActivity": "Actividad Reciente",
       "createNewDiagram": "Crear Nuevo Diagrama",
       "loadingDiagrams": "Cargando diagramas...",
@@ -142,9 +142,7 @@
       "updatedOn": "Actualizado el",
       "author": "Autor",
       "anonymous": "Anónimo",
-      "viewDiagram": "Ver diagrama",
-      "totalDiagrams": "Total de Diagramas",
-      "activeUsers": "Usuarios Activos"
+      "viewDiagram": "Ver diagrama"
     },
     "admin": {
       "title": "Panel de Administración",
@@ -163,7 +161,10 @@
       "analytics": {
         "title": "Analíticas de la Plataforma",
         "description": "Ver estadísticas detalladas de uso y métricas de la plataforma",
-        "comingSoon": "Funciones avanzadas de analíticas próximamente"
+        "comingSoon": "Funciones avanzadas de analíticas próximamente",
+        "analyticsOverview": "Resumen Global",
+        "totalDiagrams": "Total de Diagramas",
+        "activeUsers": "Usuarios Activos"
       },
       "settings": {
         "title": "Configuración de la Plataforma",
