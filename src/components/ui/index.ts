@@ -21,3 +21,4 @@ export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 export { Tabs, TabsContent, TabsList, TabsTrigger } from './Tabs';
 export * from './Pagination';
 export { DotSeparator } from './DotSeparator'; 
+export { StatCard, StatCardGrid } from './StatCard';

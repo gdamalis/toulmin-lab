@@ -3,7 +3,7 @@
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { ElementType } from "react";
+import { ElementType, ReactNode } from "react";
 import { useTranslations } from "next-intl";
 
 export interface StatCardProps {
@@ -18,8 +18,13 @@ export interface StatCardProps {
   readonly linkText?: string;
   readonly className?: string;
 }
+interface StatCardGridProps {
+  readonly children: ReactNode;
+  readonly className?: string;
+}
 
 export function StatCard({
+  id,
   name,
   stat,
   icon: Icon,
@@ -51,6 +56,7 @@ export function StatCard({
 
   return (
     <div
+      id={String(id)}
       className={cn(
         "relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-12 shadow-sm sm:px-6 sm:pt-6 border border-gray-200",
         className
@@ -101,3 +107,21 @@ export function StatCard({
     </div>
   );
 }
+
+export function StatCardGrid({ children, className }: Readonly<StatCardGridProps>) {
+  return (
+    <dl className={cn("mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3", className)}>
+      {children}
+    </dl>
+  );
+}
+
+export function useStatCardData<T>(
+  data: T[],
+  mapFn: (item: T) => Omit<StatCardProps, 'id'> & { id?: string | number }
+): StatCardProps[] {
+  return data.map((item, index) => ({
+    id: `stat-${index}`,
+    ...mapFn(item),
+  }));
+} 

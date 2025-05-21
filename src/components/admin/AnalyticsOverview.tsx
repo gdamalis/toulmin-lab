@@ -1,6 +1,6 @@
 "use client";
 
-import { StatCard, StatCardGrid } from "@/components/dashboard";
+import { StatCard, StatCardGrid } from "@/components/ui";
 import { Typography } from "@/components/ui/Typography";
 import {
   ChartBarIcon,

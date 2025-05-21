@@ -1,7 +1,7 @@
 "use client";
 
 import { ToulminDiagram } from "@/components/diagram";
-import { ToulminForm } from "@/components/ToulminForm";
+import { ToulminForm } from "@/components/form";
 import { Typography } from "@/components/ui/Typography";
 import { useArguments } from "@/hooks/useArguments";
 import useNotification from "@/hooks/useNotification";

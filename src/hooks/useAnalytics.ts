@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { AnalyticsData } from "@/components/dashboard/AnalyticsOverview";
+import { AnalyticsData } from "@/components/admin/AnalyticsOverview";
 
 export interface UseAnalyticsReturn {
   analyticsData: AnalyticsData | null;
