@@ -3,7 +3,7 @@
 import { ToulminDiagram } from "@/components/diagram";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Typography } from "@/components/ui/Typography";
-import { useAuth } from "@/contexts/AuthContext";
+import { useArguments } from "@/hooks/useArguments";
 import { ToulminArgument } from "@/types/client";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -16,50 +16,22 @@ export default function ToulminArgumentViewPage({
 }) {
   const t = useTranslations("pages.argument");
   const commonT = useTranslations("common");
-
-  const [toulminArgument, setToulminArgument] =
-    useState<ToulminArgument | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { user } = useAuth();
+  
+  const [toulminArgument, setToulminArgument] = useState<ToulminArgument | null>(null);
+  const { getArgumentById, isLoading, error } = useArguments();
   const router = useRouter();
 
   const unwrappedParams = use(params);
   const toulminArgumentId = unwrappedParams.id;
 
   useEffect(() => {
-    const fetchDiagram = async () => {
-      if (!user) {
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const token = await user.getIdToken();
-
-        const response = await fetch(`/api/argument/${toulminArgumentId}`, {
-          headers: {
-            "user-id": user.uid,
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`${t("fetchFailed")}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        setToulminArgument(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : t("unknownError"));
-        console.error("Error fetching diagram:", err);
-      } finally {
-        setIsLoading(false);
-      }
+    const fetchArgument = async () => {
+      const argument = await getArgumentById(toulminArgumentId);
+      setToulminArgument(argument);
     };
 
-    fetchDiagram();
-  }, [toulminArgumentId, user, t]);
+    fetchArgument();
+  }, [toulminArgumentId, getArgumentById]);
 
   const handleEdit = () => {
     router.push(`/argument/edit/${toulminArgumentId}`);

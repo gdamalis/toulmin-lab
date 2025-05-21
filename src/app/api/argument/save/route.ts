@@ -1,39 +1,28 @@
-import { getToken } from "@/lib/firebase/auth-admin";
-import { createToulminArgument } from "@/lib/mongodb/service";
 import { ToulminArgument } from "@/types/client";
+import { NextRequest } from "next/server";
+import { withAuth } from "@/lib/api/auth";
+import { createSuccessResponse, createErrorResponse } from "@/lib/api/responses";
+import { createArgument } from "@/lib/services/arguments";
 
-export async function POST(request: Request) {
-  try {
-    // Verify authentication
-    const authHeader = request.headers.get("Authorization");
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<Record<string, string | string[]>> }
+) {
+  return withAuth(async (request, _context, auth) => {
+    try {
+      // Parse the request body
+      const data = (await request.json()) as ToulminArgument;
 
-    if (!authHeader?.startsWith("Bearer ")) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+      const result = await createArgument(data, auth.userId);
+
+      if (!result.success || !result.data) {
+        return createErrorResponse(result.error || "Failed to save diagram", 500);
+      }
+
+      return createSuccessResponse({ success: true, toulminArgumentId: result.data.id });
+    } catch (error) {
+      console.error("Error saving diagram:", error);
+      return createErrorResponse("Failed to save diagram", 500);
     }
-
-    const token = authHeader.split("Bearer ")[1];
-
-    // Verify the token
-    const decodedToken = await getToken(token);
-    if (!decodedToken) {
-      return Response.json({ error: "Invalid token" }, { status: 401 });
-    }
-
-    const userId = decodedToken.uid;
-
-    // Parse the request body
-    const data = (await request.json()) as ToulminArgument;
-
-    if (!data) {
-      return Response.json({ error: "Missing argument data" }, { status: 400 });
-    }
-
-    // Save the argument to the database
-    const toulminArgumentId = await createToulminArgument(data, userId);
-
-    return Response.json({ success: true, toulminArgumentId });
-  } catch (error) {
-    console.error("Error saving diagram:", error);
-    return Response.json({ error: "Failed to save diagram" }, { status: 500 });
-  }
+  })(request, context);
 }

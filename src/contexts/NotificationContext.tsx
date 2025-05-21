@@ -1,7 +1,14 @@
 "use client";
 
-import { createContext, useContext, ReactNode, useState, useMemo } from "react";
 import { Toast } from "@/components/ui";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState
+} from "react";
 
 export type NotificationType = "success" | "error" | "info" | "warning";
 
@@ -31,24 +38,26 @@ export function NotificationProvider({
 }: Readonly<{ children: ReactNode }>) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const addNotification = (
-    type: NotificationType,
-    title: string,
-    message: string
-  ) => {
-    const id = Date.now().toString();
-    setNotifications((prev) => [...prev, { id, type, title, message }]);
-  };
+  const addNotification = useCallback(
+    (type: NotificationType, title: string, message: string) => {
+      const id = Date.now().toString();
+      setNotifications((prev) => [...prev, { id, type, title, message }]);
+    },
+    [setNotifications]
+  );
 
-  const removeNotification = (id: string) => {
-    setNotifications((prev) =>
-      prev.filter((notification) => notification.id !== id)
-    );
-  };
+  const removeNotification = useCallback(
+    (id: string) => {
+      setNotifications((prev) =>
+        prev.filter((notification) => notification.id !== id)
+      );
+    },
+    [setNotifications]
+  );
 
   const value = useMemo(
     () => ({ notifications, addNotification, removeNotification }),
-    [notifications]
+    [notifications, addNotification, removeNotification]
   );
 
   return (

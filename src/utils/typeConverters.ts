@@ -51,6 +51,7 @@ export function toClientUser(doc: UserCollection): User {
     name: doc.name,
     email: doc.email,
     picture: doc.picture,
+    role: doc.role,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
   };

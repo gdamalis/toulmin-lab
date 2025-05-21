@@ -1,16 +1,40 @@
-export {
-  findUserById,
+import { 
   createOrUpdateUser,
-  updateUserRole,
   deleteUser,
-  getUserAnalytics,
+  findUserById,
+  findAllUsers,
+  updateUserRole,
+  getUserAnalytics
 } from "./users";
 
-export { findToulminArgumentsByUserId } from "./toulmin-arguments";
-
-export {
+import {
   createToulminArgument,
   findToulminArgumentById,
+  findToulminArgumentByIdForUser,
+  findToulminArgumentsByUserId,
+  findRawToulminArgumentsByUserId,
   updateToulminArgument,
-  getToulminArgumentAnalytics,
+  deleteToulminArgument,
+  getToulminArgumentAnalytics
 } from "./toulmin-arguments";
+
+// Re-export all needed functions
+export {
+  // Users
+  createOrUpdateUser,
+  deleteUser,
+  findUserById,
+  findAllUsers,
+  updateUserRole,
+  getUserAnalytics,
+
+  // Toulmin Arguments
+  createToulminArgument,
+  findToulminArgumentById,
+  findToulminArgumentByIdForUser,
+  findToulminArgumentsByUserId,
+  findRawToulminArgumentsByUserId,
+  updateToulminArgument,
+  deleteToulminArgument,
+  getToulminArgumentAnalytics
+};

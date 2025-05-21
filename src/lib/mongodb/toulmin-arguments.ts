@@ -4,6 +4,8 @@ import { ToulminArgumentCollection } from "@/types/mongodb";
 import { toClientToulminArgument, toCollectionToulminArgument } from "@/utils/typeConverters";
 import { getCollection, toObjectId } from "./client";
 import { findUserById } from "./users";
+import { ObjectId, WithId } from "mongodb";
+import clientPromise from "@/lib/mongodb/config";
 
 // Create a new Toulmin argument
 export async function createToulminArgument(
@@ -39,6 +41,28 @@ export async function findToulminArgumentById(
   return result ? toClientToulminArgument(result) : null;
 }
 
+// Find a Toulmin argument by ID for a specific user
+export async function findToulminArgumentByIdForUser(
+  id: string,
+  userId: string
+): Promise<ToulminArgument | null> {
+  if (!ObjectId.isValid(id)) {
+    return null;
+  }
+
+  const client = await clientPromise;
+  const db = client.db("toulmin_lab");
+
+  const result = await db
+    .collection<ToulminArgumentCollection>(COLLECTIONS.ARGUMENTS)
+    .findOne({
+      _id: new ObjectId(id),
+      "author.userId": userId,
+    });
+  
+  return result ? toClientToulminArgument(result) : null;
+}
+
 // Find all Toulmin arguments by user ID
 export async function findToulminArgumentsByUserId(
   userId: string
@@ -50,6 +74,20 @@ export async function findToulminArgumentsByUserId(
     .toArray();
   
   return results.map(toClientToulminArgument);
+}
+
+// Find all raw Toulmin arguments by user ID (without converting to client format)
+export async function findRawToulminArgumentsByUserId(
+  userId: string
+): Promise<WithId<ToulminArgumentCollection>[]> {
+  const client = await clientPromise;
+  const db = client.db("toulmin_lab");
+
+  return db
+    .collection<ToulminArgumentCollection>(COLLECTIONS.ARGUMENTS)
+    .find({ "author.userId": userId })
+    .sort({ createdAt: -1 })
+    .toArray();
 }
 
 // Update a Toulmin argument
@@ -81,6 +119,29 @@ export async function updateToulminArgument(
   );
 
   return result.modifiedCount === 1;
+}
+
+// Delete a Toulmin argument
+export async function deleteToulminArgument(
+  id: string,
+  userId: string
+): Promise<boolean> {
+  if (!ObjectId.isValid(id)) {
+    return false;
+  }
+  
+  const client = await clientPromise;
+  const db = client.db("toulmin_lab");
+  
+  // Delete the argument if it belongs to the authenticated user
+  const result = await db
+    .collection(COLLECTIONS.ARGUMENTS)
+    .deleteOne({
+      _id: new ObjectId(id),
+      'author.userId': userId // Only delete if the argument belongs to this user
+    });
+  
+  return result.deletedCount === 1;
 }
 
 // Get analytics data

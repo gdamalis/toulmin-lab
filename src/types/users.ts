@@ -1,7 +1,6 @@
 import { Role } from "./roles";
 import { BaseEntity } from "./base";
-import { ObjectId } from "mongodb";
-import { ToulminArgument } from "./client";
+import { ObjectId, WithId } from "mongodb";
 
 /**
  * Base user interface with common properties
@@ -30,29 +29,56 @@ export interface UserResponse extends BaseUser {
 }
 
 /**
- * For API operations
+ * User input data for creation/updates
  */
-export interface UserInput extends Pick<BaseUser, 'userId' | 'name' | 'email'> {
+export interface UserInput {
+  name: string;
+  email: string;
   picture?: string;
 }
 
 /**
- * User response data structure
+ * Formatted user data for client
  */
-export interface UserResponseData {
-  user?: BaseUser;
-  arguments?: ToulminArgument[];
+export interface UserData {
+  userId: string;
+  name: string;
+  email: string;
+  picture?: string;
+  role: Role;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
 /**
- * Formats user data to ensure consistent response structure
+ * User with their toulmin arguments
  */
-export function formatUserData(user: BaseUser): BaseUser {
+export interface UserWithArguments {
+  user: WithId<UserCollection>;
+  arguments: unknown[];
+}
+
+/**
+ * Formats user data for client by removing sensitive or internal fields
+ */
+export function formatUserData(user: WithId<UserCollection> | BaseUser): UserData | BaseUser {
+  if ('createdAt' in user && 'updatedAt' in user) {
+    return {
+      userId: user.userId,
+      name: user.name,
+      email: user.email,
+      picture: user.picture,
+      role: user.role as Role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    } as UserData;
+  }
+  
   return {
     userId: user.userId,
     name: user.name,
     email: user.email,
     picture: user.picture,
     role: user.role,
-  };
+  } as BaseUser;
 } 

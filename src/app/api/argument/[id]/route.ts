@@ -1,182 +1,82 @@
-import { COLLECTIONS } from "@/constants/database.constants";
-import clientPromise from "@/lib/mongodb/config";
-import { ObjectId } from "mongodb";
-import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "@/lib/firebase/auth-admin";
-import { updateToulminArgument } from "@/lib/mongodb/service";
+import { NextRequest } from "next/server";
 import { ToulminArgument } from "@/types/client";
-import { getAuth } from 'firebase-admin/auth';
+import { withAuth } from "@/lib/api/auth";
+import { createSuccessResponse, createErrorResponse } from "@/lib/api/responses";
+import { getArgumentById, updateArgument, deleteArgument } from "@/lib/services/arguments";
 
 // GET /api/argument/:id - Get a specific diagram by ID
 export async function GET(
-  req: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const userId = req.headers.get("user-id");
+  return withAuth(async (_request, context, auth) => {
+    try {
+      const { id } = await context.params;
+      const argumentId = id as string; // Assert that id is a string
+      
+      const result = await getArgumentById(argumentId, auth.userId);
 
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      if (!result.success) {
+        return createErrorResponse(result.error || "ToulminArgument not found", 404);
+      }
+
+      return createSuccessResponse(result.data);
+    } catch (error) {
+      console.error("Error fetching argument:", error);
+      return createErrorResponse("Internal Server Error", 500);
     }
-
-    const { id } = await params;
-
-    if (!id || !ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { error: "Invalid argument ID" },
-        { status: 400 }
-      );
-    }
-
-    const client = await clientPromise;
-    const db = client.db("toulmin_lab");
-
-    const toulminArgument = await db
-      .collection(COLLECTIONS.ARGUMENTS)
-      .findOne({
-        _id: new ObjectId(id),
-        "author.userId": userId,
-      });
-
-    if (!toulminArgument) {
-      return NextResponse.json(
-        { error: "ToulminArgument not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(toulminArgument);
-  } catch (error) {
-    console.error("Error fetching argument:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+  })(request, { params });
 }
 
 // PUT /api/argument/:id - Update a specific diagram by ID
 export async function PUT(
-  req: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    // Verify authentication
-    const authHeader = req.headers.get("Authorization");
+  return withAuth(async (request, context, auth) => {
+    try {
+      const { id } = await context.params;
+      const argumentId = id as string; // Assert that id is a string
 
-    if (!authHeader?.startsWith("Bearer ")) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+      // Parse the request body
+      const data = (await request.json()) as ToulminArgument;
 
-    const token = authHeader.split("Bearer ")[1];
+      const result = await updateArgument(argumentId, data, auth.userId);
 
-    // Verify the token
-    const decodedToken = await getToken(token);
-    if (!decodedToken) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    }
+      if (!result.success) {
+        return createErrorResponse(result.error || "Failed to update argument", 400);
+      }
 
-    const userId = decodedToken.uid;
-    const { id } = await params;
-
-    if (!id || !ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { error: "Invalid argument ID" },
-        { status: 400 }
+      return createSuccessResponse({ success: true, toulminArgumentId: argumentId });
+    } catch (error) {
+      console.error("Error updating argument:", error);
+      return createErrorResponse(
+        error instanceof Error ? error.message : "Internal Server Error",
+        500
       );
     }
-
-    // Parse the request body
-    const data = (await req.json()) as ToulminArgument;
-
-    if (!data) {
-      return NextResponse.json({ error: "Missing argument data" }, { status: 400 });
-    }
-
-    // Update the argument
-    const updated = await updateToulminArgument(id, data, userId);
-
-    if (!updated) {
-      return NextResponse.json(
-        { error: "Failed to update argument" },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json({ success: true, toulminArgumentId: id });
-  } catch (error) {
-    console.error("Error updating argument:", error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+  })(request, { params });
 }
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    // Get the argument ID from the URL
-    const { id } = await params;
-    
-    // Validate ObjectId format
-    if (!ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { error: 'Invalid argument ID format' },
-        { status: 400 }
-      );
-    }
-
-    // Get authorization token from request headers
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Missing or invalid authorization token' },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.split('Bearer ')[1];
-    
-    // Verify the token
-    let userId;
+  return withAuth(async (_request, context, auth) => {
     try {
-      const decodedToken = await getAuth().verifyIdToken(token);
-      userId = decodedToken.uid;
-    } catch (authError) {
-      console.error('Error verifying auth token:', authError);
-      return NextResponse.json(
-        { error: 'Invalid or expired authorization token' },
-        { status: 401 }
-      );
+      const { id } = await context.params;
+      const argumentId = id as string; // Assert that id is a string
+      
+      const result = await deleteArgument(argumentId, auth.userId);
+      
+      if (!result.success) {
+        return createErrorResponse(result.error || "Failed to delete argument", 404);
+      }
+      
+      return createSuccessResponse({ success: true });
+    } catch (error) {
+      console.error('Error deleting argument:', error);
+      return createErrorResponse("Internal server error", 500);
     }
-    
-    // Get MongoDB client and database
-    const client = await clientPromise;
-    const db = client.db("toulmin_lab");
-    
-    // Delete the argument if it belongs to the authenticated user
-    const result = await db.collection(COLLECTIONS.ARGUMENTS).deleteOne({
-      _id: new ObjectId(id),
-      'author.userId': userId // Only delete if the argument belongs to this user
-    });
-    
-    if (result.deletedCount === 0) {
-      // Either the argument doesn't exist or doesn't belong to this user
-      return NextResponse.json(
-        { error: 'Argument not found or you do not have permission to delete it' },
-        { status: 404 }
-      );
-    }
-    
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Error deleting argument:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
+  })(request, { params });
 }

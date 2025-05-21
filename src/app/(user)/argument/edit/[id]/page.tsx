@@ -3,7 +3,7 @@
 import { ToulminDiagram } from "@/components/diagram";
 import { ToulminForm } from "@/components/ToulminForm";
 import { Typography } from "@/components/ui/Typography";
-import { useAuth } from "@/contexts/AuthContext";
+import { useArguments } from "@/hooks/useArguments";
 import useNotification from "@/hooks/useNotification";
 import { ToulminArgument } from "@/types/client";
 import { useTranslations } from "next-intl";
@@ -18,11 +18,8 @@ export default function ToulminArgumentEditor({
   const t = useTranslations("pages.argument");
   const commonT = useTranslations("common");
 
-  const [toulminArgument, setToulminArgument] =
-    useState<ToulminArgument | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { user } = useAuth();
+  const [toulminArgument, setToulminArgument] = useState<ToulminArgument | null>(null);
+  const { getArgumentById, updateArgument, isLoading, error } = useArguments();
   const { showSuccess, showError } = useNotification();
   const router = useRouter();
 
@@ -31,87 +28,29 @@ export default function ToulminArgumentEditor({
 
   useEffect(() => {
     const fetchArgument = async () => {
-      if (!user) {
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        // Get the current user's ID token
-        const token = await user.getIdToken();
-
-        const response = await fetch(`/api/argument/${toulminArgumentId}`, {
-          headers: {
-            "user-id": user.uid,
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch argument: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        setToulminArgument(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred"
-        );
-        console.error("Error fetching argument:", err);
-      } finally {
-        setIsLoading(false);
-      }
+      const argument = await getArgumentById(toulminArgumentId);
+      setToulminArgument(argument);
     };
 
     fetchArgument();
-  }, [toulminArgumentId, user]);
+  }, [toulminArgumentId, getArgumentById]);
 
   const handleFormChange = (data: ToulminArgument) => {
     setToulminArgument(data);
   };
 
   const handleSave = async () => {
-    // Only save if user is logged in and argument is loaded
-    if (!user) {
-      showError(t("authRequired"), t("pleaseSignIn"));
-      return;
-    }
-
     if (!toulminArgument) {
       showError(commonT("error"), "No argument data to save");
       return;
     }
 
-    try {
-      // Get the current user's ID token
-      const token = await user.getIdToken();
-
-      // Send to the API using PUT method
-      const response = await fetch(`/api/argument/${toulminArgumentId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(toulminArgument),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error ?? t("saveFailed"));
-      }
-
+    const success = await updateArgument(toulminArgumentId, toulminArgument);
+    
+    if (success) {
       showSuccess(commonT("success"), t("saveSuccess"));
-
       // Redirect to the view page
       router.push(`/argument/view/${toulminArgumentId}`);
-    } catch (error) {
-      console.error("Error updating diagram:", error);
-      showError(
-        t("saveFailed"),
-        error instanceof Error ? error.message : t("saveFailed")
-      );
     }
   };
 

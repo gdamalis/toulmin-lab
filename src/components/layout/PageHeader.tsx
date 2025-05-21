@@ -8,6 +8,7 @@ interface ButtonProps {
   onClick?: () => void;
   href?: string;
   variant?: "primary" | "secondary";
+  icon?: React.ElementType;
 }
 
 interface PageHeaderProps {
@@ -44,6 +45,7 @@ export function PageHeader({
                 href={button.href}
                 variant={buttonVariant}
               >
+                {button.icon && <button.icon className="w-4 h-4 mr-1" />}
                 {button.text}
               </Button>
             );

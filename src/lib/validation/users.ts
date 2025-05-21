@@ -26,12 +26,19 @@ export interface RoleUpdateInput {
 }
 
 /**
+ * Extended UserInput with userId for validation
+ */
+interface UserInputWithId extends UserInput {
+  userId: string;
+}
+
+/**
  * Validates user input for creation/update operations
  */
 export function validateUserInput(body: unknown): ValidationResult {
   // Type guard for input validation
-  const isUserInput = (data: unknown): data is UserInput => {
-    const input = data as Partial<UserInput>;
+  const isUserInput = (data: unknown): data is UserInputWithId => {
+    const input = data as Partial<UserInputWithId>;
     return typeof input === 'object' && 
            input !== null && 
            typeof input.userId === 'string' &&
@@ -56,13 +63,13 @@ export function validateUserInput(body: unknown): ValidationResult {
   }
   
   // Then validate the content of the fields
-  const validator = combineValidators<UserInput & Record<string, unknown>>(
+  const validator = combineValidators<UserInputWithId & Record<string, unknown>>(
     validateNonEmptyString('userId'),
     validateNonEmptyString('name'),
     validateNonEmptyString('email')
   );
   
-  return validator(body as UserInput & Record<string, unknown>);
+  return validator(body as UserInputWithId & Record<string, unknown>);
 }
 
 /**

@@ -2,7 +2,7 @@
 
 import { ArgumentList, DeleteArgumentModal } from "@/components/dashboard";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { useToulminArguments } from "@/hooks/useArguments";
+import { useArguments } from "@/hooks/useArguments";
 import { ToulminArgument } from "@/types/client";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -11,7 +11,7 @@ export default function ArgumentsPage() {
   const t = useTranslations("pages.argument");
   
   const { toulminArguments, isLoading, error, deleteArgument, isDeleting } =
-    useToulminArguments();
+    useArguments();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [argumentToDelete, setArgumentToDelete] =
     useState<ToulminArgument | null>(null);

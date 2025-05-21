@@ -1,99 +1,65 @@
-import { getToken } from "@/lib/firebase/auth-admin";
-import clientPromise from "@/lib/mongodb/config";
-import { COLLECTIONS } from "@/constants/database.constants";
-import { NextRequest, NextResponse } from "next/server";
+import { parseRequestBody } from "@/lib/api/middleware";
+import { createSuccessResponse, createErrorResponse } from "@/lib/api/responses";
+import { NextRequest } from "next/server";
+import { ToulminArgument } from "@/types/client";
+import { withAuth } from "@/lib/api/auth";
+import { getUserArguments, createArgument } from "@/lib/services/arguments";
+
+// Interface for argument creation request
+interface CreateArgumentRequest {
+  diagram: ToulminArgument;
+}
 
 // GET /api/arguments - Get all toulmin arguments for the authenticated user
-export async function GET(request: NextRequest) {
-  try {
-    // Extract the authorization header
-    const authHeader = request.headers.get("Authorization");
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<Record<string, string | string[]>> }
+) {
+  return withAuth(async (_request, _context, auth) => {
+    try {
+      const result = await getUserArguments(auth.userId);
 
-    if (!authHeader?.startsWith("Bearer ")) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+      if (!result.success) {
+        return createErrorResponse(result.error || "Failed to fetch arguments", 500);
+      }
+
+      return createSuccessResponse(result.data);
+    } catch (error) {
+      console.error("Error fetching toulmin arguments:", error);
+      return createErrorResponse("Internal Server Error", 500);
     }
-
-    const token = authHeader.split("Bearer ")[1];
-
-    // Verify the token
-    const decodedToken = await getToken(token);
-    if (!decodedToken) {
-      return Response.json({ error: "Invalid token" }, { status: 401 });
-    }
-
-    const userId = decodedToken.uid;
-
-    const client = await clientPromise;
-    const db = client.db("toulmin_lab");
-
-    const toulminArguments = await db
-      .collection(COLLECTIONS.ARGUMENTS)
-      .find({ "author.userId": userId })
-      .sort({ createdAt: -1 })
-      .toArray();
-
-    return NextResponse.json(toulminArguments);
-  } catch (error) {
-    console.error("Error fetching toulmin arguments:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+  })(request, context);
 }
 
 // POST /api/arguments - Create a new toulmin argument
-export async function POST(request: NextRequest) {
-  try {
-    // Extract the authorization header
-    const authHeader = request.headers.get("Authorization");
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<Record<string, string | string[]>> }
+) {
+  return withAuth(async (request, _context, auth) => {
+    try {
+      const data = await parseRequestBody<CreateArgumentRequest>(request);
 
-    if (!authHeader?.startsWith("Bearer ")) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+      if (!data.diagram) {
+        return createErrorResponse("Diagram data is required", 400);
+      }
+
+      const result = await createArgument(data.diagram, auth.userId);
+
+      if (!result.success || !result.data) {
+        return createErrorResponse(result.error || "Failed to create argument", 500);
+      }
+
+      return createSuccessResponse({
+        id: result.data.id,
+        diagram: data.diagram,
+        userId: auth.userId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    } catch (error) {
+      console.error("Error creating argument:", error);
+      return createErrorResponse("Internal Server Error", 500);
     }
-
-    const token = authHeader.split("Bearer ")[1];
-
-    // Verify the token
-    const decodedToken = await getToken(token);
-    if (!decodedToken) {
-      return Response.json({ error: "Invalid token" }, { status: 401 });
-    }
-
-    const userId = decodedToken.uid;
-
-    const data = await request.json();
-
-    if (!data.diagram) {
-      return NextResponse.json(
-        { error: "Diagram data is required" },
-        { status: 400 }
-      );
-    }
-
-    const client = await clientPromise;
-    const db = client.db("toulmin_lab");
-
-    const diagramData = {
-      userId,
-      diagram: data.diagram,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    const result = await db
-      .collection("toulminArguments")
-      .insertOne(diagramData);
-
-    return NextResponse.json({
-      id: result.insertedId,
-      ...diagramData,
-    });
-  } catch (error) {
-    console.error("Error creating argument:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+  })(request, context);
 }

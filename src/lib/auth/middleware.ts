@@ -2,7 +2,6 @@ import { createErrorResponse } from "@/lib/api/responses";
 import { Role, isAdmin } from "@/types/roles";
 import { NextResponse } from "next/server";
 import { verifyToken } from "./firebase";
-import { extractBearerToken } from "./utils";
 
 export type AuthenticatedRequest = Request & {
   user: {
@@ -14,6 +13,17 @@ export type AuthenticatedRequest = Request & {
 export interface AuthResult {
   userId: string;
   role: Role;
+  isAdmin: boolean;
+}
+
+/**
+ * Extracts bearer token from authorization header
+ */
+export function extractBearerToken(authHeader: string | null): string | null {
+  if (!authHeader?.startsWith("Bearer ")) {
+    return null;
+  }
+  return authHeader.split("Bearer ")[1];
 }
 
 /**
@@ -36,13 +46,14 @@ export async function verifyAuth(
 
   const decodedToken = result.token;
   
-  if (!decodedToken.role) {
+  if (!decodedToken.uid || !decodedToken.role) {
     return null;
   }
 
   return {
     userId: decodedToken.uid,
     role: decodedToken.role,
+    isAdmin: isAdmin(decodedToken.role),
   };
 }
 
@@ -61,7 +72,7 @@ export async function requireAdmin(
     };
   }
 
-  if (!isAdmin(auth.role)) {
+  if (!auth.isAdmin) {
     return {
       success: false,
       response: createErrorResponse("Forbidden: Requires administrator privileges", 403),

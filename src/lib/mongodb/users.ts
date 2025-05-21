@@ -13,6 +13,12 @@ export async function findUserById(
   return collection.findOne({ userId });
 }
 
+// Find all users
+export async function findAllUsers(): Promise<WithId<UserCollection>[]> {
+  const collection = await getCollection<UserCollection>(COLLECTIONS.USERS);
+  return collection.find({}).sort({ createdAt: -1 }).toArray();
+}
+
 // Create or update a user
 export async function createOrUpdateUser(userData: {
   userId: string;

@@ -238,5 +238,40 @@
       "deleteArgument": "Delete Argument",
       "deleteConfirmation": "Are you sure you want to delete \"{name}\"? All of the argument data will be permanently removed. This action cannot be undone."
     }
+  },
+  "admin": {
+    "users": {
+      "title": "Users Management",
+      "refreshUsers": "Refresh Users",
+      "description": "A list of all the users in your account including their name, email and role.",
+      "addUser": "Add user",
+      "connectionError": "Connection Error",
+      "tryAgain": "Try Again",
+      "unknownUser": "Unknown User",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "created": "Created",
+      "actions": "Actions",
+      "delete": "Delete",
+      "deleting": "Deleting...",
+      "edit": "Edit",
+      "editUser": "Edit User",
+      "deleteUser": "Delete User",
+      "deleteUserConfirmation": "Are you sure you want to delete the user {userName}?",
+      "deleteUserWarning": "This action cannot be undone.",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "noUsers": "No users found",
+      "error": "Error",
+      "roles": {
+        "user": "User",
+        "student": "Student",
+        "beta_tester": "Beta Tester",
+        "professor": "Professor",
+        "administrator": "Administrator"
+      }
+    }
   }
 }

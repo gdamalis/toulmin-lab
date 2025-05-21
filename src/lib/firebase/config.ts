@@ -1,5 +1,5 @@
 // Firebase configuration
-import { getApps, initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -9,12 +9,14 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
-export const auth = getAuth(app);
+// Initialize Firebase only if it hasn't been initialized
+export const firebaseApp = getApps().length === 0 
+  ? initializeApp(firebaseConfig) 
+  : getApps()[0];
+
+export const auth = getAuth(firebaseApp);
 
 // Disabled for now, due to the emulator not being able to provide a valid token
 // // Connect to Auth emulator when in development
@@ -24,4 +26,4 @@ export const auth = getAuth(app);
 //   setPersistence(auth, browserLocalPersistence);
 // }
 
-export { app };
+export default firebaseApp;

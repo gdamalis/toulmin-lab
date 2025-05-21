@@ -2,8 +2,8 @@
 
 import { ToulminDiagram } from "@/components/diagram";
 import { ToulminForm } from "@/components/ToulminForm";
-import { useAuth } from "@/contexts/AuthContext";
 import { emptyToulminArgument } from "@/data/toulminTemplates";
+import { useArguments } from "@/hooks/useArguments";
 import useNotification from "@/hooks/useNotification";
 import { ToulminArgument } from "@/types/client";
 import { useTranslations } from "next-intl";
@@ -14,9 +14,9 @@ export default function ToulminArgumentBuilder() {
   const t = useTranslations("pages.argument");
   const commonT = useTranslations("common");
 
-  const [toulminArgument, setToulminArgument] =
+  const [toulminArgument, setToulminArgument] = 
     useState<ToulminArgument>(emptyToulminArgument);
-  const { user } = useAuth();
+  const { createArgument } = useArguments();
   const { showSuccess, showError } = useNotification();
   const router = useRouter();
 
@@ -25,37 +25,15 @@ export default function ToulminArgumentBuilder() {
   };
 
   const handleSave = async () => {
-    // Only save if user is logged in
-    if (!user) {
-      showError(t("authRequired"), t("pleaseSignIn"));
-      return;
-    }
-
     try {
-      // Get the current user's ID token
-      const token = await user.getIdToken();
-
-      // Send to the API
-      const response = await fetch("/api/argument/save", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(toulminArgument),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error ?? "Failed to save diagram");
-      }
-
-      showSuccess(commonT("success"), t("saveSuccess"));
-
-      // Redirect to the view page using the returned ID
-      if (result.toulminArgumentId) {
-        router.push(`/argument/view/${result.toulminArgumentId}`);
+      const argumentId = await createArgument(toulminArgument);
+      
+      if (argumentId) {
+        showSuccess(commonT("success"), t("saveSuccess"));
+        // Redirect to the view page using the returned ID
+        router.push(`/argument/view/${argumentId}`);
+      } else {
+        showError(commonT("error"), t("saveFailed"));
       }
     } catch (error) {
       console.error("Error saving diagram:", error);

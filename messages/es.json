@@ -238,5 +238,40 @@
       "deleteArgument": "Eliminar Argumento",
       "deleteConfirmation": "¿Estás seguro de que deseas eliminar \"{name}\"? Todos los datos del argumento se eliminarán permanentemente. Esta acción no se puede deshacer."
     }
+  },
+  "admin": {
+    "users": {
+      "title": "Gestión de Usuarios",
+      "refreshUsers": "Actualizar Usuarios",
+      "description": "Una lista de todos los usuarios en tu cuenta incluyendo su nombre, correo y rol.",
+      "addUser": "Agregar usuario",
+      "connectionError": "Error de Conexión",
+      "tryAgain": "Intentar de Nuevo",
+      "unknownUser": "Usuario Desconocido",
+      "name": "Nombre",
+      "email": "Correo",
+      "role": "Rol",
+      "created": "Creado",
+      "actions": "Acciones",
+      "delete": "Eliminar",
+      "deleting": "Eliminando...",
+      "edit": "Editar",
+      "editUser": "Editar Usuario",
+      "deleteUser": "Eliminar Usuario",
+      "deleteUserConfirmation": "¿Estás seguro de que deseas eliminar al usuario {userName}?",
+      "deleteUserWarning": "Esta acción no se puede deshacer.",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "noUsers": "No se encontraron usuarios",
+      "error": "Error",
+      "roles": {
+        "user": "Usuario",
+        "student": "Estudiante",
+        "beta_tester": "Probador Beta",
+        "professor": "Profesor",
+        "administrator": "Administrador"
+      }
+    }
   }
 }

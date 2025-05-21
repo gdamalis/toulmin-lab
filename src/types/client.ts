@@ -1,4 +1,5 @@
 import { BaseAuthor, BaseEntity, BaseToulminArgument } from "./base";
+import { Role } from "./roles";
 
 // Client-side types with string IDs instead of ObjectId
 export interface User extends BaseEntity {
@@ -7,6 +8,7 @@ export interface User extends BaseEntity {
   name: string;
   email: string;
   picture?: string;
+  role: Role;
 }
 
 export interface Author extends BaseAuthor {
