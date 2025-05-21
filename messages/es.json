@@ -29,7 +29,14 @@
     "madeWith": "Hecho con ♥️ desde 🇦🇷",
     "lastSaved": "Guardado a las {time}",
     "offlineDraftSaved": "Borrador guardado localmente (sin conexión)",
-    "offlineWarning": "Estás sin conexión. Los cambios se guardarán localmente."
+    "offlineWarning": "Estás sin conexión. Los cambios se guardarán localmente.",
+    "banner": {
+      "closedBeta": {
+        "emphasis": "Beta Cerrada",
+        "message": "Solo por invitación. Necesitas que un administrador cree una cuenta para ti.",
+        "dismiss": "Descartar"
+      }
+    }
   },
   "nav": {
     "dashboard": "Inicio",
@@ -67,11 +74,20 @@
       "getStarted": "Comenzar",
       "learnMore": "Saber más",
       "hero": {
-        "title": "Construye argumentos más sólidos visualmente",
-        "description": "Crea, analiza y comparte argumentos estructurados utilizando el método Toulmin. Haz que tu razonamiento sea claro, identifica puntos débiles y persuade efectivamente.",
+        "title": "Crea argumentos visualmente más fuertes",
+        "description": "Crea, analiza y comparte argumentos estructurados utilizando el método Toulmin. Haz que tu razonamiento sea claro, identifica puntos débiles y persuade eficazmente.",
         "badge": {
-          "text": "Nuevo",
-          "label": "Beta pública ya disponible"
+          "text": "Beta cerrada",
+          "label": "Únete a nuestra lista de espera para acceder cuando abramos el acceso a nuevos usuarios."
+        },
+        "subscribe": {
+          "title": "Únete a nuestra lista de espera",
+          "description": "Recibe una notificación cuando abramos el acceso a nuevos usuarios",
+          "emailPlaceholder": "Tu dirección de correo electrónico",
+          "buttonText": "Suscribirse",
+          "success": "¡Gracias! Te notificaremos cuando el acceso esté disponible.",
+          "error": "No se pudo suscribir. Por favor, inténtelo de nuevo.",
+          "subscribeAgain": "Suscribirse de nuevo"
         }
       },
       "featureSection": {

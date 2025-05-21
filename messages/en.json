@@ -29,7 +29,14 @@
     "madeWith": "Made with ♥️ from 🇦🇷",
     "lastSaved": "Last saved at {time}",
     "offlineDraftSaved": "Draft saved locally (offline)",
-    "offlineWarning": "You're currently offline. Changes will be saved locally."
+    "offlineWarning": "You're currently offline. Changes will be saved locally.",
+    "banner": {
+      "closedBeta": {
+        "emphasis": "Closed Beta",
+        "message": "By invitation only. You need an admin to create an account for you.",
+        "dismiss": "Dismiss"
+      }
+    }
   },
   "nav": {
     "dashboard": "Home",
@@ -70,8 +77,17 @@
         "title": "Build stronger arguments visually",
         "description": "Create, analyze, and share structured arguments using the Toulmin method. Make your reasoning clear, identify weak points, and persuade effectively.",
         "badge": {
-          "text": "New",
-          "label": "Public beta now available"
+          "text": "Closed beta",
+          "label": "Join our waitlist to get access when we open it to new users."
+        },
+        "subscribe": {
+          "title": "Join our waitlist",
+          "description": "Get notified when we open access to new users",
+          "emailPlaceholder": "Your email address",
+          "buttonText": "Subscribe",
+          "success": "Thank you! We'll notify you when access becomes available.",
+          "error": "Failed to subscribe. Please try again.",
+          "subscribeAgain": "Subscribe again"
         }
       },
       "featureSection": {

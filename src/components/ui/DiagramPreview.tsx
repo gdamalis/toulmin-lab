@@ -20,9 +20,9 @@ export function DiagramPreview() {
           </div>
         </div>
       </div>
-      <div className="px-6 pt-6 pb-14 relative bg-white">
+      <div className="px-4 pt-4 pb-4 relative bg-white">
         <div className="aspect-[16/10] w-full bg-gray-100 rounded-md overflow-hidden relative">
-          <div className="p-4 flex flex-col h-full">
+          <div className="p-4 flex flex-col">
             <ToulminDiagram
               data={sampleData}
               showExportButtons={false}

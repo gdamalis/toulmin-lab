@@ -7,6 +7,7 @@ import {
   HeroSection,
   LightningIcon,
   ShareIcon,
+  SlimBanner,
 } from "@/components/ui";
 import { Metadata } from "next";
 import { useTranslations } from "next-intl";
@@ -44,6 +45,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function Home() {
   const t = useTranslations("pages.home");
+  const commonT = useTranslations("common");
 
   const features = [
     {
@@ -70,19 +72,20 @@ export default function Home() {
 
   return (
     <div className="bg-white">
+      <SlimBanner 
+        bgColor="bg-primary-700"
+        textColor="text-white"
+        emphasizedText={commonT("banner.closedBeta.emphasis")}
+        dismissible
+      >
+        {commonT("banner.closedBeta.message")}
+      </SlimBanner>
+      
       <Header />
 
       <HeroSection
         title={t("hero.title")}
         description={t("hero.description")}
-        primaryCta={{
-          text: t("getStarted"),
-          href: "/auth",
-        }}
-        secondaryCta={{
-          text: t("learnMore"),
-          href: "#features",
-        }}
       />
 
       <div id="features">

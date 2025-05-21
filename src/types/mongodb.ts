@@ -20,3 +20,8 @@ export interface ToulminArgumentCollection extends BaseToulminArgument {
   _id?: ObjectId;
   author: AuthorCollection;
 }
+
+export interface SubscriberCollection extends BaseEntity {
+  _id?: ObjectId;
+  email: string;
+}

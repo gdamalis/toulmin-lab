@@ -22,3 +22,5 @@ export { Tabs, TabsContent, TabsList, TabsTrigger } from './Tabs';
 export * from './Pagination';
 export { DotSeparator } from './DotSeparator'; 
 export { StatCard, StatCardGrid } from './StatCard';
+export { SubscribeForm } from './SubscribeForm';
+export { SlimBanner } from './SlimBanner';
