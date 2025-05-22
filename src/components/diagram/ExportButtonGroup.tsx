@@ -2,6 +2,7 @@
 
 import { DocumentArrowDownIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
+import { Button } from "../ui";
 
 interface ExportButtonGroupProps {
   readonly onExportPNG: () => Promise<string | null | undefined>;
@@ -42,16 +43,19 @@ interface ExportButtonProps {
 }
 
 function ExportButton({ onClick, label, icon }: Readonly<ExportButtonProps>) {
-  const t = useTranslations('pages.argument');
-  
+  const t = useTranslations("pages.argument");
+
   return (
-    <button
+    <Button
       onClick={onClick}
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-      title={t('exportAsFormat', { format: label })}
+      variant="outline"
+      className="inline-flex items-center gap-1.5"
+      title={t("exportAsFormat", { format: label })}
     >
       {icon}
-      <span>{t('export')} {label}</span>
-    </button>
+      <span>
+        {t("export")} {label}
+      </span>
+    </Button>
   );
 }
