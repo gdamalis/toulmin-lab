@@ -11,6 +11,13 @@ export interface User extends BaseEntity {
   role: Role;
 }
 
+export interface UserFormData {
+  name: string;
+  email: string;
+  password: string;
+  role: Role;
+}
+
 export interface Author extends BaseAuthor {
   _id: string;
 }

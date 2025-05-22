@@ -8,6 +8,7 @@ import {
 import { Role } from "@/types/roles";
 import { NextRequest } from "next/server";
 import { withAuth, withAdminAuth, ensureSelfOrAdmin } from "@/lib/api/auth";
+import { deleteFirebaseUser } from "@/lib/firebase/auth-admin";
 
 // Role update request body interface
 interface RoleUpdateRequest {
@@ -71,26 +72,43 @@ export async function PATCH(
   })(request, { params });
 }
 
-// DELETE /api/users/[id] - Delete a user (admin only)
+// DELETE /api/users/:id - Delete a user (admin only)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  return withAdminAuth(async (_request, context) => {
+  return withAdminAuth(async () => {
     try {
-      const { id } = await context.params;
-      const userId = id as string; // Assert that id is a string
+      const { id } = await params;
       
-      const result = await deleteUser(userId);
+      if (!id) {
+        return createErrorResponse("User ID is required", 400);
+      }
+
+      // 1. Delete user from Firebase first
+      const firebaseResult = await deleteFirebaseUser(id);
+      
+      if (!firebaseResult.success) {
+        return createErrorResponse(
+          firebaseResult.error ?? "Failed to delete user from Firebase",
+          400
+        );
+      }
+
+      // 2. Delete from MongoDB
+      const result = await deleteUser(id);
 
       if (!result.success) {
-        return createErrorResponse(result.error || "Failed to delete user", 404);
+        return createErrorResponse(
+          result.error ?? "Failed to delete user from database",
+          400
+        );
       }
 
       return createSuccessResponse({ success: true });
     } catch (error) {
-      console.error("Error deleting user:", error);
-      return createErrorResponse("Internal Server Error", 500);
+      console.error("Error in DELETE /api/users/[id]:", error);
+      return createErrorResponse("Failed to delete user", 500);
     }
-  })(request, { params });
+  })(request, { params: Promise.resolve(params) });
 }

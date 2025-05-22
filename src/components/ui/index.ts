@@ -1,4 +1,5 @@
 export { ActionMenu } from './ActionMenu';
+export { Badge } from './Badge';
 export { Button } from './Button';
 export { Container } from './Container';
 export { CTASection } from './CTASection';

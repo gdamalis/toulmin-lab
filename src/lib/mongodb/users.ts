@@ -31,13 +31,14 @@ export async function createOrUpdateUser(userData: {
   
   const now = new Date();
   const existingUser = await findUserById(userData.userId);
+  const updatedRole = userData.role ?? (existingUser?.role ?? Role.USER);
   
   const user: UserCollection = {
     userId: userData.userId,
     name: userData.name,
     email: userData.email,
     picture: userData.picture,
-    role: userData.role ?? (existingUser?.role ?? Role.USER),
+    role: updatedRole,
     createdAt: existingUser?.createdAt ?? now,
     updatedAt: now,
   };
@@ -65,14 +66,15 @@ export async function updateUserRole(userId: string, role: Role): Promise<WithId
   // Set the role in Firebase custom claims
   await setUserRole(userId, role);
   
+  const now = new Date();
+  const updateFields: Partial<UserCollection> = { 
+    role,
+    updatedAt: now
+  };
+  
   const result = await collection.findOneAndUpdate(
     { userId },
-    { 
-      $set: { 
-        role,
-        updatedAt: new Date()
-      } 
-    },
+    { $set: updateFields },
     { returnDocument: 'after' }
   );
 

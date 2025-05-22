@@ -1,11 +1,23 @@
 "use client";
 
-import { DeleteUserModal, EditUserModal, UsersList } from "@/components/admin";
+import {
+  AddUserModal,
+  DeleteUserModal,
+  EditUserModal,
+  UsersList,
+} from "@/components/admin";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { Button } from "@/components/ui";
+import { Alert } from "@/components/ui/Alert";
 import { Card } from "@/components/ui/Card";
+import { Typography } from "@/components/ui/Typography";
 import { useUsers } from "@/hooks/useUsers";
-import { User } from "@/types/client";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { User, UserFormData } from "@/types/client";
+import {
+  ArrowPathIcon,
+  ClipboardDocumentIcon,
+  PlusIcon,
+} from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -28,6 +40,12 @@ export default function UsersManagement() {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
+
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  // State for tracking temporary password from user creation
+  const [tempPassword, setTempPassword] = useState<string | null>(null);
+  const [newUser, setNewUser] = useState<UserFormData | null>(null);
 
   // Delete user handlers
   const handleOpenDeleteModal = (user: User) => {
@@ -62,11 +80,54 @@ export default function UsersManagement() {
     return await updateUser(userToEdit.userId, userData);
   };
 
+  // Add user handlers
+  const handleOpenAddModal = () => {
+    // Clear any existing temp password when opening modal
+    setTempPassword(null);
+    setNewUser(null);
+    setIsAddModalOpen(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setIsAddModalOpen(false);
+  };
+
+  // Handler for user creation success
+  const handleUserCreated = (user: UserFormData, password: string | null) => {
+    setNewUser(user);
+    setTempPassword(password);
+    refreshUsers();
+    handleCloseAddModal();
+  };
+
+  // Handler for copying password to clipboard
+  const handleCopyPassword = () => {
+    if (tempPassword) {
+      navigator.clipboard.writeText(tempPassword);
+      // Show a notification that password was copied
+      alert("Password copied to clipboard!");
+    }
+  };
+
+  // Handler to dismiss the success message
+  const dismissSuccessMessage = () => {
+    setTempPassword(null);
+    setNewUser(null);
+  };
+
+  console.log('[UsersManagement] Success alert state:', {newUser, tempPassword});
+
   return (
     <>
       <PageHeader
         title={t("title")}
         buttons={[
+          {
+            text: t("addUser"),
+            variant: "primary",
+            onClick: handleOpenAddModal,
+            icon: PlusIcon,
+          },
           {
             text: t("refreshUsers"),
             variant: "secondary",
@@ -78,7 +139,33 @@ export default function UsersManagement() {
         <p className="mt-2 max-w-2xl text-gray-500">{t("description")}</p>
       </PageHeader>
 
-      <div className="mt-8">
+      {/* Success message with temporary password */}
+      {tempPassword && newUser && (
+        <Alert
+          variant="success"
+          className="mt-4 mb-4"
+          title={t("userCreatedSuccess")}
+          onDismiss={dismissSuccessMessage}
+          description={t("userCreatedDescription", { name: newUser.name })}
+        >
+          <Typography variant="body-sm" textColor="inherit" className="py-1">
+            {t("userEmail")} {newUser.email}
+          </Typography>
+          <div className="flex gap-1 items-center">
+            <Typography variant="body-sm" textColor="inherit">
+              {t("temporaryPassword")}
+            </Typography>
+            <Typography variant="code" textColor="inherit" className="bg-green-200">
+             {tempPassword}
+            </Typography>
+            <Button variant="ghost" size="sm" onClick={handleCopyPassword}>
+              <ClipboardDocumentIcon className="size-4 text-inherit" />
+            </Button>
+          </div>
+        </Alert>
+      )}
+
+      <div className="mt-4">
         {error ? (
           <Card className="p-6 bg-red-50 border-red-200">
             <h3 className="text-lg font-medium text-red-800 mb-2">
@@ -119,6 +206,13 @@ export default function UsersManagement() {
         onSave={handleUpdateUser}
         user={userToEdit}
         isUpdating={isUpdating}
+      />
+
+      {/* Add user modal */}
+      <AddUserModal
+        isOpen={isAddModalOpen}
+        onClose={handleCloseAddModal}
+        onSuccess={handleUserCreated}
       />
     </>
   );

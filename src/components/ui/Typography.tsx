@@ -20,6 +20,7 @@ const typographyVariants = cva("", {
       body2: "text-sm",
       caption: "text-xs",
       overline: "text-xs uppercase tracking-wider",
+      code: "text-sm font-mono font-bold rounded-md px-2 py-1",
     },
     textColor: {
       default: "text-gray-900",
@@ -29,6 +30,7 @@ const typographyVariants = cva("", {
       success: "text-green-600",
       warning: "text-yellow-600",
       danger: "text-red-600",
+      inherit: "text-inherit",
     },
     bold: {
       true: "font-bold",

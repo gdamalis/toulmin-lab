@@ -68,7 +68,7 @@ export function formatUserData(user: WithId<UserCollection> | BaseUser): UserDat
       name: user.name,
       email: user.email,
       picture: user.picture,
-      role: user.role as Role,
+      role: user.role,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     } as UserData;

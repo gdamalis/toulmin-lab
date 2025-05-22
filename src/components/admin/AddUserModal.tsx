@@ -1,56 +1,47 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { Button } from "@/components/ui/Button";
+import { Typography } from "@/components/ui/Typography";
+import { useAddUser } from "@/hooks/useAddUser";
+import { UserFormData } from "@/types/client";
+import { Role, getAllRoles } from "@/types/roles";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/Button";
-import { Typography } from "@/components/ui/Typography";
-import { User } from "@/types/client";
-import { Role, getAllRoles } from "@/types/roles";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
+import { useRef, useState } from "react";
 
-interface EditUserModalProps {
+interface AddUserModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (userData: Partial<User>) => Promise<boolean>;
-  user: User | null;
-  isUpdating: boolean;
+  onSuccess: (user: UserFormData, password: string | null) => void;
 }
 
-export function EditUserModal({
+export function AddUserModal({
   isOpen,
   onClose,
-  onSave,
-  user,
-  isUpdating,
-}: Readonly<EditUserModalProps>) {
+  onSuccess,
+}: Readonly<AddUserModalProps>) {
   const t = useTranslations("admin.users");
   const commonT = useTranslations("common");
   const cancelButtonRef = useRef(null);
+  const { addUser, isAdding } = useAddUser();
+
   const [formData, setFormData] = useState<{
     name: string;
     email: string;
+    password: string;
     role: Role;
   }>({
     name: "",
     email: "",
+    password: "",
     role: Role.USER,
   });
-
-  useEffect(() => {
-    if (user) {
-      setFormData({
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      });
-    }
-  }, [user]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -62,17 +53,34 @@ export function EditUserModal({
     }));
   };
 
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      role: Role.USER,
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
     
-    const success = await onSave(formData);
-    if (success) {
-      onClose();
+    // Convert the empty password string to undefined so a random one will be generated
+    const userData = {
+      ...formData,
+      password: formData.password.trim() || undefined
+    };
+    
+    const result = await addUser(userData);
+    if (result.success) {
+      // Pass the user data and temporary password to parent component
+      onSuccess(formData, result.temporaryPassword);
+      resetForm();
     }
   };
 
   const handleClose = () => {
+    resetForm();
     onClose();
   };
 
@@ -101,7 +109,7 @@ export function EditUserModal({
                 type="button"
                 onClick={handleClose}
                 className="rounded-md bg-white text-gray-400 cursor-pointer hover:text-gray-500 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:outline-hidden"
-                disabled={isUpdating}
+                disabled={isAdding}
               >
                 <span className="sr-only">{commonT("close")}</span>
                 <XMarkIcon aria-hidden="true" className="size-6" />
@@ -114,7 +122,7 @@ export function EditUserModal({
                   as="h3"
                   className="text-base font-semibold leading-6 text-gray-900"
                 >
-                  {t("editUser")}
+                  {t("addUser")}
                 </DialogTitle>
                 
                 <form onSubmit={handleSubmit} className="mt-6">
@@ -160,6 +168,26 @@ export function EditUserModal({
                     </div>
                     
                     <div>
+                      <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
+                        <Typography variant="body-sm" className="font-medium">
+                          {t("password")}
+                          <span className="text-gray-500 text-xs ml-2">({t("passwordHint")})</span>
+                        </Typography>
+                      </label>
+                      <div className="mt-2">
+                        <input
+                          type="password"
+                          name="password"
+                          id="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          className={getInputClasses()}
+                          placeholder={t("passwordPlaceholder")}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
                       <label htmlFor="role" className="block text-sm/6 font-medium text-gray-900">
                         <Typography variant="body-sm" className="font-medium">
                           {t("role")}
@@ -187,21 +215,21 @@ export function EditUserModal({
                     <Button
                       type="submit"
                       variant="primary"
-                      disabled={isUpdating}
-                      isLoading={isUpdating}
+                      disabled={isAdding}
+                      isLoading={isAdding}
                       className="sm:ml-3 sm:w-auto w-full"
                     >
-                      {t("save")}
+                      {t("add")}
                     </Button>
                     <Button
                       type="button"
                       variant="secondary"
                       onClick={handleClose}
-                      disabled={isUpdating}
+                      disabled={isAdding}
                       className="mt-3 sm:mt-0 sm:w-auto w-full"
                       ref={cancelButtonRef}
                     >
-                      {t("cancel")}
+                      {commonT("cancel")}
                     </Button>
                   </div>
                 </form>
