@@ -53,7 +53,7 @@ export function ProfileMenu() {
           {/* Role badge */}
           {userRole && (
             <Badge className="mt-2" variant={getRoleBadgeVariant(userRole)}>
-              {userRole.charAt(0).toUpperCase() + userRole.slice(1)}
+              {t(`admin.users.roles.${userRole}`)}
             </Badge>
           )}
         </div>
