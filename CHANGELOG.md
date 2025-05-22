@@ -1,3 +1,10 @@
+## [0.28.1](https://github.com/gdamalis/toulmin-lab/compare/v0.28.0...v0.28.1) (2025-05-22)
+
+
+### Bug Fixes
+
+* translate user role labels in profile menu ([43fae0e](https://github.com/gdamalis/toulmin-lab/commit/43fae0e9370fdb6bdc8cdeda7354a3c27857384d))
+
 ## [0.28.0](https://github.com/gdamalis/toulmin-lab/compare/v0.27.1...v0.28.0) (2025-05-22)
 
 
@@ -20,6 +27,4 @@
 ### Features
 
 * **subscribe:** implement waitlist subscription feature with API integration. Marked closed beta ([cc5d1f7](https://github.com/gdamalis/toulmin-lab/commit/cc5d1f75820969053f30dd1efdb7bd0b0ba44886))
-
-## [0.25.4](https://github.com/gdamalis/toulmin-lab/compare/v0.25.3...v0.25.4) (2025-05-21)
 
