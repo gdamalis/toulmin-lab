@@ -1,3 +1,10 @@
+## [0.28.0](https://github.com/gdamalis/toulmin-lab/compare/v0.27.1...v0.28.0) (2025-05-22)
+
+
+### Features
+
+* **admin:** implement user management features with add and delete user modals ([288199c](https://github.com/gdamalis/toulmin-lab/commit/288199c840c21fe803055fefd4aab3df66391333))
+
 ## [0.27.1](https://github.com/gdamalis/toulmin-lab/compare/v0.27.0...v0.27.1) (2025-05-21)
 
 ## [0.27.0](https://github.com/gdamalis/toulmin-lab/compare/v0.26.0...v0.27.0) (2025-05-21)
@@ -15,6 +22,4 @@
 * **subscribe:** implement waitlist subscription feature with API integration. Marked closed beta ([cc5d1f7](https://github.com/gdamalis/toulmin-lab/commit/cc5d1f75820969053f30dd1efdb7bd0b0ba44886))
 
 ## [0.25.4](https://github.com/gdamalis/toulmin-lab/compare/v0.25.3...v0.25.4) (2025-05-21)
-
-## [0.25.3](https://github.com/gdamalis/toulmin-lab/compare/v0.25.2...v0.25.3) (2025-05-21)
 
