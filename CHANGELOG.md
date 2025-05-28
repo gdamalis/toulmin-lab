@@ -1,3 +1,5 @@
+## [0.29.1](https://github.com/gdamalis/toulmin-lab/compare/v0.29.0...v0.29.1) (2025-05-28)
+
 ## [0.29.0](https://github.com/gdamalis/toulmin-lab/compare/v0.28.2...v0.29.0) (2025-05-28)
 
 
@@ -20,6 +22,4 @@
 ### Features
 
 * **admin:** implement user management features with add and delete user modals ([288199c](https://github.com/gdamalis/toulmin-lab/commit/288199c840c21fe803055fefd4aab3df66391333))
-
-## [0.27.1](https://github.com/gdamalis/toulmin-lab/compare/v0.27.0...v0.27.1) (2025-05-21)
 
