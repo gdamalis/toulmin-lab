@@ -266,19 +266,19 @@
       "adding": "Agregando...",
       "password": "Contraseña",
       "passwordHint": "dejar vacío para generar una contraseña temporal",
-      "passwordPlaceholder": "Ingresar contraseña o dejar vacío",
+      "passwordPlaceholder": "Ingresa contraseña o deja vacío",
       "userCreatedSuccess": "¡Usuario creado exitosamente!",
-      "userCreatedDescription": "Proporciona estas credenciales a {name} para que inicie sesión.",
-      "userEmail": "Correo:",
+      "userCreatedDescription": "Proporciona estas credenciales a {name} para iniciar sesión. Se ha enviado un email de invitación.",
+      "userEmail": "Email:",
       "temporaryPassword": "Contraseña temporal:",
       "copyPassword": "Copiar",
-      "dismiss": "Cerrar",
-      "done": "Listo",
+      "dismiss": "Descartar",
+      "done": "Hecho",
       "connectionError": "Error de Conexión",
       "tryAgain": "Intentar de Nuevo",
       "unknownUser": "Usuario Desconocido",
       "name": "Nombre",
-      "email": "Correo",
+      "email": "Email",
       "role": "Rol",
       "created": "Creado",
       "actions": "Acciones",
@@ -287,13 +287,15 @@
       "edit": "Editar",
       "editUser": "Editar Usuario",
       "deleteUser": "Eliminar Usuario",
-      "deleteUserConfirmation": "¿Estás seguro de que deseas eliminar al usuario {userName}?",
+      "deleteUserConfirmation": "¿Estás seguro de que quieres eliminar al usuario {userName}?",
       "deleteUserWarning": "Esta acción no se puede deshacer.",
       "cancel": "Cancelar",
       "save": "Guardar",
       "saving": "Guardando...",
       "noUsers": "No se encontraron usuarios",
       "error": "Error",
+      "emailSent": "Email de invitación enviado exitosamente",
+      "emailFailed": "Error al enviar email de invitación",
       "roles": {
         "user": "Usuario",
         "student": "Estudiante",
@@ -301,6 +303,31 @@
         "professor": "Profesor",
         "administrator": "Administrador"
       }
+    }
+  },
+  "email": {
+    "invitation": {
+      "subject": "Bienvenido a Toulmin Lab - Tu cuenta está lista",
+      "greeting": "¡Bienvenido a Toulmin Lab!",
+      "invitedBy": "Has sido invitado a unirte a Toulmin Lab por",
+      "roleAssigned": "Tu rol ha sido establecido como",
+      "loginInstructions": "Para comenzar, inicia sesión en tu cuenta usando las credenciales a continuación:",
+      "temporaryPasswordNote": "Esta es una contraseña temporal. Puedes cambiarla después de tu primer inicio de sesión.",
+      "noPasswordNote": "Por favor usa la contraseña que proporcionaste durante el registro.",
+      "getStarted": "Comenzar",
+      "aboutPlatform": "Toulmin Lab es una herramienta poderosa para crear y analizar argumentos estructurados usando el método Toulmin.",
+      "tagline": "Plataforma de Argumentación Estructurada",
+      "features": {
+        "title": "Lo que puedes hacer:",
+        "items": [
+          "Crear diagramas de argumentos visuales",
+          "Analizar razonamiento lógico",
+          "Compartir y colaborar en argumentos",
+          "Exportar diagramas en múltiples formatos"
+        ]
+      },
+      "support": "Si tienes alguna pregunta, no dudes en contactar a nuestro equipo de soporte.",
+      "footer": "Saludos cordiales,<br/>El equipo de Toulmin Lab"
     }
   }
 }

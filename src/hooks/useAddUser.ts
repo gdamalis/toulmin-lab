@@ -3,6 +3,8 @@
 import { useNotification } from "@/contexts/NotificationContext";
 import { getCurrentUserToken } from "@/lib/auth/utils";
 import { useState } from "react";
+import { useSendEmail } from "./useSendEmail";
+import { useSession } from "next-auth/react";
 
 interface AddUserData {
   name: string;
@@ -29,6 +31,8 @@ export function useAddUser() {
   const [isAdding, setIsAdding] = useState(false);
   const [tempPassword, setTempPassword] = useState<string | null>(null);
   const { addNotification } = useNotification();
+  const { sendUserInvitation } = useSendEmail();
+  const { data: session } = useSession();
 
   const addUser = async (userData: AddUserData): Promise<{success: boolean; temporaryPassword: string | null}> => {
     setIsAdding(true);
@@ -65,6 +69,15 @@ export function useAddUser() {
           generatedPassword = result.data.temporaryPassword;
           setTempPassword(generatedPassword);
         }
+        
+        // Send invitation email
+        const inviterName = session?.user?.name ?? session?.user?.email ?? "Admin";
+        await sendUserInvitation(
+          userData.email,
+          inviterName,
+          userData.role,
+          generatedPassword
+        );
         
         addNotification("success", "Success", "User added successfully");
         return { success: true, temporaryPassword: generatedPassword };

@@ -268,7 +268,7 @@
       "passwordHint": "leave empty to generate a temporary password",
       "passwordPlaceholder": "Enter password or leave empty",
       "userCreatedSuccess": "User created successfully!",
-      "userCreatedDescription": "Provide these credentials to {name} to sign.",
+      "userCreatedDescription": "Provide these credentials to {name} to sign in. An invitation email has been sent.",
       "userEmail": "Email:",
       "temporaryPassword": "Temporary password:",
       "copyPassword": "Copy",
@@ -294,6 +294,8 @@
       "saving": "Saving...",
       "noUsers": "No users found",
       "error": "Error",
+      "emailSent": "Invitation email sent successfully",
+      "emailFailed": "Failed to send invitation email",
       "roles": {
         "user": "User",
         "student": "Student",
@@ -301,6 +303,31 @@
         "professor": "Professor",
         "administrator": "Administrator"
       }
+    }
+  },
+  "email": {
+    "invitation": {
+      "subject": "Welcome to Toulmin Lab - Your Account is Ready",
+      "greeting": "Welcome to Toulmin Lab!",
+      "invitedBy": "You have been invited to join Toulmin Lab by",
+      "roleAssigned": "Your role has been set as",
+      "loginInstructions": "To get started, please sign in to your account using the credentials below:",
+      "temporaryPasswordNote": "This is a temporary password. You can change it after your first login.",
+      "noPasswordNote": "Please use the password you provided during registration.",
+      "getStarted": "Get Started",
+      "aboutPlatform": "Toulmin Lab is a powerful tool for creating and analyzing structured arguments using the Toulmin method.",
+      "tagline": "Structured Argumentation Platform",
+      "features": {
+        "title": "What you can do:",
+        "items": [
+          "Create visual argument diagrams",
+          "Analyze logical reasoning",
+          "Share and collaborate on arguments",
+          "Export diagrams in multiple formats"
+        ]
+      },
+      "support": "If you have any questions, feel free to reach out to our support team.",
+      "footer": "Best regards,<br/>The Toulmin Lab Team"
     }
   }
 }
