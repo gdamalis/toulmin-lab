@@ -115,8 +115,6 @@ export default function UsersManagement() {
     setNewUser(null);
   };
 
-  console.log('[UsersManagement] Success alert state:', {newUser, tempPassword});
-
   return (
     <>
       <PageHeader
