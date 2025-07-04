@@ -1,3 +1,5 @@
+## [0.29.2](https://github.com/gdamalis/toulmin-lab/compare/v0.29.1...v0.29.2) (2025-07-04)
+
 ## [0.29.1](https://github.com/gdamalis/toulmin-lab/compare/v0.29.0...v0.29.1) (2025-05-28)
 
 ## [0.29.0](https://github.com/gdamalis/toulmin-lab/compare/v0.28.2...v0.29.0) (2025-05-28)
@@ -15,11 +17,4 @@
 ### Bug Fixes
 
 * translate user role labels in profile menu ([43fae0e](https://github.com/gdamalis/toulmin-lab/commit/43fae0e9370fdb6bdc8cdeda7354a3c27857384d))
-
-## [0.28.0](https://github.com/gdamalis/toulmin-lab/compare/v0.27.1...v0.28.0) (2025-05-22)
-
-
-### Features
-
-* **admin:** implement user management features with add and delete user modals ([288199c](https://github.com/gdamalis/toulmin-lab/commit/288199c840c21fe803055fefd4aab3df66391333))
 
