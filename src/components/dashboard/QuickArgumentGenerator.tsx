@@ -176,15 +176,15 @@ export function QuickArgumentGenerator({
           )}
 
           {/* Action buttons */}
-          <div className="flex gap-3 items-center justify-between">
-            <Button
+          <div className="flex gap-3 items-center justify-end">
+            {/* <Button
               onClick={handleGoToFullCreator}
               variant="secondary"
               className="text-sm"
               disabled={isGenerating || isGeneratingAndSaving}
             >
               {dashboardT("quickGenerate.fullCreator")}
-            </Button>
+            </Button> */}
 
             <div className="flex items-center gap-2">
               <Typography
