@@ -24,7 +24,6 @@ export function ArgumentGenerator({
   const t = useTranslations("ai.generator");
   const [prompt, setPrompt] = useState("");
   const [context, setContext] = useState("");
-  const [lastResult, setLastResult] = useState<AIGenerationResult | null>(null);
   
   const {
     generateArgument,
@@ -64,8 +63,6 @@ export function ArgumentGenerator({
       language
     );
     if (result) {
-      setLastResult(result);
-
       // Call preview callback if provided
       if (onPreview) {
         onPreview(result);
@@ -84,12 +81,6 @@ export function ArgumentGenerator({
     onPreview,
     onGenerate,
   ]);
-
-  const handleUseGenerated = useCallback(() => {
-    if (lastResult) {
-      onGenerate(lastResult.argument);
-    }
-  }, [lastResult, onGenerate]);
 
   const promptValidation = validatePrompt(prompt);
   const isPromptValid = promptValidation.valid;
@@ -172,7 +163,7 @@ export function ArgumentGenerator({
           <Typography variant="body-sm" className="text-blue-800">
             {t("rateLimitInfo", {
               remaining: rateLimitInfo.remaining,
-              max: rateLimitInfo.maxRequestsPerMinute || 15,
+              max: rateLimitInfo.maxRequestsPerMinute ?? 15,
             })}
             {timeUntilReset > 0 && rateLimitInfo.remaining === 0 && (
               <span className="block mt-1">
@@ -233,57 +224,6 @@ export function ArgumentGenerator({
           )}
         </Button>
       </div>
-
-      {/* Results Preview */}
-      {lastResult && onPreview && (
-        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-          <div className="flex justify-between items-start mb-3">
-            <Typography variant="h3" className="text-md font-medium">
-              {t("generatedResult")}
-            </Typography>
-            <div className="flex items-center space-x-2">
-              <Typography variant="body-sm" textColor="muted">
-                {t("confidence", {
-                  confidence: Math.round(lastResult.confidence * 100),
-                })}
-              </Typography>
-              <Button
-                onClick={handleUseGenerated}
-                variant="secondary"
-                size="sm"
-              >
-                {t("useGenerated")}
-              </Button>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Typography variant="body-sm" className="font-medium">
-              {lastResult.argument.name}
-            </Typography>
-            <Typography variant="body-sm" textColor="muted">
-              {lastResult.reasoning}
-            </Typography>
-
-            {lastResult.suggestions.length > 0 && (
-              <div className="mt-3">
-                <Typography variant="body-sm" className="font-medium mb-1">
-                  {t("suggestions")}
-                </Typography>
-                <ul className="list-disc list-inside space-y-1">
-                  {lastResult.suggestions.map((suggestion) => (
-                    <li key={suggestion}>
-                      <Typography variant="body-sm" textColor="muted">
-                        {suggestion}
-                      </Typography>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

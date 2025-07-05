@@ -342,11 +342,7 @@
       "rateLimitInfo": "{remaining} generations remaining this minute",
       "rateLimitReset": "Reset in {seconds} seconds",
       "generating": "Generating...",
-      "generateButton": "Generate Argument",
-      "generatedResult": "Generated Argument",
-      "confidence": "{confidence}% confidence",
-      "useGenerated": "Use This Argument",
-      "suggestions": "Suggestions:"
+      "generateButton": "Generate Argument"
     },
     "creator": {
       "title": "AI Argument Creator",
