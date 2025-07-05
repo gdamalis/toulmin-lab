@@ -18,6 +18,7 @@
     "close": "Close",
     "clear": "Clear",
     "refresh": "Refresh",
+    "reset": "Reset",
     "by": "by",
     "openUserMenu": "Open user menu",
     "openMainMenu": "Open main menu",
@@ -328,6 +329,41 @@
       },
       "support": "If you have any questions, feel free to reach out to our support team.",
       "footer": "Best regards,<br/>The Toulmin Lab Team"
+    }
+  },
+  "ai": {
+    "generator": {
+      "title": "AI Argument Generator",
+      "description": "Describe your argument in plain language and let AI structure it using the Toulmin model.",
+      "promptLabel": "Describe your argument",
+      "promptPlaceholder": "Example: I believe renewable energy should be prioritized because fossil fuels are depleting and causing climate change...",
+      "contextLabel": "Additional context (optional)",
+      "contextPlaceholder": "Any additional context, audience, or specific requirements...",
+      "rateLimitInfo": "{remaining} generations remaining this minute",
+      "rateLimitReset": "Reset in {seconds} seconds",
+      "generating": "Generating...",
+      "generateButton": "Generate Argument",
+      "generatedResult": "Generated Argument",
+      "confidence": "{confidence}% confidence",
+      "useGenerated": "Use This Argument",
+      "suggestions": "Suggestions:"
+    },
+    "creator": {
+      "title": "AI Argument Creator",
+      "description": "Create structured Toulmin arguments using AI - just describe your position in plain language."
+    },
+    "preview": {
+      "title": "AI Analysis",
+      "confidence": "Confidence:",
+      "reasoning": "Reasoning:",
+      "suggestions": "Suggestions:"
+    },
+    "diagram": {
+      "title": "Generated Diagram"
+    },
+    "placeholder": {
+      "title": "Generate Your First Argument",
+      "description": "Describe your argument in the panel on the left, and watch as AI structures it into a complete Toulmin diagram."
     }
   }
 }

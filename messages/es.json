@@ -18,6 +18,7 @@
     "close": "Cerrar",
     "clear": "Limpiar",
     "refresh": "Actualizar",
+    "reset": "Restablecer",
     "by": "por",
     "openUserMenu": "Abrir menú de usuario",
     "openMainMenu": "Abrir menú principal",
@@ -328,6 +329,41 @@
       },
       "support": "Si tienes alguna pregunta, no dudes en contactar a nuestro equipo de soporte.",
       "footer": "Saludos cordiales,<br/>El equipo de Toulmin Lab"
+    }
+  },
+  "ai": {
+    "generator": {
+      "title": "Generador de Argumentos AI",
+      "description": "Describe tu argumento en lenguaje natural y deja que la IA lo estructure usando el modelo Toulmin.",
+      "promptLabel": "Describe tu argumento",
+      "promptPlaceholder": "Ejemplo: Creo que se debe priorizar la energía renovable porque los combustibles fósiles se están agotando y causan cambio climático...",
+      "contextLabel": "Contexto adicional (opcional)",
+      "contextPlaceholder": "Cualquier contexto adicional, audiencia o requisitos específicos...",
+      "rateLimitInfo": "{remaining} generaciones restantes este minuto",
+      "rateLimitReset": "Reinicia en {seconds} segundos",
+      "generating": "Generando...",
+      "generateButton": "Generar Argumento",
+      "generatedResult": "Argumento Generado",
+      "confidence": "{confidence}% de confianza",
+      "useGenerated": "Usar Este Argumento",
+      "suggestions": "Sugerencias:"
+    },
+    "creator": {
+      "title": "Creador de Argumentos AI",
+      "description": "Crea argumentos Toulmin estructurados usando IA - solo describe tu posición en lenguaje natural."
+    },
+    "preview": {
+      "title": "Análisis de IA",
+      "confidence": "Confianza:",
+      "reasoning": "Razonamiento:",
+      "suggestions": "Sugerencias:"
+    },
+    "diagram": {
+      "title": "Diagrama Generado"
+    },
+    "placeholder": {
+      "title": "Genera Tu Primer Argumento",
+      "description": "Describe tu argumento en el panel de la izquierda y observa cómo la IA lo estructura en un diagrama Toulmin completo."
     }
   }
 }
