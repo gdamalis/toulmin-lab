@@ -159,7 +159,16 @@
       "updatedOn": "Updated on",
       "author": "Author",
       "anonymous": "Anonymous",
-      "viewDiagram": "View diagram"
+      "viewDiagram": "View diagram",
+      "quickGenerate": {
+        "title": "What argument would you like to create?",
+        "description": "Describe your position in plain language and let AI structure it into a Toulmin argument.",
+        "placeholder": "Example: I believe renewable energy should be prioritized because fossil fuels are depleting and causing climate change...",
+        "generate": "Generate",
+        "generating": "Generating...",
+        "fullCreator": "Advanced Creator",
+        "shortcut": "⌘ + Enter"
+      }
     },
     "admin": {
       "title": "Admin Panel",

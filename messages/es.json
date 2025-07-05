@@ -159,7 +159,16 @@
       "updatedOn": "Actualizado el",
       "author": "Autor",
       "anonymous": "Anónimo",
-      "viewDiagram": "Ver diagrama"
+      "viewDiagram": "Ver diagrama",
+      "quickGenerate": {
+        "title": "¿Qué argumento te gustaría crear?",
+        "description": "Describe tu posición en lenguaje natural y deja que la IA lo estructure en un argumento Toulmin.",
+        "placeholder": "Ejemplo: Creo que se debe priorizar la energía renovable porque los combustibles fósiles se están agotando y causan cambio climático...",
+        "generate": "Generar",
+        "generating": "Generando...",
+        "fullCreator": "Creador Avanzado",
+        "shortcut": "⌘ + Intro"
+      }
     },
     "admin": {
       "title": "Panel de Administración",
