@@ -1,6 +1,6 @@
 "use client";
 
-import { ArgumentList, DeleteArgumentModal } from "@/components/dashboard";
+import { ArgumentList, DeleteArgumentModal, QuickArgumentGenerator } from "@/components/dashboard";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { useArguments } from "@/hooks/useArguments";
 import { ToulminArgument } from "@/types/client";
@@ -33,24 +33,32 @@ export default function ArgumentsPage() {
   };
 
   return (
-    <>
-      <PageHeader
-        title={t("myArguments")}
-        buttons={[
-          {
-            text: t("newArgument"),
-            href: "/argument/create",
-            variant: "primary",
-          },
-        ]}
-      />
-      
-      <ArgumentList 
-        arguments={toulminArguments}
-        isLoading={isLoading}
-        error={error}
-        onDeleteArgument={handleOpenDeleteModal}
-      />
+    <div className="space-y-8">
+      {/* Quick AI Generator Section */}
+      <div className="max-w-4xl mx-auto">
+        <QuickArgumentGenerator />
+      </div>
+
+      {/* My Arguments Section */}
+      <div>
+        <PageHeader
+          title={t("myArguments")}
+          buttons={[
+            {
+              text: t("newArgument"),
+              href: "/argument/create",
+              variant: "primary",
+            },
+          ]}
+        />
+        
+        <ArgumentList 
+          arguments={toulminArguments}
+          isLoading={isLoading}
+          error={error}
+          onDeleteArgument={handleOpenDeleteModal}
+        />
+      </div>
 
       {/* Delete confirmation modal */}
       <DeleteArgumentModal
@@ -60,6 +68,6 @@ export default function ArgumentsPage() {
         argumentName={argumentToDelete?.name || t("untitled")}
         isDeleting={isDeleting}
       />
-    </>
+    </div>
   );
 }

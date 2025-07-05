@@ -14,7 +14,7 @@ export default function ToulminArgumentBuilder() {
   const t = useTranslations("pages.argument");
   const commonT = useTranslations("common");
 
-  const [toulminArgument, setToulminArgument] = 
+  const [toulminArgument, setToulminArgument] =
     useState<ToulminArgument>(emptyToulminArgument);
   const { createArgument } = useArguments();
   const { showSuccess, showError } = useNotification();
@@ -27,7 +27,7 @@ export default function ToulminArgumentBuilder() {
   const handleSave = async () => {
     try {
       const argumentId = await createArgument(toulminArgument);
-      
+
       if (argumentId) {
         showSuccess(commonT("success"), t("saveSuccess"));
         // Redirect to the view page using the returned ID
