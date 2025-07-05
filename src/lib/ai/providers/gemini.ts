@@ -13,7 +13,7 @@ import { Locale } from '@/i18n/settings';
  * Gemini-specific configuration
  */
 export interface GeminiConfig extends AIProviderConfig {
-  model: 'gemini-2.0-flash' | 'gemini-1.5-flash' | 'gemini-1.5-pro';
+  model: 'gemini-2.0-flash' | 'gemini-2.5-flash' |  'gemini-2.5-pro' | 'gemini-1.5-flash' | 'gemini-1.5-pro';
   safetySettings?: {
     category: string;
     threshold: string;
@@ -24,7 +24,7 @@ export interface GeminiConfig extends AIProviderConfig {
  * Prompt template for Toulmin argument generation
  */
 const TOULMIN_PROMPT_TEMPLATE = `
-You are an expert in argumentation and the Toulmin model. Your task is to analyze a user's free-text description and create a structured Toulmin argument.
+You are a theologist with expertise in argumentation and the Toulmin model. Your task is to analyze a user's free-text description and create a structured Toulmin argument.
 
 The Toulmin model has these components:
 1. **Claim**: The main assertion or conclusion being argued
@@ -52,7 +52,7 @@ Please analyze this and create a structured Toulmin argument. Return your respon
     "groundsBacking": "Why this evidence is credible",
     "warrant": "How the evidence connects to the claim",
     "warrantBacking": "Why this logical connection is valid",
-    "qualifier": "Limiting words (e.g., 'In most cases', 'Usually', 'Probably')",
+    "qualifier": "Limiting words (e.g., 'In most cases', 'Usually', 'Probably', 'Plausible')",
     "rebuttal": "Conditions where the claim might not hold"
   },
   "createdAt": "{currentDate}",
@@ -65,6 +65,11 @@ Additional context:
 - Include appropriate qualifiers to make the argument more nuanced
 - Consider potential counterarguments in the rebuttal
 - Keep language clear and concise
+- Verify that the claim is not repeated in other parts of the argument
+- The warrant should be a logical connection between the grounds and the claim
+- The warrant must not be conditional
+- If the argument is theological, in the grounds backing should contain the theological sources that supports the grounds
+- If the argument is theological, in the warrant backing should contain the theological sources that supports the warrant
 - Return ONLY the JSON object, no additional text
 `;
 
@@ -75,7 +80,7 @@ export const createGeminiProvider = (apiKey: string): AIProviderInterface => {
   const config: GeminiConfig = {
     name: 'gemini',
     apiKey,
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-pro',
     maxTokens: 4096,
     temperature: 0.7,
     safetySettings: [
@@ -151,7 +156,7 @@ export const createGeminiProvider = (apiKey: string): AIProviderInterface => {
         success: true,
         argument: parsedArgument,
         confidence: 0.8, // Default confidence for Gemini
-        reasoning: 'Generated using Gemini 2.0 Flash model',
+        reasoning: `Generated using Gemini ${config.model} model`,
         suggestions: [
           'Review the warrant to ensure it clearly connects evidence to claim',
           'Consider strengthening the backing with additional sources',

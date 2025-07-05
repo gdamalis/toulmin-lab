@@ -6,6 +6,7 @@
         "headlessui",
         "jspdf",
         "NEXTAUTH",
+        "theologist",
         "toulmin",
         "turbopack",
         "xyflow"
