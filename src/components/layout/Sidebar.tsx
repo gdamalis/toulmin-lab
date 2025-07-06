@@ -53,7 +53,9 @@ export function Sidebar() {
               {navigation.map((item) => {
                 const isCurrent =
                   pathname === item.href ||
-                  pathname.startsWith(`${item.href}/`);
+                  pathname.startsWith(`${item.href}/`) ||
+                  // Special case: highlight "My Arguments" for both /arguments and /argument/* paths
+                  (item.href === "/arguments" && pathname.startsWith("/argument/"));
                 const Icon = item.icon;
                 return (
                   <li key={item.href}>
