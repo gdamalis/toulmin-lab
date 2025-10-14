@@ -80,7 +80,7 @@ export const createGeminiProvider = (apiKey: string): AIProviderInterface => {
   const config: GeminiConfig = {
     name: 'gemini',
     apiKey,
-    model: 'gemini-2.5-pro',
+    model: 'gemini-2.5-flash',
     maxTokens: 4096,
     temperature: 0.7,
     safetySettings: [
