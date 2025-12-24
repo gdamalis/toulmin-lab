@@ -1,6 +1,7 @@
 import { COLLECTIONS } from "@/constants/database.constants";
 import { ToulminArgument } from "@/types/client";
 import { ToulminArgumentCollection } from "@/types/mongodb";
+import { ToulminArgumentPart } from "@/types/toulmin";
 import { toClientToulminArgument, toCollectionToulminArgument } from "@/utils/typeConverters";
 import { getCollection, toObjectId } from "./client";
 import { findUserById } from "./users";
@@ -142,6 +143,78 @@ export async function deleteToulminArgument(
     });
   
   return result.deletedCount === 1;
+}
+
+/**
+ * Update a single part of a Toulmin argument
+ */
+export async function updateToulminArgumentPart(
+  id: string,
+  partName: keyof ToulminArgumentPart,
+  partValue: string,
+  userId: string
+): Promise<boolean> {
+  const collection = await getCollection<ToulminArgumentCollection>(COLLECTIONS.ARGUMENTS);
+  
+  // Verify ownership
+  const existing = await collection.findOne({
+    _id: toObjectId(id),
+    "author.userId": userId
+  });
+  
+  if (!existing) {
+    throw new Error("Argument not found or not authorized");
+  }
+  
+  const result = await collection.updateOne(
+    { _id: toObjectId(id) },
+    { 
+      $set: { 
+        [`parts.${partName}`]: partValue,
+        updatedAt: new Date()
+      }
+    }
+  );
+  
+  return result.modifiedCount === 1;
+}
+
+/**
+ * Create an empty Toulmin argument (for incremental building)
+ */
+export async function createEmptyToulminArgument(
+  title: string,
+  userId: string
+): Promise<string> {
+  const collection = await getCollection<ToulminArgumentCollection>(COLLECTIONS.ARGUMENTS);
+  
+  const user = await findUserById(userId);
+  if (!user) {
+    throw new Error("User not found");
+  }
+  
+  const emptyArgument: Omit<ToulminArgumentCollection, '_id'> = {
+    name: title,
+    author: {
+      _id: user._id,
+      userId: user.userId,
+      name: user.name,
+    },
+    parts: {
+      claim: '',
+      grounds: '',
+      groundsBacking: '',
+      warrant: '',
+      warrantBacking: '',
+      qualifier: '',
+      rebuttal: ''
+    },
+    createdAt: new Date(),
+    updatedAt: new Date()
+  };
+  
+  const result = await collection.insertOne(emptyArgument as ToulminArgumentCollection);
+  return result.insertedId.toString();
 }
 
 // Get analytics data

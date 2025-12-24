@@ -1,5 +1,5 @@
 import { Role } from "@/types/roles";
-import { ChartBarIcon, HomeIcon, UsersIcon } from "@heroicons/react/24/outline";
+import { ChartBarIcon, DocumentTextIcon, HomeIcon, UsersIcon } from "@heroicons/react/24/outline";
 import type { ComponentType } from "react";
 
 export interface NavItem {
@@ -15,6 +15,12 @@ export const NAV_ITEMS: NavItem[] = [
     labelKey: "nav.dashboard",
     href: "/dashboard",
     icon: HomeIcon,
+    roles: [Role.USER, Role.ADMINISTRATOR, Role.BETA_TESTER, Role.PROFESSOR, Role.STUDENT],
+  },
+  {
+    labelKey: "nav.myArguments",
+    href: "/arguments",
+    icon: DocumentTextIcon,
     roles: [Role.USER, Role.ADMINISTRATOR, Role.BETA_TESTER, Role.PROFESSOR, Role.STUDENT],
   },
   {

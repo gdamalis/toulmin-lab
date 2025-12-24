@@ -18,6 +18,7 @@
     "close": "Cerrar",
     "clear": "Limpiar",
     "refresh": "Actualizar",
+    "reset": "Restablecer",
     "by": "por",
     "openUserMenu": "Abrir menú de usuario",
     "openMainMenu": "Abrir menú principal",
@@ -158,7 +159,69 @@
       "updatedOn": "Actualizado el",
       "author": "Autor",
       "anonymous": "Anónimo",
-      "viewDiagram": "Ver diagrama"
+      "viewDiagram": "Ver diagrama",
+      "quickGenerate": {
+        "title": "¿Qué argumento te gustaría crear?",
+        "description": "Describe tu posición en lenguaje natural y deja que la IA lo estructure en un argumento Toulmin.",
+        "placeholder": "Ejemplo: Creo que se debe priorizar la energía renovable porque los combustibles fósiles se están agotando y causan cambio climático...",
+        "generate": "Generar",
+        "generating": "Generando...",
+        "fullCreator": "Creador Avanzado",
+        "shortcut": "⌘ + Intro"
+      },
+      "guidedChat": {
+        "title": "Creación Guiada de Argumentos",
+        "description": "Orientación paso a paso usando el modelo de Toulmin",
+        "welcome": {
+          "title": "Bienvenido a la Creación Guiada de Argumentos",
+          "description": "Te ayudaré a construir un argumento sólido usando el modelo de Stephen Toulmin. Comencemos discutiendo tu tema o enunciado."
+        },
+        "buttons": {
+          "createDiagram": "Crear Diagrama",
+          "creating": "Creando...",
+          "startOver": "Empezar de Nuevo",
+          "tryAgain": "Intentar de Nuevo"
+        },
+        "messages": {
+          "noActiveSession": "No hay sesión activa. Por favor actualiza la página.",
+          "argumentNotComplete": "El argumento aún no está completo.",
+          "argumentCreated": "¡Argumento creado exitosamente! Redirigiendo al diagrama...",
+          "failedToCreate": "Error al crear el argumento",
+          "unableToStart": "No se Pudo Iniciar la Sesión",
+          "problemStarting": "Hubo un problema al iniciar tu sesión de argumento guiado.",
+          "thinking": "Pensando...",
+          "typeResponse": "Escribe tu respuesta aquí..."
+        },
+        "progress": {
+          "title": "Progreso del Argumento",
+          "stepsCompleted": "{completed} de {total} pasos completados ({percentage}%)",
+          "currentTopic": "Tema Actual:",
+          "completed": "Completado:"
+        },
+        "steps": {
+          "intro": "Introducción",
+          "claim": "Enunciado",
+          "warrant": "Garantía",
+          "warrantBacking": "Respaldo de Garantía",
+          "grounds": "Evidencia",
+          "groundsBacking": "Respaldo de Evidencia",
+          "qualifier": "Calificador",
+          "rebuttal": "Refutación",
+          "done": "Completado"
+        },
+        "draft": {
+          "title": "Borrador {step}",
+          "ready": "Listo para confirmar",
+          "needsWork": "Necesita mejoras",
+          "issues": "Problemas encontrados:",
+          "suggestion": "Sugerencia:",
+          "confirm": "Confirmar",
+          "refine": "Refinar",
+          "skip": "Saltar",
+          "confirming": "Confirmando..."
+        },
+        "focus": "Trabajando en: {step}"
+      }
     },
     "admin": {
       "title": "Panel de Administración",
@@ -195,6 +258,8 @@
       "saveAndView": "Guardar y Ver",
       "edit": "Editar: {title}",
       "signInToSave": "Inicia sesión para guardar tus diagramas",
+      "guidedCreation": "Creación Guiada",
+      "backToDashboard": "Volver al Tablero",
       "claim": "Afirmación",
       "evidence": "Evidencia",
       "warrant": "Garantía",
@@ -328,6 +393,37 @@
       },
       "support": "Si tienes alguna pregunta, no dudes en contactar a nuestro equipo de soporte.",
       "footer": "Saludos cordiales,<br/>El equipo de Toulmin Lab"
+    }
+  },
+  "ai": {
+    "generator": {
+      "title": "Generador de Argumentos AI",
+      "description": "Describe tu argumento en lenguaje natural y deja que la IA lo estructure usando el modelo Toulmin.",
+      "promptLabel": "Describe tu argumento",
+      "promptPlaceholder": "Ejemplo: Creo que se debe priorizar la energía renovable porque los combustibles fósiles se están agotando y causan cambio climático...",
+      "contextLabel": "Contexto adicional (opcional)",
+      "contextPlaceholder": "Cualquier contexto adicional, audiencia o requisitos específicos...",
+      "rateLimitInfo": "{remaining} generaciones restantes este minuto",
+      "rateLimitReset": "Reinicia en {seconds} segundos",
+      "generating": "Generando...",
+      "generateButton": "Generar Argumento"
+    },
+    "creator": {
+      "title": "Creador de Argumentos AI",
+      "description": "Crea argumentos Toulmin estructurados usando IA - solo describe tu posición en lenguaje natural."
+    },
+    "preview": {
+      "title": "Análisis de IA",
+      "confidence": "Confianza:",
+      "reasoning": "Razonamiento:",
+      "suggestions": "Sugerencias:"
+    },
+    "diagram": {
+      "title": "Diagrama Generado"
+    },
+    "placeholder": {
+      "title": "Genera Tu Primer Argumento",
+      "description": "Describe tu argumento en el panel de la izquierda y observa cómo la IA lo estructura en un diagrama Toulmin completo."
     }
   }
 }
