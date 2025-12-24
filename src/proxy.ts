@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { Role } from "@/types/roles";
 
-export async function middleware(request: NextRequest) {
+// Next.js 16: Renamed from middleware to proxy (default export)
+export default async function proxy(request: NextRequest) {
   // Get the pathname
   const path = request.nextUrl.pathname;
   

@@ -1,0 +1,10 @@
+ignoredBuiltDependencies:
+  - '@firebase/util'
+  - '@parcel/watcher'
+  - core-js
+  - protobufjs
+  - unrs-resolver
+
+onlyBuiltDependencies:
+  - '@swc/core'
+  - sharp

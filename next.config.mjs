@@ -5,6 +5,13 @@ const withNextIntl = createNextIntlPlugin();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  
+  // Next.js 16: Enable React Compiler for automatic memoization optimization
+  reactCompiler: true,
+  
+  // Next.js 16: Cache Components (disabled for now - requires Suspense boundaries)
+  // Enable when ready: cacheComponents: true,
+  
   images: {
     remotePatterns: [
       {
@@ -17,22 +24,20 @@ const nextConfig = {
       },
     ],
   },
+  
+  // Turbopack is now the default bundler in Next.js 16
   turbopack: {
     rules: {
       "*.mjs": {
-        loaders: [], // Empty array, as we're just changing the type
-        as: "*.js", // This indicates to treat .mjs files as JavaScript
+        loaders: [],
+        as: "*.js",
       },
     },
   },
-  webpack: (config) => {
-    // This is to make React Flow work with Next.js
-    config.module.rules.push({
-      test: /\.mjs$/,
-      include: /node_modules/,
-      type: "javascript/auto",
-    });
-    return config;
+  
+  // Enable Turbopack file system caching for faster dev rebuilds
+  experimental: {
+    turbopackFileSystemCacheForDev: true,
   },
 };
 
