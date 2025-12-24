@@ -42,7 +42,7 @@ importers:
         specifier: ^1.11.13
         version: 1.11.13
       jspdf:
-        specifier: ^3.0.1
+        specifier: ^3.0.4
         version: 3.0.4
       mongodb:
         specifier: ^6.17.0
