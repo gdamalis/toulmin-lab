@@ -4,4 +4,5 @@ export const COLLECTIONS = {
   ARGUMENTS: "toulminArguments",
   USERS: "users",
   SUBSCRIBERS: "subscribers",
+  CHAT_SESSIONS: "chatSessions",
 };

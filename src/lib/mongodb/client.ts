@@ -18,5 +18,13 @@ export async function getCollection<T extends Document>(
 
 // Helper for converting string IDs to ObjectIds
 export function toObjectId(id: string) {
+  if (!id || typeof id !== 'string') {
+    throw new Error(`Invalid ObjectId: ${id}. Expected a non-empty string.`);
+  }
+  
+  if (!ObjectId.isValid(id)) {
+    throw new Error(`Invalid ObjectId format: ${id}. Must be a 24 character hex string.`);
+  }
+  
   return new ObjectId(id);
 } 

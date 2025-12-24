@@ -40,6 +40,11 @@ export default function MyArgumentsPage() {
           {
             text: t("newArgument"),
             href: "/argument/create",
+            variant: "secondary",
+          },
+          {
+            text: t("guidedCreation"),
+            href: "/argument/create/guided",
             variant: "primary",
           },
         ]}

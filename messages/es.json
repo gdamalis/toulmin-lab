@@ -168,6 +168,59 @@
         "generating": "Generando...",
         "fullCreator": "Creador Avanzado",
         "shortcut": "⌘ + Intro"
+      },
+      "guidedChat": {
+        "title": "Creación Guiada de Argumentos",
+        "description": "Orientación paso a paso usando el modelo de Toulmin",
+        "welcome": {
+          "title": "Bienvenido a la Creación Guiada de Argumentos",
+          "description": "Te ayudaré a construir un argumento sólido usando el modelo de Stephen Toulmin. Comencemos discutiendo tu tema o enunciado."
+        },
+        "buttons": {
+          "createDiagram": "Crear Diagrama",
+          "creating": "Creando...",
+          "startOver": "Empezar de Nuevo",
+          "tryAgain": "Intentar de Nuevo"
+        },
+        "messages": {
+          "noActiveSession": "No hay sesión activa. Por favor actualiza la página.",
+          "argumentNotComplete": "El argumento aún no está completo.",
+          "argumentCreated": "¡Argumento creado exitosamente! Redirigiendo al diagrama...",
+          "failedToCreate": "Error al crear el argumento",
+          "unableToStart": "No se Pudo Iniciar la Sesión",
+          "problemStarting": "Hubo un problema al iniciar tu sesión de argumento guiado.",
+          "thinking": "Pensando...",
+          "typeResponse": "Escribe tu respuesta aquí..."
+        },
+        "progress": {
+          "title": "Progreso del Argumento",
+          "stepsCompleted": "{completed} de {total} pasos completados ({percentage}%)",
+          "currentTopic": "Tema Actual:",
+          "completed": "Completado:"
+        },
+        "steps": {
+          "intro": "Introducción",
+          "claim": "Enunciado",
+          "warrant": "Garantía",
+          "warrantBacking": "Respaldo de Garantía",
+          "grounds": "Evidencia",
+          "groundsBacking": "Respaldo de Evidencia",
+          "qualifier": "Calificador",
+          "rebuttal": "Refutación",
+          "done": "Completado"
+        },
+        "draft": {
+          "title": "Borrador {step}",
+          "ready": "Listo para confirmar",
+          "needsWork": "Necesita mejoras",
+          "issues": "Problemas encontrados:",
+          "suggestion": "Sugerencia:",
+          "confirm": "Confirmar",
+          "refine": "Refinar",
+          "skip": "Saltar",
+          "confirming": "Confirmando..."
+        },
+        "focus": "Trabajando en: {step}"
       }
     },
     "admin": {
@@ -205,6 +258,8 @@
       "saveAndView": "Guardar y Ver",
       "edit": "Editar: {title}",
       "signInToSave": "Inicia sesión para guardar tus diagramas",
+      "guidedCreation": "Creación Guiada",
+      "backToDashboard": "Volver al Tablero",
       "claim": "Afirmación",
       "evidence": "Evidencia",
       "warrant": "Garantía",

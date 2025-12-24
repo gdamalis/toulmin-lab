@@ -168,6 +168,59 @@
         "generating": "Generating...",
         "fullCreator": "Advanced Creator",
         "shortcut": "⌘ + Enter"
+      },
+      "guidedChat": {
+        "title": "Guided Argument Creation",
+        "description": "Step-by-step guidance using Toulmin's model",
+        "welcome": {
+          "title": "Welcome to Guided Argument Creation",
+          "description": "I'll help you build a strong argument using Stephen Toulmin's model. Let's start by discussing your topic or claim."
+        },
+        "buttons": {
+          "createDiagram": "Create Diagram",
+          "creating": "Creating...",
+          "startOver": "Start Over",
+          "tryAgain": "Try Again"
+        },
+        "messages": {
+          "noActiveSession": "No active session. Please refresh the page.",
+          "argumentNotComplete": "Argument is not complete yet.",
+          "argumentCreated": "Argument created successfully! Redirecting to diagram...",
+          "failedToCreate": "Failed to create argument",
+          "unableToStart": "Unable to Start Session",
+          "problemStarting": "There was a problem starting your guided argument session.",
+          "thinking": "Thinking...",
+          "typeResponse": "Type your response here..."
+        },
+        "progress": {
+          "title": "Argument Progress",
+          "stepsCompleted": "{completed} of {total} steps completed ({percentage}%)",
+          "currentTopic": "Current Topic:",
+          "completed": "Completed:"
+        },
+        "steps": {
+          "intro": "Introduction",
+          "claim": "Claim",
+          "warrant": "Warrant",
+          "warrantBacking": "Warrant Backing",
+          "grounds": "Grounds",
+          "groundsBacking": "Grounds Backing",
+          "qualifier": "Qualifier",
+          "rebuttal": "Rebuttal",
+          "done": "Complete"
+        },
+        "draft": {
+          "title": "Draft {step}",
+          "ready": "Ready to confirm",
+          "needsWork": "Needs improvement",
+          "issues": "Issues found:",
+          "suggestion": "Suggestion:",
+          "confirm": "Confirm",
+          "refine": "Refine",
+          "skip": "Skip",
+          "confirming": "Confirming..."
+        },
+        "focus": "Working on: {step}"
       }
     },
     "admin": {
@@ -205,6 +258,8 @@
       "saveAndView": "Save & View",
       "edit": "Edit: {title}",
       "signInToSave": "Sign in to save your diagrams",
+      "guidedCreation": "Guided Creation",
+      "backToDashboard": "Back to Dashboard",
       "claim": "Claim",
       "evidence": "Evidence",
       "warrant": "Warrant",
