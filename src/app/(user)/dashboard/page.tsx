@@ -6,6 +6,7 @@ import { useArguments } from "@/hooks/useArguments";
 import { ToulminArgument } from "@/types/client";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { SparklesIcon } from "@heroicons/react/24/outline";
 
 export default function ArgumentsPage() {
   const t = useTranslations("pages.argument");
@@ -41,6 +42,12 @@ export default function ArgumentsPage() {
             text: t("newArgument"),
             href: "/argument/create",
             variant: "primary",
+          },
+          {
+            text: t("createWithAI"),
+            href: "/argument/coach",
+            variant: "secondary",
+            icon: SparklesIcon,
           },
         ]}
       />

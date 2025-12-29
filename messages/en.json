@@ -244,12 +244,99 @@
       "diagram": "Diagram",
       "myArguments": "My Arguments",
       "newArgument": "New Argument",
+      "createWithAI": "Create with AI",
       "noArguments": "You haven't created any arguments yet.",
       "createdOn": "Created on",
       "updatedOn": "Updated on",
       "author": "Author",
       "anonymous": "Anonymous",
       "viewDiagram": "View diagram"
+    },
+    "coach": {
+      "title": "AI Argument Coach",
+      "subtitle": "Build your argument step by step with AI guidance",
+      "livePreview": "Live Preview",
+      "steps": {
+        "claim": "Claim",
+        "grounds": "Grounds",
+        "warrant": "Warrant",
+        "groundsBacking": "Grounds Backing",
+        "warrantBacking": "Warrant Backing",
+        "qualifier": "Qualifier",
+        "rebuttal": "Rebuttal"
+      },
+      "stepInfo": {
+        "claim": {
+          "definition": "The main assertion or conclusion you want your audience to accept as true. It should be debatable, not a simple fact.",
+          "example": "Universities should require all students to take a course in critical thinking.",
+          "antiPattern": "Do NOT accept claims that are actually evidence (e.g., 'Studies show X') or simple facts (e.g., 'The sun rises in the east')."
+        },
+        "grounds": {
+          "definition": "The evidence, data, facts, or observations that support your claim. These are the concrete foundations for your argument.",
+          "example": "A 2023 survey found that 78% of employers rate critical thinking as the most important skill they seek in graduates.",
+          "antiPattern": "Do NOT accept grounds that are abstract principles or generalizations. Grounds should be specific and verifiable."
+        },
+        "warrant": {
+          "definition": "The logical bridge connecting your grounds to your claim. Often expressed as a general principle or 'if-then' statement.",
+          "example": "If a skill is highly valued by employers, universities should prioritize teaching that skill to prepare students for the workforce.",
+          "antiPattern": "Do NOT accept warrants that are merely restating the claim or grounds. The warrant must explain WHY the grounds support the claim."
+        },
+        "groundsBacking": {
+          "definition": "Support that establishes the credibility or reliability of your grounds. Can include source citations, methodology, or authority.",
+          "example": "The survey was conducted by the National Association of Colleges and Employers, which has tracked employer preferences since 1956.",
+          "antiPattern": "Do NOT accept backing that doesn't reference a source, authority, or methodology."
+        },
+        "warrantBacking": {
+          "definition": "Support that establishes why the warrant (general principle) is valid. Can reference laws, theories, shared values, or established principles.",
+          "example": "The primary purpose of higher education, as stated in most university mission statements, is to prepare students for successful careers and civic life.",
+          "antiPattern": "Do NOT accept backing that doesn't explain why the logical principle in the warrant is valid."
+        },
+        "qualifier": {
+          "definition": "Words or phrases indicating the strength of your claim. Qualifiers acknowledge that few claims are absolute.",
+          "example": "In most cases, probably, generally, typically, unless there are resource constraints.",
+          "antiPattern": "Be cautious of claims presented as absolute truths. Most honest arguments require some qualification."
+        },
+        "rebuttal": {
+          "definition": "Acknowledgment of exceptions, counter-arguments, or conditions under which your claim might not hold.",
+          "example": "This may not apply to highly specialized technical programs where curricula are already densely packed with required courses.",
+          "antiPattern": "Do NOT accept rebuttals that are dismissive or don't genuinely engage with potential weaknesses."
+        }
+      },
+      "whatIs": "What is {step}?",
+      "suggestedText": "Suggested {step}",
+      "useThis": "Use this",
+      "rewrite": "I'll rewrite",
+      "sendMessage": "Send message",
+      "typeResponse": "Type your response...",
+      "completion": {
+        "title": "Argument Complete!",
+        "message": "Your Toulmin argument has been saved successfully. You can now view, edit, and export your argument diagram.",
+        "viewArgument": "View Your Argument"
+      },
+      "error": {
+        "saveFailed": "Failed to Save Argument",
+        "tryAgain": "Try Again",
+        "sessionFailed": "Failed to create coaching session",
+        "authRequired": "Authentication required. Please sign in and try again.",
+        "processingFailed": "I encountered an error processing your message. Please try again.",
+        "saveFailedRetry": "Failed to save. Please try again.",
+        "unexpectedError": "An unexpected error occurred. Please try again."
+      },
+      "welcome": "Welcome! I'm your Toulmin argument coach. I'll help you build a well-structured argument step by step.\n\nLet's start with your **Claim** - the main assertion you want others to accept as true.\n\nWhat are you trying to argue? What position do you want to take?",
+      "untitledArgument": "Untitled Argument",
+      "describeStep": "Describe your {step}...",
+      "exampleLabel": "Example:",
+      "autoContinue": "I've confirmed this. Please continue to the next step.",
+      "editStep": "I'd like to revise this step. Please guide me.",
+      "preview": {
+        "claim": "(Claim will appear here)",
+        "grounds": "(Grounds will appear here)",
+        "warrant": "(Warrant will appear here)",
+        "groundsBacking": "(Grounds backing will appear here)",
+        "warrantBacking": "(Warrant backing will appear here)",
+        "qualifier": "(Qualifier will appear here)",
+        "rebuttal": "(Rebuttal will appear here)"
+      }
     },
     "modals": {
       "deleteArgument": "Delete Argument",

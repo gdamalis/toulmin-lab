@@ -244,12 +244,99 @@
       "diagram": "Diagrama",
       "myArguments": "Mis Argumentos",
       "newArgument": "Nuevo Argumento",
+      "createWithAI": "Crear con IA",
       "noArguments": "Aún no has creado ningún argumento.",
       "createdOn": "Creado el",
       "updatedOn": "Actualizado el",
       "author": "Autor",
       "anonymous": "Anónimo",
       "viewDiagram": "Ver diagrama"
+    },
+    "coach": {
+      "title": "Asistente de Argumentos IA",
+      "subtitle": "Construye tu argumento paso a paso con guía de IA",
+      "livePreview": "Vista Previa en Vivo",
+      "steps": {
+        "claim": "Afirmación",
+        "grounds": "Fundamentos",
+        "warrant": "Garantía",
+        "groundsBacking": "Respaldo de Fundamentos",
+        "warrantBacking": "Respaldo de Garantía",
+        "qualifier": "Calificador",
+        "rebuttal": "Refutación"
+      },
+      "stepInfo": {
+        "claim": {
+          "definition": "La afirmación o conclusión principal que deseas que tu audiencia acepte como verdadera. Debe ser debatible, no un simple hecho.",
+          "example": "Las universidades deberían exigir que todos los estudiantes tomen un curso de pensamiento crítico.",
+          "antiPattern": "NO aceptes afirmaciones que en realidad son evidencia (ej., 'Los estudios muestran X') o hechos simples (ej., 'El sol sale por el este')."
+        },
+        "grounds": {
+          "definition": "La evidencia, datos, hechos u observaciones que respaldan tu afirmación. Estos son los cimientos concretos de tu argumento.",
+          "example": "Una encuesta de 2023 encontró que el 78% de los empleadores califican el pensamiento crítico como la habilidad más importante que buscan en los graduados.",
+          "antiPattern": "NO aceptes fundamentos que sean principios abstractos o generalizaciones. Los fundamentos deben ser específicos y verificables."
+        },
+        "warrant": {
+          "definition": "El puente lógico que conecta tus fundamentos con tu afirmación. A menudo se expresa como un principio general o declaración 'si-entonces'.",
+          "example": "Si una habilidad es muy valorada por los empleadores, las universidades deberían priorizar enseñar esa habilidad para preparar a los estudiantes para el mercado laboral.",
+          "antiPattern": "NO aceptes garantías que simplemente reformulan la afirmación o los fundamentos. La garantía debe explicar POR QUÉ los fundamentos apoyan la afirmación."
+        },
+        "groundsBacking": {
+          "definition": "Apoyo que establece la credibilidad o fiabilidad de tus fundamentos. Puede incluir citas de fuentes, metodología o autoridad.",
+          "example": "La encuesta fue realizada por la Asociación Nacional de Universidades y Empleadores, que ha rastreado las preferencias de los empleadores desde 1956.",
+          "antiPattern": "NO aceptes respaldo que no haga referencia a una fuente, autoridad o metodología."
+        },
+        "warrantBacking": {
+          "definition": "Apoyo que establece por qué la garantía (principio general) es válida. Puede hacer referencia a leyes, teorías, valores compartidos o principios establecidos.",
+          "example": "El propósito principal de la educación superior, según la mayoría de las declaraciones de misión universitarias, es preparar a los estudiantes para carreras exitosas y vida cívica.",
+          "antiPattern": "NO aceptes respaldo que no explique por qué el principio lógico en la garantía es válido."
+        },
+        "qualifier": {
+          "definition": "Palabras o frases que indican la fuerza de tu afirmación. Los calificadores reconocen que pocas afirmaciones son absolutas.",
+          "example": "En la mayoría de los casos, probablemente, generalmente, típicamente, a menos que haya restricciones de recursos.",
+          "antiPattern": "Ten cuidado con las afirmaciones presentadas como verdades absolutas. La mayoría de los argumentos honestos requieren alguna calificación."
+        },
+        "rebuttal": {
+          "definition": "Reconocimiento de excepciones, contra-argumentos o condiciones bajo las cuales tu afirmación podría no ser válida.",
+          "example": "Esto puede no aplicarse a programas técnicos altamente especializados donde los planes de estudio ya están densamente cargados con cursos requeridos.",
+          "antiPattern": "NO aceptes refutaciones que sean despectivas o que no se involucren genuinamente con las debilidades potenciales."
+        }
+      },
+      "whatIs": "¿Qué es {step}?",
+      "suggestedText": "{step} sugerido",
+      "useThis": "Usar esto",
+      "rewrite": "Lo reescribiré",
+      "sendMessage": "Enviar mensaje",
+      "typeResponse": "Escribe tu respuesta...",
+      "completion": {
+        "title": "¡Argumento Completo!",
+        "message": "Tu argumento Toulmin ha sido guardado exitosamente. Ahora puedes ver, editar y exportar tu diagrama de argumento.",
+        "viewArgument": "Ver Tu Argumento"
+      },
+      "error": {
+        "saveFailed": "Error al Guardar el Argumento",
+        "tryAgain": "Intentar de Nuevo",
+        "sessionFailed": "Error al crear la sesión de coaching",
+        "authRequired": "Se requiere autenticación. Por favor inicia sesión e intenta de nuevo.",
+        "processingFailed": "Ocurrió un error al procesar tu mensaje. Por favor intenta de nuevo.",
+        "saveFailedRetry": "Error al guardar. Por favor intenta de nuevo.",
+        "unexpectedError": "Ocurrió un error inesperado. Por favor intenta de nuevo."
+      },
+      "welcome": "¡Bienvenido! Soy tu asistente de argumentos Toulmin. Te ayudaré a construir un argumento bien estructurado paso a paso.\n\nComencemos con tu **Afirmación** - la proposición principal que quieres que otros acepten como verdadera.\n\n¿Qué estás tratando de argumentar? ¿Qué posición quieres tomar?",
+      "untitledArgument": "Argumento sin título",
+      "describeStep": "Describe tu {step}...",
+      "exampleLabel": "Ejemplo:",
+      "autoContinue": "He confirmado esto. Por favor continúa al siguiente paso.",
+      "editStep": "Me gustaría revisar este paso. Por favor guíame.",
+      "preview": {
+        "claim": "(La afirmación aparecerá aquí)",
+        "grounds": "(Los fundamentos aparecerán aquí)",
+        "warrant": "(La garantía aparecerá aquí)",
+        "groundsBacking": "(El respaldo de fundamentos aparecerá aquí)",
+        "warrantBacking": "(El respaldo de garantía aparecerá aquí)",
+        "qualifier": "(El calificador aparecerá aquí)",
+        "rebuttal": "(La refutación aparecerá aquí)"
+      }
     },
     "modals": {
       "deleteArgument": "Eliminar Argumento",
