@@ -169,26 +169,41 @@ export function ChatPanel({
    * Process the AI result after streaming completes
    */
   const processAIResult = useCallback(async (result: CoachAIResult) => {
-    const assistantMessage = createMessage('assistant', result.assistantText, result.step);
+    const assistantMessage = createMessage('assistant', result.assistantText, currentStep);
     setMessages((prev) => [...prev, assistantMessage]);
     setStreamingContent('');
 
-    await addMessage(sessionId, 'assistant', result.assistantText, result.step);
+    await addMessage(sessionId, 'assistant', result.assistantText, currentStep);
 
-    if (result.proposedUpdate) {
+    // Only accept proposedUpdate when the field matches the current step
+    // This prevents the model from proposing updates to wrong fields
+    if (result.proposedUpdate && result.proposedUpdate.field === currentStep) {
       setProposedUpdate(result.proposedUpdate);
+    } else if (result.proposedUpdate) {
+      console.warn(`Ignoring proposedUpdate for field '${result.proposedUpdate.field}' - expected '${currentStep}'`);
     }
 
-    // Use nextStep for deterministic step progression
-    if (result.shouldAdvance && result.nextStep) {
-      setCurrentStep(result.nextStep);
-      await updateSessionStep(sessionId, result.nextStep);
+    // SAVE-DRIVEN step progression:
+    // We only advance in processAIResult if the draft already has content for this step
+    // (editing flow). For new content, advancement happens in handleConfirmProposal
+    // after the user clicks "Use this" and the save succeeds.
+    // This prevents skipping steps when the model sets shouldAdvance=true
+    // without the user ever confirming a proposal.
+    const stepHasContent = draft[currentStep]?.trim() !== '';
+    const canAdvanceAutomatically = result.shouldAdvance && stepHasContent && currentStep !== TOULMIN_STEPS.REBUTTAL;
+
+    if (canAdvanceAutomatically) {
+      const nextStep = getNextStep(currentStep);
+      if (nextStep) {
+        setCurrentStep(nextStep);
+        await updateSessionStep(sessionId, nextStep);
+      }
     }
 
     if (result.isComplete) {
       await handleFinalization();
     }
-  }, [sessionId, createMessage, handleFinalization]);
+  }, [sessionId, currentStep, createMessage, handleFinalization]);
 
   /**
    * Request a coach response from the API

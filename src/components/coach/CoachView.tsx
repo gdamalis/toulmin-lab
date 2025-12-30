@@ -26,7 +26,7 @@ export function CoachView({ session, messages, draft: initialDraft }: CoachViewP
    */
   const draftToArgument = (d: ClientArgumentDraft): ToulminArgument => ({
     _id: d.id,
-    name: d.name || t('untitledArgument'),
+    name: d.name?.trim() || t('untitledArgument'),
     author: {
       _id: '',
       userId: '',

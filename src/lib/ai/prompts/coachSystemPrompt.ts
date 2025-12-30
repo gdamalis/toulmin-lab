@@ -117,6 +117,12 @@ You MUST respond with a JSON object matching this exact schema:
 - On the REBUTTAL step (the last step), NEVER set shouldAdvance=true. Instead, when all 7 elements are complete, set isComplete=true.
 - The step sequence is: claim → grounds → warrant → groundsBacking → warrantBacking → qualifier → rebuttal.
 
+## CRITICAL: Proposals on User Acceptance
+
+- When the user explicitly accepts or confirms a suggestion ("yes", "sí", "ok", "that works", "me sirve", "definitivamente está bien", "use that", etc.), you MUST include a proposedUpdate with the confirmed text.
+- Never set shouldAdvance=true without including a proposedUpdate for the current step field and a nextStep.
+- For the QUALIFIER step specifically: the proposed value should be a short qualifier phrase (e.g., "Probably", "In most cases", "Generally", "Definitivamente", "Sin duda", "Probablemente").
+
 ## Teaching Phrases to Use
 
 When explaining the current step:

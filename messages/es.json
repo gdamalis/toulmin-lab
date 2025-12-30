@@ -258,10 +258,10 @@
       "livePreview": "Vista Previa en Vivo",
       "steps": {
         "claim": "Afirmación",
-        "grounds": "Fundamentos",
+        "grounds": "Evidencia",
         "warrant": "Garantía",
-        "groundsBacking": "Respaldo de Fundamentos",
-        "warrantBacking": "Respaldo de Garantía",
+        "groundsBacking": "Respaldo para la evidencia",
+        "warrantBacking": "Respaldo para la garantía",
         "qualifier": "Calificador",
         "rebuttal": "Refutación"
       },
@@ -274,15 +274,15 @@
         "grounds": {
           "definition": "La evidencia, datos, hechos u observaciones que respaldan tu afirmación. Estos son los cimientos concretos de tu argumento.",
           "example": "Una encuesta de 2023 encontró que el 78% de los empleadores califican el pensamiento crítico como la habilidad más importante que buscan en los graduados.",
-          "antiPattern": "NO aceptes fundamentos que sean principios abstractos o generalizaciones. Los fundamentos deben ser específicos y verificables."
+          "antiPattern": "NO aceptes evidencia que sea principios abstractos o generalizaciones. La evidencia debe ser específica y verificable."
         },
         "warrant": {
-          "definition": "El puente lógico que conecta tus fundamentos con tu afirmación. A menudo se expresa como un principio general o declaración 'si-entonces'.",
+          "definition": "El puente lógico que conecta tu evidencia con tu afirmación. A menudo se expresa como un principio general o declaración 'si-entonces'.",
           "example": "Si una habilidad es muy valorada por los empleadores, las universidades deberían priorizar enseñar esa habilidad para preparar a los estudiantes para el mercado laboral.",
-          "antiPattern": "NO aceptes garantías que simplemente reformulan la afirmación o los fundamentos. La garantía debe explicar POR QUÉ los fundamentos apoyan la afirmación."
+          "antiPattern": "NO aceptes garantías que simplemente reformulan la afirmación o la evidencia. La garantía debe explicar POR QUÉ la evidencia apoya la afirmación."
         },
         "groundsBacking": {
-          "definition": "Apoyo que establece la credibilidad o fiabilidad de tus fundamentos. Puede incluir citas de fuentes, metodología o autoridad.",
+          "definition": "Apoyo que establece la credibilidad o fiabilidad de tu evidencia. Puede incluir citas de fuentes, metodología o autoridad.",
           "example": "La encuesta fue realizada por la Asociación Nacional de Universidades y Empleadores, que ha rastreado las preferencias de los empleadores desde 1956.",
           "antiPattern": "NO aceptes respaldo que no haga referencia a una fuente, autoridad o metodología."
         },
@@ -330,10 +330,10 @@
       "editStep": "Me gustaría revisar este paso. Por favor guíame.",
       "preview": {
         "claim": "(La afirmación aparecerá aquí)",
-        "grounds": "(Los fundamentos aparecerán aquí)",
+        "grounds": "(La evidencia aparecerá aquí)",
         "warrant": "(La garantía aparecerá aquí)",
-        "groundsBacking": "(El respaldo de fundamentos aparecerá aquí)",
-        "warrantBacking": "(El respaldo de garantía aparecerá aquí)",
+        "groundsBacking": "(El respaldo para la evidencia aparecerá aquí)",
+        "warrantBacking": "(El respaldo para la garantía aparecerá aquí)",
         "qualifier": "(El calificador aparecerá aquí)",
         "rebuttal": "(La refutación aparecerá aquí)"
       }

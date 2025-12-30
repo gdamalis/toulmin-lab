@@ -84,6 +84,61 @@ function trySalvageCoachResult(err: unknown): Record<string, unknown> | null {
 }
 
 /**
+ * Coerce the AI result to match the session's current step
+ * This prevents the model from proposing updates to wrong fields or skipping steps
+ * @param draftFieldValue - The current value of the draft field for this step (empty string if not set)
+ */
+function coerceResultToCurrentStep(
+  result: Record<string, unknown>,
+  sessionCurrentStep: ToulminStep,
+  draftFieldValue: string = ''
+): Record<string, unknown> {
+  const coerced = { ...result };
+
+  // Force step to match session's current step
+  if (coerced.step !== sessionCurrentStep) {
+    console.warn(`Coercing AI step '${coerced.step}' to session step '${sessionCurrentStep}'`);
+    coerced.step = sessionCurrentStep;
+  }
+
+  // If proposedUpdate.field doesn't match current step, remove it
+  const proposedUpdate = coerced.proposedUpdate as { field?: string } | undefined;
+  if (proposedUpdate && proposedUpdate.field !== sessionCurrentStep) {
+    console.warn(`Removing proposedUpdate for field '${proposedUpdate.field}' - expected '${sessionCurrentStep}'`);
+    delete coerced.proposedUpdate;
+  }
+
+  // Recompute nextStep based on session's current step (not model's claimed step)
+  if (coerced.shouldAdvance === true) {
+    if (sessionCurrentStep === TOULMIN_STEPS.REBUTTAL) {
+      // Can't advance from rebuttal
+      coerced.shouldAdvance = false;
+      delete coerced.nextStep;
+    } else {
+      // Server-side save-driven enforcement:
+      // If shouldAdvance=true but there's no valid proposedUpdate AND the draft field is empty,
+      // we strip shouldAdvance to prevent the client from advancing with an empty box.
+      const hasValidProposal = coerced.proposedUpdate !== undefined;
+      const stepHasContent = draftFieldValue.trim() !== '';
+
+      if (!hasValidProposal && !stepHasContent) {
+        console.warn(`Stripping shouldAdvance=true: no proposedUpdate and draft.${sessionCurrentStep} is empty`);
+        coerced.shouldAdvance = false;
+        delete coerced.nextStep;
+      } else {
+        const correctNextStep = getNextStep(sessionCurrentStep);
+        if (correctNextStep && coerced.nextStep !== correctNextStep) {
+          console.warn(`Correcting nextStep from '${coerced.nextStep}' to '${correctNextStep}'`);
+          coerced.nextStep = correctNextStep;
+        }
+      }
+    }
+  }
+
+  return coerced;
+}
+
+/**
  * POST /api/coach
  * Stream AI coach response
  */
@@ -221,9 +276,15 @@ export async function POST(request: NextRequest) {
               controller.enqueue(encoder.encode(line));
             }
             
-            // Emit final complete object
-            const finalObject = await result.object;
-            const finalLine = JSON.stringify(finalObject) + '\n';
+            // Emit final complete object, coerced to match session's current step
+            const rawFinalObject = await result.object;
+            const draftFieldValue = (draft[currentStep] as string) ?? '';
+            const coercedFinal = coerceResultToCurrentStep(
+              rawFinalObject as unknown as Record<string, unknown>,
+              currentStep,
+              draftFieldValue
+            );
+            const finalLine = JSON.stringify(coercedFinal) + '\n';
             controller.enqueue(encoder.encode(finalLine));
             
             controller.close();
@@ -233,7 +294,10 @@ export async function POST(request: NextRequest) {
             // Try to salvage a result if the model forgot nextStep
             const salvaged = trySalvageCoachResult(streamErr);
             if (salvaged) {
-              const parsed = CoachAIResultSchema.safeParse(salvaged);
+              // Also coerce the salvaged result
+              const draftValue = (draft[currentStep] as string) ?? '';
+              const coerced = coerceResultToCurrentStep(salvaged, currentStep, draftValue);
+              const parsed = CoachAIResultSchema.safeParse(coerced);
               if (parsed.success) {
                 const salvagedLine = JSON.stringify(parsed.data) + '\n';
                 controller.enqueue(encoder.encode(salvagedLine));

@@ -419,9 +419,15 @@ export async function finalizeArgumentFromDraft(
       return { success: false, error: 'Draft not found' };
     }
 
+    // Get translations for fallback title
+    const t = await getTranslations('pages.coach');
+
+    // Ensure argument has a non-empty title
+    const argumentName = draft.name?.trim() || t('untitledArgument');
+
     // Convert draft to ToulminArgument format
     const argument: ToulminArgument = {
-      name: draft.name,
+      name: argumentName,
       author: {
         _id: userId,
         userId,
