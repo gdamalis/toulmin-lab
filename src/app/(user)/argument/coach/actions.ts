@@ -10,6 +10,8 @@ import {
   getArgumentDraftsCollection 
 } from '@/lib/mongodb/collections/coach';
 import { createToulminArgument } from '@/lib/mongodb/service';
+import { generateArgumentTitle } from '@/lib/ai/coach';
+import { SupportedLocale } from '@/lib/ai/prompts/coachSystemPrompt';
 import { 
   ChatSession, 
   ChatMessage, 
@@ -28,7 +30,7 @@ import {
   validateDraftUpdate,
 } from '@/lib/validation/coach';
 import { ApiResponse } from '@/lib/api/responses';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 /**
  * Convert MongoDB session to client-safe format
@@ -238,13 +240,14 @@ export async function loadSession(
 
 /**
  * Save a draft field update with optimistic locking
+ * When saving a claim for the first time, automatically generates a title
  */
 export async function saveDraftField(
   sessionId: string,
   field: ToulminStep,
   value: string,
   expectedVersion: number
-): Promise<ApiResponse<{ version: number }>> {
+): Promise<ApiResponse<{ version: number; name?: string }>> {
   try {
     const userId = await getAuthenticatedUserId();
     if (!userId) {
@@ -263,6 +266,42 @@ export async function saveDraftField(
     const draftsCol = await getArgumentDraftsCollection();
     const objectId = new ObjectId(sessionId);
 
+    // Get translations for checking untitled state
+    const t = await getTranslations('pages.coach');
+    const untitledName = t('untitledArgument');
+
+    // Build the update object
+    const updateFields: Record<string, unknown> = {
+      [field]: value,
+      updatedAt: new Date(),
+    };
+
+    let generatedTitle: string | undefined;
+
+    // Generate title when saving claim for the first time
+    if (field === TOULMIN_STEPS.CLAIM && value.trim()) {
+      // Fetch current draft to check if name is untitled
+      const currentDraft = await draftsCol.findOne({ 
+        sessionId: objectId, 
+        userId,
+        version: expectedVersion 
+      });
+
+      if (currentDraft && (!currentDraft.name || currentDraft.name === untitledName)) {
+        try {
+          // Get locale for title generation
+          const rawLocale = await getLocale();
+          const locale: SupportedLocale = rawLocale === 'es' ? 'es' : 'en';
+          
+          generatedTitle = await generateArgumentTitle(value, locale);
+          updateFields.name = generatedTitle;
+        } catch (titleError) {
+          // Log but don't fail the save if title generation fails
+          console.warn('Failed to generate title:', titleError);
+        }
+      }
+    }
+
     // Optimistic locking: only update if version matches
     const result = await draftsCol.findOneAndUpdate(
       { 
@@ -271,10 +310,7 @@ export async function saveDraftField(
         version: expectedVersion 
       },
       {
-        $set: {
-          [field]: value,
-          updatedAt: new Date(),
-        },
+        $set: updateFields,
         $inc: { version: 1 },
       },
       { returnDocument: 'after' }
@@ -289,7 +325,10 @@ export async function saveDraftField(
 
     return { 
       success: true, 
-      data: { version: result.version } 
+      data: { 
+        version: result.version,
+        ...(generatedTitle && { name: generatedTitle }),
+      } 
     };
   } catch (error) {
     console.error('Error saving draft field:', error);

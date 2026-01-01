@@ -74,16 +74,21 @@ export function CoachView({ session, messages, draft: initialDraft }: CoachViewP
 
       {/* Right: Diagram Preview */}
       <div className="w-1/2 rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
-        <div className="h-full p-4">
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">
-            {t('livePreview')}
-          </h3>
-          <ToulminDiagram
-            data={argumentData}
-            showExportButtons={false}
-            showControls={true}
-            showTitle={false}
-          />
+        <div className="h-full p-4 flex flex-col">
+          <div className="mb-4">
+            <h2 className="text-xl font-bold text-gray-900 truncate" title={argumentData.name}>
+              {argumentData.name}
+            </h2>
+            <p className="text-sm text-gray-500">{t('livePreview')}</p>
+          </div>
+          <div className="flex-1 min-h-0">
+            <ToulminDiagram
+              data={argumentData}
+              showExportButtons={false}
+              showControls={true}
+              showTitle={false}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -318,6 +318,8 @@ export function ChatPanel({
           ...draft,
           [proposedUpdate.field]: proposedUpdate.value,
           version: result.data.version,
+          // Update name if a title was generated
+          ...(result.data.name && { name: result.data.name }),
         };
         setDraft(updatedDraft);
         setProposedUpdate(null);

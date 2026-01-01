@@ -222,11 +222,18 @@ export async function deleteCoachSessionAndDraft(
     }
 
     // Delete all related data
-    await Promise.all([
+    // Draft deletion uses sessionId only (ownership already verified on session)
+    const [, , draftResult] = await Promise.all([
       sessionsCol.deleteOne({ _id: objectId, userId }),
       messagesCol.deleteMany({ sessionId: objectId }),
-      draftsCol.deleteOne({ sessionId: objectId, userId }),
+      draftsCol.deleteOne({ sessionId: objectId }),
     ]);
+
+    if (draftResult.deletedCount === 0) {
+      console.warn(
+        `[deleteCoachSessionAndDraft] No draft found for sessionId=${sessionId}, userId=${userId}`
+      );
+    }
 
     return { success: true };
   } catch (error) {

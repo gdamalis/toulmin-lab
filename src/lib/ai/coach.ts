@@ -1,6 +1,7 @@
 import { streamObject } from 'ai';
+import { z } from 'zod';
 import { getCoachProvider } from './providers';
-import { getCoachSystemPrompt } from './prompts/coachSystemPrompt';
+import { getCoachSystemPrompt, SupportedLocale } from './prompts/coachSystemPrompt';
 import { CoachAIResultSchema } from '@/lib/validation/coach';
 import { ToulminStep, ArgumentDraft } from '@/types/coach';
 
@@ -72,4 +73,51 @@ export async function generateCoachResponse(context: CoachContext) {
   });
 
   return object;
+}
+
+/**
+ * Schema for title generation response
+ */
+const TitleGenerationSchema = z.object({
+  title: z.string().min(1).max(100).describe('A concise, descriptive title for the argument'),
+});
+
+/**
+ * Language prompts for title generation
+ */
+const TITLE_PROMPTS: Record<SupportedLocale, { system: string; user: (claim: string) => string }> = {
+  en: {
+    system: `You are a title generator for academic arguments. Generate a concise, descriptive title (5-10 words) that captures the essence of the argument's claim. The title should be clear, professional, and suitable for an academic context. Do not use quotes or special formatting.`,
+    user: (claim: string) => `Generate a title for an argument with this claim: "${claim}"`,
+  },
+  es: {
+    system: `Eres un generador de títulos para argumentos académicos. Genera un título conciso y descriptivo (5-10 palabras) que capture la esencia de la afirmación del argumento. El título debe ser claro, profesional y adecuado para un contexto académico. No uses comillas ni formato especial.`,
+    user: (claim: string) => `Genera un título para un argumento con esta afirmación: "${claim}"`,
+  },
+};
+
+/**
+ * Generate a title for an argument based on its claim
+ * 
+ * @param claim - The claim text to generate a title from
+ * @param locale - The user's locale for response language (default: 'en')
+ * @returns The generated title string
+ */
+export async function generateArgumentTitle(
+  claim: string,
+  locale: SupportedLocale = 'en'
+): Promise<string> {
+  const provider = getCoachProvider();
+  const model = provider.getModel();
+  const prompts = TITLE_PROMPTS[locale];
+
+  const { object } = await streamObject({
+    model,
+    schema: TitleGenerationSchema,
+    system: prompts.system,
+    messages: [{ role: 'user', content: prompts.user(claim) }],
+    temperature: 0.5,
+  });
+
+  return object.title;
 }
