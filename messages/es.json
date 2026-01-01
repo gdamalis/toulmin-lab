@@ -217,7 +217,7 @@
       "authorPlaceholder": "Tu nombre",
       "argumentStructure": "Estructura del Argumento Toulmin",
       "argumentStructureDescription": "Completa los campos a continuación para construir tu argumento lógico utilizando el modelo Toulmin.",
-      "evidenceBacking": "Respaldo para la Evidencia",
+      "evidenceBacking": "Respaldo de la Evidencia",
       "evidenceBackingPlaceholder": "¿Por qué esta evidencia es creíble?",
       "reasoningSection": "Razonamiento y Justificación",
       "reasoningSectionDescription": "Conecta tu evidencia con tu afirmación a través de un razonamiento lógico.",
@@ -266,8 +266,8 @@
         "claim": "Afirmación",
         "grounds": "Evidencia",
         "warrant": "Garantía",
-        "groundsBacking": "Respaldo para la evidencia",
-        "warrantBacking": "Respaldo para la garantía",
+        "groundsBacking": "Respaldo de la evidencia",
+        "warrantBacking": "Respaldo de la garantía",
         "qualifier": "Calificador",
         "rebuttal": "Refutación"
       },
@@ -334,12 +334,13 @@
       "exampleLabel": "Ejemplo:",
       "autoContinue": "He confirmado esto. Por favor continúa al siguiente paso.",
       "editStep": "Me gustaría revisar este paso. Por favor guíame.",
+      "editingStep": "Editando: {step}",
       "preview": {
         "claim": "(La afirmación aparecerá aquí)",
         "grounds": "(La evidencia aparecerá aquí)",
         "warrant": "(La garantía aparecerá aquí)",
-        "groundsBacking": "(El respaldo para la evidencia aparecerá aquí)",
-        "warrantBacking": "(El respaldo para la garantía aparecerá aquí)",
+        "groundsBacking": "(El respaldo de la evidencia aparecerá aquí)",
+        "warrantBacking": "(El respaldo de la garantía aparecerá aquí)",
         "qualifier": "(El calificador aparecerá aquí)",
         "rebuttal": "(La refutación aparecerá aquí)"
       }

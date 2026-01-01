@@ -48,7 +48,7 @@ function StepIndicatorComponent({
                 disabled={!isClickable}
                 className={cn(
                   'group relative flex flex-col items-center',
-                  isClickable ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
+                  isClickable ? 'cursor-pointer hover:bg-white/20' : 'cursor-default'
                 )}
                 aria-current={isCurrent ? 'step' : undefined}
                 aria-disabled={!isClickable}

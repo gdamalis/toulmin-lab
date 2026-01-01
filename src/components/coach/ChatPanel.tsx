@@ -15,8 +15,9 @@ import {
   ProposedUpdate,
   getNextStep,
   TOULMIN_STEPS,
+  TOULMIN_STEP_ORDER,
 } from '@/types/coach';
-import { getStepCompletionStatus, ValidationLocale } from '@/lib/services/coach/stepCriteria';
+import { getStepCompletionStatus, findFirstIncompleteStep, ValidationLocale } from '@/lib/services/coach/stepCriteria';
 import { getCurrentUserToken } from '@/lib/auth/utils';
 import { 
   saveDraftField, 
@@ -54,6 +55,7 @@ export function ChatPanel({
   const [isRetrying, setIsRetrying] = useState(false);
   const [saveError, setSaveError] = useState<string | undefined>();
   const [streamError, setStreamError] = useState<string | null>(null);
+  const [editingStepFrom, setEditingStepFrom] = useState<ToulminStep | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -195,6 +197,8 @@ export function ChatPanel({
     if (canAdvanceAutomatically) {
       const nextStep = getNextStep(currentStep);
       if (nextStep) {
+        // Clear editing state since we're advancing forward
+        setEditingStepFrom(null);
         setCurrentStep(nextStep);
         await updateSessionStep(sessionId, nextStep);
       }
@@ -328,7 +332,8 @@ export function ChatPanel({
         const nextStep = isRebuttal ? null : getNextStep(currentStep);
 
         if (nextStep) {
-          // Advance to next step
+          // Advance to next step - clear editing state since we're moving forward
+          setEditingStepFrom(null);
           setCurrentStep(nextStep);
           await updateSessionStep(sessionId, nextStep);
         }
@@ -362,11 +367,35 @@ export function ChatPanel({
   /**
    * Handle clicking on a completed step to edit it
    * Only completed non-current steps are clickable (enforced by StepIndicator)
+   * If there are incomplete steps ahead of the clicked step, reroute to the first one
    */
   const handleStepClick = useCallback(async (step: ToulminStep) => {
     // Clear any pending proposal when switching steps
     setProposedUpdate(null);
     setSaveError(undefined);
+    
+    // Check if there are incomplete steps ahead of the clicked step
+    const clickedIndex = TOULMIN_STEP_ORDER.indexOf(step);
+    const firstIncomplete = findFirstIncompleteStep(draft, locale);
+    
+    // If there's an incomplete step ahead, reroute to it instead
+    if (firstIncomplete) {
+      const incompleteIndex = TOULMIN_STEP_ORDER.indexOf(firstIncomplete);
+      if (incompleteIndex > clickedIndex) {
+        // Reroute to the first incomplete step
+        setEditingStepFrom(null); // Clear editing state since we're moving to an incomplete step
+        setCurrentStep(firstIncomplete);
+        await updateSessionStep(sessionId, firstIncomplete);
+        await requestCoachResponse(t('autoContinue'), { 
+          emitUserMessage: false,
+          stepOverride: firstIncomplete,
+        });
+        return;
+      }
+    }
+    
+    // Track that we're editing from a previous step
+    setEditingStepFrom(step);
     
     // Update current step
     setCurrentStep(step);
@@ -377,7 +406,7 @@ export function ChatPanel({
       emitUserMessage: false,
       stepOverride: step,
     });
-  }, [sessionId, requestCoachResponse, t]);
+  }, [sessionId, draft, locale, requestCoachResponse, t]);
 
   if (isComplete || argumentId) {
     return (
@@ -401,6 +430,17 @@ export function ChatPanel({
           completedSteps={completedSteps}
           onStepClick={handleStepClick}
         />
+        {/* Editing chip - shows when editing a previous step */}
+        {editingStepFrom && (
+          <div className="mt-2 flex justify-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+              </svg>
+              {t('editingStep', { step: t(`steps.${editingStepFrom}`) })}
+            </span>
+          </div>
+        )}
         <div className="mt-3 flex justify-center">
           <ElementHelper step={currentStep} />
         </div>

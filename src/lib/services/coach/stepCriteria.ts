@@ -378,9 +378,10 @@ export function getStepCompletionStatus(
 
 /**
  * Find the first incomplete step
+ * Accepts any object with the required Toulmin fields
  */
 export function findFirstIncompleteStep(
-  draft: ArgumentDraft, 
+  draft: DraftFields, 
   locale: ValidationLocale = 'en'
 ): ToulminStep | null {
   const status = getStepCompletionStatus(draft, locale);

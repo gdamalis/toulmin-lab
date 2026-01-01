@@ -334,6 +334,7 @@
       "exampleLabel": "Example:",
       "autoContinue": "I've confirmed this. Please continue to the next step.",
       "editStep": "I'd like to revise this step. Please guide me.",
+      "editingStep": "Editing: {step}",
       "preview": {
         "claim": "(Claim will appear here)",
         "grounds": "(Grounds will appear here)",
