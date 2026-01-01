@@ -250,7 +250,13 @@
       "updatedOn": "Updated on",
       "author": "Author",
       "anonymous": "Anonymous",
-      "viewDiagram": "View diagram"
+      "viewDiagram": "View diagram",
+      "draft": "Draft",
+      "currentStep": "Current step",
+      "finishWithAI": "Finish with AI",
+      "continueWithAI": "Continue with AI",
+      "editWithAI": "Edit with AI",
+      "draftEditingHint": "This is a draft from the AI Coach. Saving will update the draft."
     },
     "coach": {
       "title": "AI Argument Coach",

@@ -250,7 +250,13 @@
       "updatedOn": "Actualizado el",
       "author": "Autor",
       "anonymous": "Anónimo",
-      "viewDiagram": "Ver diagrama"
+      "viewDiagram": "Ver diagrama",
+      "draft": "Borrador",
+      "currentStep": "Paso actual",
+      "finishWithAI": "Terminar con IA",
+      "continueWithAI": "Continuar con IA",
+      "editWithAI": "Editar con IA",
+      "draftEditingHint": "Este es un borrador del Asistente IA. Guardar actualizará el borrador."
     },
     "coach": {
       "title": "Asistente de Argumentos IA",

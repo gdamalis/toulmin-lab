@@ -13,20 +13,24 @@ export function extractAuthToken(authHeader: string | null): string | null {
 
 /**
  * Get the current user's authentication token
+ * @param forceRefresh Whether to force a token refresh (only use for auth-critical operations)
  * @param retryCount Number of retries if auth.currentUser is not immediately available
  * @returns Promise that resolves to the token string or null if no user is signed in
  */
-export async function getCurrentUserToken(retryCount = 3): Promise<string | null> {
+export async function getCurrentUserToken(
+  forceRefresh = false,
+  retryCount = 3
+): Promise<string | null> {
   try {
     // If we already have the currentUser, get the token immediately
     if (auth.currentUser) {
-      return await auth.currentUser.getIdToken(true);
+      return await auth.currentUser.getIdToken(forceRefresh);
     }
     
     // If we still have retries left, wait a bit and try again
     if (retryCount > 0) {
       await new Promise(resolve => setTimeout(resolve, 300));
-      return getCurrentUserToken(retryCount - 1);
+      return getCurrentUserToken(forceRefresh, retryCount - 1);
     }
     
     // No more retries, return null
