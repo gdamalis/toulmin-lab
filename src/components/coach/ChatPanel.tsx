@@ -341,12 +341,17 @@ export function ChatPanel({
         // Release loading before triggering next coach turn
         setIsLoading(false);
 
-        // Trigger next coach turn to continue the flow
-        // Use a hidden continuation message that won't appear in chat
-        await requestCoachResponse(t('autoContinue'), { 
-          emitUserMessage: false,
-          stepOverride: nextStep ?? currentStep,
-        });
+        if (isRebuttal) {
+          // Rebuttal is the last step - finalize the argument
+          await handleFinalization();
+        } else {
+          // Trigger next coach turn to continue the flow
+          // Use a hidden continuation message that won't appear in chat
+          await requestCoachResponse(t('autoContinue'), { 
+            emitUserMessage: false,
+            stepOverride: nextStep ?? currentStep,
+          });
+        }
       } else {
         const errorMsg = result.error ?? t('error.saveFailedRetry');
         setSaveError(errorMsg);
@@ -358,7 +363,7 @@ export function ChatPanel({
       console.error('Error saving draft:', error);
       setIsLoading(false);
     }
-  }, [sessionId, proposedUpdate, draft, isLoading, currentStep, requestCoachResponse, t]);
+  }, [sessionId, proposedUpdate, draft, isLoading, currentStep, requestCoachResponse, handleFinalization, t]);
 
   const handleRejectProposal = useCallback(() => {
     setProposedUpdate(null);

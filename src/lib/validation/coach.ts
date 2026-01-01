@@ -69,6 +69,22 @@ export const CoachAIResultSchema = z.object({
 });
 
 /**
+ * Lenient version of CoachAIResultSchema for streaming
+ * Does not enforce step-specific validation rules (e.g., no shouldAdvance on rebuttal)
+ * Use this for AI streaming, then apply coercion and validate with CoachAIResultSchema
+ */
+export const CoachAIResultStreamSchema = z.object({
+  assistantText: z.string().describe('The tutor response message to display to the user'),
+  step: ToulminStepSchema.describe('The current step being worked on'),
+  confidence: z.number().min(0).max(1).optional().describe('Confidence score 0-1 for the current step completion'),
+  proposedUpdate: ProposedUpdateSchema.optional().describe('Proposed text for the current Toulmin field'),
+  nextQuestion: z.string().optional().describe('A guiding question to help the user'),
+  shouldAdvance: z.boolean().optional().describe('Whether to advance to the next step'),
+  nextStep: ToulminStepSchema.optional().describe('The next step to advance to (required when shouldAdvance=true)'),
+  isComplete: z.boolean().optional().describe('Whether the entire argument is complete'),
+});
+
+/**
  * Zod schema for chat API request
  */
 export const CoachChatRequestSchema = z.object({

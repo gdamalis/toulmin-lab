@@ -5,7 +5,7 @@ import { withAuth } from '@/lib/api/auth';
 import { createErrorResponse } from '@/lib/api/responses';
 import { parseRequestBody } from '@/lib/api/middleware';
 import { checkRateLimit, COACH_RATE_LIMIT, createRateLimitHeaders } from '@/lib/api/rateLimit';
-import { validateChatRequest, CoachAIResultSchema } from '@/lib/validation/coach';
+import { validateChatRequest, CoachAIResultSchema, CoachAIResultStreamSchema } from '@/lib/validation/coach';
 import { getCoachProvider } from '@/lib/ai/providers';
 import { getCoachSystemPrompt, SupportedLocale, StepInfo } from '@/lib/ai/prompts/coachSystemPrompt';
 import { 
@@ -67,14 +67,23 @@ function trySalvageCoachResult(err: unknown): Record<string, unknown> | null {
       const step = parsed.step as ToulminStep | undefined;
       if (!step) return parsed;
 
-      // Don't advance from rebuttal; completion should be signaled via isComplete=true
+      // Don't advance from rebuttal; set isComplete=true instead
       if (step === TOULMIN_STEPS.REBUTTAL) {
         parsed.shouldAdvance = false;
+        parsed.isComplete = true;
+        delete parsed.nextStep;
         return parsed;
       }
 
       const computed = getNextStep(step);
       if (computed) parsed.nextStep = computed;
+    }
+
+    // Also handle case where shouldAdvance is true and step is rebuttal (even with nextStep set)
+    if (parsed.shouldAdvance === true && parsed.step === TOULMIN_STEPS.REBUTTAL) {
+      parsed.shouldAdvance = false;
+      parsed.isComplete = true;
+      delete parsed.nextStep;
     }
 
     return parsed;
@@ -111,8 +120,9 @@ function coerceResultToCurrentStep(
   // Recompute nextStep based on session's current step (not model's claimed step)
   if (coerced.shouldAdvance === true) {
     if (sessionCurrentStep === TOULMIN_STEPS.REBUTTAL) {
-      // Can't advance from rebuttal
+      // Can't advance from rebuttal - set isComplete instead
       coerced.shouldAdvance = false;
+      coerced.isComplete = true;
       delete coerced.nextStep;
     } else {
       // Server-side save-driven enforcement:
@@ -256,10 +266,11 @@ export async function POST(request: NextRequest) {
         { role: 'user' as const, content: sanitizedMessage },
       ];
 
-      // Stream the response using streamObject
+      // Stream the response using streamObject with lenient schema
+      // Coercion and strict validation happen after streaming completes
       const result = streamObject({
         model,
-        schema: CoachAIResultSchema,
+        schema: CoachAIResultStreamSchema,
         system: systemPrompt,
         messages,
         temperature: 0.7,
