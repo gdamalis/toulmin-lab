@@ -8,7 +8,6 @@ import {
 } from '@/lib/mongodb/collections/coach';
 import {
   ArgumentDraft,
-  ChatSession,
   SESSION_STATUS,
   ToulminStep,
   ClientArgumentDraft,
@@ -261,16 +260,22 @@ export async function resolveArgumentOrDraft(
 
     const objectId = new ObjectId(id);
 
-    // Check if it's a coach session first (faster path for drafts)
+    // Check if it's a coach session first
     const sessionsCol = await getCoachSessionsCollection();
     const session = await sessionsCol.findOne({
       _id: objectId,
       userId,
-      status: SESSION_STATUS.ACTIVE,
     });
 
     if (session) {
-      return { success: true, data: { kind: 'draft', sessionId: id } };
+      // If session is completed, return the finalized argument
+      if (session.status === SESSION_STATUS.COMPLETED && session.argumentId) {
+        return { success: true, data: { kind: 'argument', id: session.argumentId } };
+      }
+      // If session is active, return as draft
+      if (session.status === SESSION_STATUS.ACTIVE) {
+        return { success: true, data: { kind: 'draft', sessionId: id } };
+      }
     }
 
     // Otherwise assume it's an argument ID

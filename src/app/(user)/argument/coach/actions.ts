@@ -488,6 +488,17 @@ export async function finalizeArgumentFromDraft(
     // Create the permanent argument
     const argumentId = await createToulminArgument(argument, userId);
 
+    // Clean up draft and messages (best-effort, don't block on failure)
+    const messagesCol = await getCoachMessagesCollection();
+    try {
+      await Promise.allSettled([
+        draftsCol.deleteOne({ sessionId: objectId }),
+        messagesCol.deleteMany({ sessionId: objectId }),
+      ]);
+    } catch (cleanupError) {
+      console.warn('Failed to clean up draft/messages after finalization:', cleanupError);
+    }
+
     // Update session status
     await sessionsCol.updateOne(
       { _id: objectId, userId },

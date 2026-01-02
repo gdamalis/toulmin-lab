@@ -10,8 +10,6 @@ import { getCurrentUserToken } from "@/lib/auth/utils";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { use, useCallback, useEffect, useState } from "react";
-import { SparklesIcon } from "@heroicons/react/24/outline";
-
 interface ResolvedData {
   kind: "argument" | "draft";
   argument?: ToulminArgument;
@@ -110,16 +108,6 @@ export default function ToulminArgumentViewPage({
     }
   };
 
-  const handleEditWithAI = () => {
-    // For drafts, sessionId is the id
-    // For arguments, we'd need to create a new session - for now redirect to coach
-    if (resolvedData?.kind === "draft") {
-      router.push(`/argument/coach/${id}`);
-    } else {
-      router.push(`/argument/coach`);
-    }
-  };
-
   const renderContent = () => {
     if (isLoading) {
       return (
@@ -173,33 +161,13 @@ export default function ToulminArgumentViewPage({
 
   const isDraft = resolvedData?.kind === "draft" || isDraftQuery;
 
-  const headerButtons = isDraft
-    ? [
-        {
-          text: t("editDiagram"),
-          onClick: handleEdit,
-          variant: "secondary" as const,
-        },
-        {
-          text: t("continueWithAI"),
-          onClick: handleEditWithAI,
-          variant: "primary" as const,
-          icon: SparklesIcon,
-        },
-      ]
-    : [
-        {
-          text: t("editDiagram"),
-          onClick: handleEdit,
-          variant: "primary" as const,
-        },
-        {
-          text: t("editWithAI"),
-          onClick: handleEditWithAI,
-          variant: "secondary" as const,
-          icon: SparklesIcon,
-        },
-      ];
+  const headerButtons = [
+    {
+      text: t("editDiagram"),
+      onClick: handleEdit,
+      variant: "primary" as const,
+    },
+  ];
 
   return (
     <div className="mx-auto max-w-8xl pb-12">

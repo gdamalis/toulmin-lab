@@ -1,10 +1,11 @@
 import { Suspense } from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { CoachView } from '@/components/coach';
 import { loadSession } from '../actions';
 import { Loader } from '@/components/ui/Loader';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { getTranslations } from 'next-intl/server';
+import { SESSION_STATUS } from '@/types/coach';
 
 interface CoachSessionPageProps {
   params: Promise<{ sessionId: string }>;
@@ -18,6 +19,11 @@ async function CoachSessionContent({ sessionId }: { sessionId: string }) {
   }
   
   const { session, messages, draft } = result.data;
+  
+  // Redirect to finalized argument if session is completed
+  if (session.status === SESSION_STATUS.COMPLETED && session.argumentId) {
+    redirect(`/argument/view/${session.argumentId}`);
+  }
   
   return (
     <CoachView
