@@ -326,7 +326,12 @@
         "authRequired": "Authentication required. Please sign in and try again.",
         "processingFailed": "I encountered an error processing your message. Please try again.",
         "saveFailedRetry": "Failed to save. Please try again.",
-        "unexpectedError": "An unexpected error occurred. Please try again."
+        "unexpectedError": "An unexpected error occurred. Please try again.",
+        "rateLimitExceeded": "You're sending messages too quickly. Please wait {seconds} seconds before trying again.",
+        "validationFailed": "I couldn't understand that response. Please try rephrasing your message.",
+        "emptyResponse": "I didn't receive a proper response. Please try again.",
+        "stepMismatch": "There was a synchronization issue. Please refresh and try again.",
+        "streamFailed": "The connection was interrupted. Please try sending your message again."
       },
       "welcome": "Welcome! I'm your Toulmin argument coach. I'll help you build a well-structured argument step by step.\n\nLet's start with your **Claim** - the main assertion you want others to accept as true.\n\nWhat are you trying to argue? What position do you want to take?",
       "untitledArgument": "Untitled Argument",

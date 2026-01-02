@@ -17,135 +17,134 @@ import {
   ChatMessage, 
   ArgumentDraft,
   ToulminStep,
-  getNextStep,
-  TOULMIN_STEPS,
 } from '@/types/coach';
 import { getLocale, getTranslations } from 'next-intl/server';
+import { 
+  coerceResultToCurrentStep, 
+  trySalvageCoachResult 
+} from '@/lib/coach/coercion';
+
+/**
+ * Patterns for sanitizing user input to prevent prompt injection
+ */
+const INJECTION_PATTERNS = [
+  /ignore (previous|all|above) instructions/gi,
+  /you are now/gi,
+  /new instructions:/gi,
+  /system:/gi,
+  /\[SYSTEM\]/gi,
+  /\[INST\]/gi,
+  /<\|im_start\|>/gi,
+  /<\|im_end\|>/gi,
+];
+
+/**
+ * Max character length for user messages
+ */
+const MAX_USER_MESSAGE_LENGTH = 5000;
+
+/**
+ * Max total characters for conversation history (budget)
+ */
+const MAX_HISTORY_CHARS = 20000;
 
 /**
  * Sanitize user input to prevent prompt injection
  */
 function sanitizeUserInput(input: string): string {
-  // Remove any attempts to override system instructions
-  const patterns = [
-    /ignore (previous|all|above) instructions/gi,
-    /you are now/gi,
-    /new instructions:/gi,
-    /system:/gi,
-    /\[SYSTEM\]/gi,
-    /\[INST\]/gi,
-    /<\|im_start\|>/gi,
-    /<\|im_end\|>/gi,
-  ];
-  
   let sanitized = input;
-  patterns.forEach((pattern) => {
+  INJECTION_PATTERNS.forEach((pattern) => {
     sanitized = sanitized.replace(pattern, '[FILTERED]');
   });
   
   // Limit length
-  return sanitized.substring(0, 5000);
+  return sanitized.substring(0, MAX_USER_MESSAGE_LENGTH);
 }
 
 /**
- * Try to salvage a coach result when the model forgets nextStep
- * This patches the result so it passes schema validation
+ * Sanitize and budget conversation history
+ * Applies sanitization to all user messages and limits total character budget
  */
-function trySalvageCoachResult(err: unknown): Record<string, unknown> | null {
-  if (!err || typeof err !== 'object') return null;
-
-  // Vercel AI SDK errors sometimes include the generated text payload
-  const text = (err as { text?: unknown }).text;
-  if (typeof text !== 'string') return null;
-
-  try {
-    const parsed = JSON.parse(text) as Record<string, unknown>;
-    const shouldAdvance = parsed.shouldAdvance === true;
-    const nextStep = parsed.nextStep;
-
-    if (shouldAdvance && (nextStep === undefined || nextStep === null)) {
-      const step = parsed.step as ToulminStep | undefined;
-      if (!step) return parsed;
-
-      // Don't advance from rebuttal; set isComplete=true instead
-      if (step === TOULMIN_STEPS.REBUTTAL) {
-        parsed.shouldAdvance = false;
-        parsed.isComplete = true;
-        delete parsed.nextStep;
-        return parsed;
-      }
-
-      const computed = getNextStep(step);
-      if (computed) parsed.nextStep = computed;
-    }
-
-    // Also handle case where shouldAdvance is true and step is rebuttal (even with nextStep set)
-    if (parsed.shouldAdvance === true && parsed.step === TOULMIN_STEPS.REBUTTAL) {
-      parsed.shouldAdvance = false;
-      parsed.isComplete = true;
-      delete parsed.nextStep;
-    }
-
-    return parsed;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Coerce the AI result to match the session's current step
- * This prevents the model from proposing updates to wrong fields or skipping steps
- * @param draftFieldValue - The current value of the draft field for this step (empty string if not set)
- */
-function coerceResultToCurrentStep(
-  result: Record<string, unknown>,
-  sessionCurrentStep: ToulminStep,
-  draftFieldValue: string = ''
-): Record<string, unknown> {
-  const coerced = { ...result };
-
-  // Force step to match session's current step
-  if (coerced.step !== sessionCurrentStep) {
-    console.warn(`Coercing AI step '${coerced.step}' to session step '${sessionCurrentStep}'`);
-    coerced.step = sessionCurrentStep;
-  }
-
-  // If proposedUpdate.field doesn't match current step, remove it
-  const proposedUpdate = coerced.proposedUpdate as { field?: string } | undefined;
-  if (proposedUpdate && proposedUpdate.field !== sessionCurrentStep) {
-    console.warn(`Removing proposedUpdate for field '${proposedUpdate.field}' - expected '${sessionCurrentStep}'`);
-    delete coerced.proposedUpdate;
-  }
-
-  // Recompute nextStep based on session's current step (not model's claimed step)
-  if (coerced.shouldAdvance === true) {
-    if (sessionCurrentStep === TOULMIN_STEPS.REBUTTAL) {
-      // Can't advance from rebuttal - set isComplete instead
-      coerced.shouldAdvance = false;
-      coerced.isComplete = true;
-      delete coerced.nextStep;
+function sanitizeConversationHistory(
+  messages: Array<{ role: 'user' | 'assistant'; content: string }>
+): Array<{ role: 'user' | 'assistant'; content: string }> {
+  // First sanitize all user messages
+  const sanitizedMessages = messages.map((msg) => ({
+    role: msg.role,
+    content: msg.role === 'user' 
+      ? sanitizeUserInput(msg.content) 
+      : msg.content.substring(0, MAX_USER_MESSAGE_LENGTH), // Also limit assistant messages
+  }));
+  
+  // Apply character budget (keep most recent messages that fit)
+  let totalChars = 0;
+  const budgetedMessages: typeof sanitizedMessages = [];
+  
+  // Process in reverse (most recent first) to keep recent context
+  for (let i = sanitizedMessages.length - 1; i >= 0; i--) {
+    const msg = sanitizedMessages[i];
+    const msgLength = msg.content.length;
+    
+    if (totalChars + msgLength <= MAX_HISTORY_CHARS) {
+      budgetedMessages.unshift(msg);
+      totalChars += msgLength;
     } else {
-      // Server-side save-driven enforcement:
-      // If shouldAdvance=true but there's no valid proposedUpdate AND the draft field is empty,
-      // we strip shouldAdvance to prevent the client from advancing with an empty box.
-      const hasValidProposal = coerced.proposedUpdate !== undefined;
-      const stepHasContent = draftFieldValue.trim() !== '';
-
-      if (!hasValidProposal && !stepHasContent) {
-        console.warn(`Stripping shouldAdvance=true: no proposedUpdate and draft.${sessionCurrentStep} is empty`);
-        coerced.shouldAdvance = false;
-        delete coerced.nextStep;
-      } else {
-        const correctNextStep = getNextStep(sessionCurrentStep);
-        if (correctNextStep && coerced.nextStep !== correctNextStep) {
-          console.warn(`Correcting nextStep from '${coerced.nextStep}' to '${correctNextStep}'`);
-          coerced.nextStep = correctNextStep;
-        }
-      }
+      // Budget exceeded, stop including older messages
+      break;
     }
   }
+  
+  return budgetedMessages;
+}
 
-  return coerced;
+/**
+ * Detect if the user message indicates a rewrite/improve request
+ * This helps the AI understand when to propose text updates
+ */
+function detectRewriteIntent(message: string): boolean {
+  const rewritePatterns = [
+    /\b(rewrite|re-write|rephrase|re-phrase|improve|fix|help me word|reword|re-word)\b/i,
+    /\b(reescrib|reescribe|mejora|arregla|ayúdame a redactar|reformula)\b/i, // Spanish
+    /\b(can you|could you|please).*(write|rewrite|improve|fix|rephrase)/i,
+    /\b(puedes|podrías|por favor).*(escribir|reescribir|mejorar|arreglar)/i, // Spanish
+  ];
+  
+  return rewritePatterns.some((pattern) => pattern.test(message));
+}
+
+/**
+ * Validate the final coerced result against the strict schema
+ * Returns an error message if validation fails, null if valid
+ */
+function validateCoachResult(
+  result: Record<string, unknown>,
+  sessionCurrentStep: ToulminStep
+): string | null {
+  // Validate with strict schema
+  const parsed = CoachAIResultSchema.safeParse(result);
+  
+  if (!parsed.success) {
+    const issues = parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ');
+    console.error(`Coach result validation failed: ${issues}`);
+    return 'coach_validation_failed';
+  }
+
+  // Additional business rule checks
+  const data = parsed.data;
+
+  // assistantText must be non-empty
+  if (!data.assistantText || data.assistantText.trim() === '') {
+    console.error('Coach result has empty assistantText');
+    return 'coach_empty_response';
+  }
+
+  // step must match session
+  if (data.step !== sessionCurrentStep) {
+    console.error(`Coach result step '${data.step}' doesn't match session '${sessionCurrentStep}'`);
+    return 'coach_step_mismatch';
+  }
+
+  return null;
 }
 
 /**
@@ -226,9 +225,9 @@ export async function POST(request: NextRequest) {
       };
       await messagesCol.insertOne(userMessage as ChatMessage);
 
-      // Build conversation history, filtering out invalid messages
-      const conversationHistory = recentMessages
-        .reverse()
+      // Build conversation history, filtering out invalid messages and applying sanitization
+      const reversedMessages = [...recentMessages].reverse();
+      const rawHistory = reversedMessages
         .filter((msg) => 
           typeof msg.content === 'string' && 
           msg.content.trim() !== '' &&
@@ -238,9 +237,15 @@ export async function POST(request: NextRequest) {
           role: msg.role as 'user' | 'assistant',
           content: msg.content,
         }));
+      
+      // Sanitize all messages and apply character budget
+      const conversationHistory = sanitizeConversationHistory(rawHistory);
 
       // Sanitize user input
       const sanitizedMessage = sanitizeUserInput(message);
+
+      // Detect if user is requesting a rewrite/improvement
+      const isRewriteRequest = detectRewriteIntent(message);
 
       // Get locale for AI response language
       const rawLocale = await getLocale();
@@ -260,10 +265,14 @@ export async function POST(request: NextRequest) {
       const model = provider.getModel();
       const systemPrompt = getCoachSystemPrompt(currentStep, draft as ArgumentDraft, locale, stepInfo);
 
-      // Build messages for AI
+      // Build messages for AI, including rewrite context if detected
+      const userContent = isRewriteRequest
+        ? `[CONTEXT: User is requesting a rewrite/improvement of their text. If the current step field has content, propose an improved version in proposedUpdate.]\n\n${sanitizedMessage}`
+        : sanitizedMessage;
+
       const messages = [
         ...conversationHistory,
-        { role: 'user' as const, content: sanitizedMessage },
+        { role: 'user' as const, content: userContent },
       ];
 
       // Stream the response using streamObject with lenient schema
@@ -293,25 +302,71 @@ export async function POST(request: NextRequest) {
             const coercedFinal = coerceResultToCurrentStep(
               rawFinalObject as unknown as Record<string, unknown>,
               currentStep,
-              draftFieldValue
+              draftFieldValue,
+              locale
             );
-            const finalLine = JSON.stringify(coercedFinal) + '\n';
+
+            // Validate the coerced result
+            const validationError = validateCoachResult(coercedFinal, currentStep);
+            if (validationError) {
+              const errorLine = JSON.stringify({ error: validationError }) + '\n';
+              controller.enqueue(encoder.encode(errorLine));
+              controller.close();
+              return;
+            }
+
+            // Persist assistant message server-side (eliminates out-of-band client persistence)
+            const assistantText = coercedFinal.assistantText as string;
+            const assistantMessage: Omit<ChatMessage, '_id'> = {
+              sessionId: objectId,
+              role: 'assistant',
+              content: assistantText,
+              createdAt: new Date(),
+              step: currentStep,
+            };
+            const insertResult = await messagesCol.insertOne(assistantMessage as ChatMessage);
+            const assistantMessageId = insertResult.insertedId.toString();
+
+            // Include assistantMessageId in final response for reconciliation
+            const finalWithId = { ...coercedFinal, assistantMessageId };
+            const finalLine = JSON.stringify(finalWithId) + '\n';
             controller.enqueue(encoder.encode(finalLine));
             
             controller.close();
-          } catch (streamErr) {
-            console.error('Stream error:', streamErr);
+          } catch (error_) {
+            console.error('Stream error:', error_);
             
             // Try to salvage a result if the model forgot nextStep
-            const salvaged = trySalvageCoachResult(streamErr);
+            const salvaged = trySalvageCoachResult(error_);
             if (salvaged) {
               // Also coerce the salvaged result
               const draftValue = (draft[currentStep] as string) ?? '';
-              const coerced = coerceResultToCurrentStep(salvaged, currentStep, draftValue);
-              const parsed = CoachAIResultSchema.safeParse(coerced);
-              if (parsed.success) {
-                const salvagedLine = JSON.stringify(parsed.data) + '\n';
-                controller.enqueue(encoder.encode(salvagedLine));
+              const coerced = coerceResultToCurrentStep(salvaged, currentStep, draftValue, locale);
+              
+              // Validate the salvaged result
+              const validationError = validateCoachResult(coerced, currentStep);
+              if (!validationError) {
+                // Persist assistant message for salvaged result too
+                try {
+                  const assistantText = coerced.assistantText as string;
+                  const assistantMessage: Omit<ChatMessage, '_id'> = {
+                    sessionId: objectId,
+                    role: 'assistant',
+                    content: assistantText,
+                    createdAt: new Date(),
+                    step: currentStep,
+                  };
+                  const insertResult = await messagesCol.insertOne(assistantMessage as ChatMessage);
+                  const assistantMessageId = insertResult.insertedId.toString();
+                  const salvagedWithId = { ...coerced, assistantMessageId };
+                  const salvagedLine = JSON.stringify(salvagedWithId) + '\n';
+                  controller.enqueue(encoder.encode(salvagedLine));
+                } catch {
+                  console.error('Failed to persist salvaged assistant message');
+                  // Still emit the result without ID
+                  const salvagedLine = JSON.stringify(coerced) + '\n';
+                  controller.enqueue(encoder.encode(salvagedLine));
+                }
                 controller.close();
                 return;
               }

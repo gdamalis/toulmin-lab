@@ -114,6 +114,33 @@ export const COACH_RATE_LIMIT: RateLimitConfig = {
 };
 
 /**
+ * Rate limit for session creation
+ * 5 sessions per minute per user
+ */
+export const SESSION_CREATE_RATE_LIMIT: RateLimitConfig = {
+  maxRequests: 5,
+  windowMs: 60 * 1000, // 1 minute
+};
+
+/**
+ * Rate limit for argument finalization
+ * 10 finalizations per minute per user
+ */
+export const FINALIZE_RATE_LIMIT: RateLimitConfig = {
+  maxRequests: 10,
+  windowMs: 60 * 1000, // 1 minute
+};
+
+/**
+ * Rate limit for AI title generation
+ * 10 title generations per minute per user
+ */
+export const TITLE_GENERATION_RATE_LIMIT: RateLimitConfig = {
+  maxRequests: 10,
+  windowMs: 60 * 1000, // 1 minute
+};
+
+/**
  * Create rate limit headers for response
  */
 export function createRateLimitHeaders(result: RateLimitResult): HeadersInit {

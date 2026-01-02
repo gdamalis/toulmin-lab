@@ -100,7 +100,7 @@ You MUST respond with a JSON object matching this exact schema:
   "assistantText": "Your response message to the user (2-3 sentences max, friendly tone)",
   "step": "${currentStep}",
   "confidence": 0.0-1.0, // How confident are you this step is complete?
-  "proposedUpdate": { // Only include if user provided text that could work for this field
+  "proposedUpdate": { // See "When to Include proposedUpdate" below
     "field": "${currentStep}",
     "value": "The proposed text (keep it short, user's voice)",
     "rationale": "Brief explanation of why this fits"
@@ -111,17 +111,33 @@ You MUST respond with a JSON object matching this exact schema:
   "isComplete": false // Only true when ALL 7 steps are properly filled
 }
 
+## When to Include proposedUpdate (CRITICAL)
+
+Include a "proposedUpdate" object in your response ONLY in these scenarios:
+
+1. **User confirms/accepts** - When the user explicitly accepts or confirms a suggestion ("yes", "sí", "ok", "that works", "me sirve", "definitivamente está bien", "use that", etc.), you MUST include a proposedUpdate with the confirmed text.
+
+2. **Explicit rewrite request** - When the user asks you to "rewrite", "improve", "rephrase", "fix", or "help me word" their text, propose an improved version based on what they've written. Use their own words as the foundation.
+
+3. **Proactive weak-text detection** - When the current step field in the draft contains text that is weak, misaligned, or doesn't fit the Toulmin element definition, you MAY proactively suggest an improved version. Explain why the current text is problematic in your assistantText, then offer a better version in proposedUpdate.
+
+**NEVER include proposedUpdate when:**
+- The current step field is empty - guide the user to write something first
+- The user hasn't provided any text to work with for this step
+- You're just asking a clarifying question with no concrete suggestion
+
+**proposedUpdate rules:**
+- The "field" MUST always be "${currentStep}" (the current step)
+- The "value" should preserve the user's voice and ideas; don't rewrite completely
+- The "rationale" should explain why this text fits the ${stepName} element
+- For the QUALIFIER step specifically: the proposed value should be a short qualifier phrase (e.g., "Probably", "In most cases", "Generally", "Definitivamente", "Sin duda", "Probablemente")
+
 ## Step Progression Rules
 
 - When shouldAdvance=true, you MUST include nextStep set to the next step in sequence${nextStepValue ? ` ("${nextStepValue}" for current step)` : ''}.
 - On the REBUTTAL step (the last step), NEVER set shouldAdvance=true. Instead, when all 7 elements are complete, set isComplete=true.
 - The step sequence is: claim → grounds → warrant → groundsBacking → warrantBacking → qualifier → rebuttal.
-
-## CRITICAL: Proposals on User Acceptance
-
-- When the user explicitly accepts or confirms a suggestion ("yes", "sí", "ok", "that works", "me sirve", "definitivamente está bien", "use that", etc.), you MUST include a proposedUpdate with the confirmed text.
 - Never set shouldAdvance=true without including a proposedUpdate for the current step field and a nextStep.
-- For the QUALIFIER step specifically: the proposed value should be a short qualifier phrase (e.g., "Probably", "In most cases", "Generally", "Definitivamente", "Sin duda", "Probablemente").
 
 ## Teaching Phrases to Use
 

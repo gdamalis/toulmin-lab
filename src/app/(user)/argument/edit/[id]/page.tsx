@@ -9,6 +9,7 @@ import useNotification from "@/hooks/useNotification";
 import { ToulminArgument } from "@/types/client";
 import { ClientArgumentDraft } from "@/types/coach";
 import { getCurrentUserToken } from "@/lib/auth/utils";
+import { updateDraftFromEditorAction } from "@/app/(user)/argument/coach/actions";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { use, useCallback, useEffect, useState } from "react";
@@ -121,28 +122,15 @@ export default function ToulminArgumentEditor({
           router.push(`/argument/view/${id}`);
         }
       } else {
-        // Save draft via API
-        const token = await getCurrentUserToken();
-        if (!token) {
-          throw new Error("Authentication required");
-        }
-
-        const response = await fetch(`/api/coach/draft/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            name: toulminArgument.name,
-            parts: toulminArgument.parts,
-            version: resolvedData.draft?.version ?? 1,
-          }),
+        // Save draft via server action (consolidated mutation path)
+        const result = await updateDraftFromEditorAction(id, {
+          name: toulminArgument.name,
+          parts: toulminArgument.parts,
+          version: resolvedData.draft?.version ?? 1,
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error ?? "Failed to save draft");
+        if (!result.success) {
+          throw new Error(result.error ?? "Failed to save draft");
         }
 
         showSuccess(commonT("success"), t("saveSuccess"));

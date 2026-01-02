@@ -1,4 +1,4 @@
-import { streamObject } from 'ai';
+import { streamObject, generateObject } from 'ai';
 import { z } from 'zod';
 import { getCoachProvider } from './providers';
 import { getCoachSystemPrompt, SupportedLocale } from './prompts/coachSystemPrompt';
@@ -99,6 +99,8 @@ const TITLE_PROMPTS: Record<SupportedLocale, { system: string; user: (claim: str
 /**
  * Generate a title for an argument based on its claim
  * 
+ * Uses generateObject (non-streaming) for more reliable server-side generation.
+ * 
  * @param claim - The claim text to generate a title from
  * @param locale - The user's locale for response language (default: 'en')
  * @returns The generated title string
@@ -111,7 +113,7 @@ export async function generateArgumentTitle(
   const model = provider.getModel();
   const prompts = TITLE_PROMPTS[locale];
 
-  const { object } = await streamObject({
+  const { object } = await generateObject({
     model,
     schema: TitleGenerationSchema,
     system: prompts.system,
@@ -119,6 +121,5 @@ export async function generateArgumentTitle(
     temperature: 0.5,
   });
 
-  const result = await object;
-  return result.title;
+  return object.title;
 }

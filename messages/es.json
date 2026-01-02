@@ -326,7 +326,12 @@
         "authRequired": "Se requiere autenticación. Por favor inicia sesión e intenta de nuevo.",
         "processingFailed": "Ocurrió un error al procesar tu mensaje. Por favor intenta de nuevo.",
         "saveFailedRetry": "Error al guardar. Por favor intenta de nuevo.",
-        "unexpectedError": "Ocurrió un error inesperado. Por favor intenta de nuevo."
+        "unexpectedError": "Ocurrió un error inesperado. Por favor intenta de nuevo.",
+        "rateLimitExceeded": "Estás enviando mensajes muy rápido. Por favor espera {seconds} segundos antes de intentar de nuevo.",
+        "validationFailed": "No pude entender esa respuesta. Por favor intenta reformular tu mensaje.",
+        "emptyResponse": "No recibí una respuesta válida. Por favor intenta de nuevo.",
+        "stepMismatch": "Hubo un problema de sincronización. Por favor actualiza la página e intenta de nuevo.",
+        "streamFailed": "La conexión se interrumpió. Por favor intenta enviar tu mensaje de nuevo."
       },
       "welcome": "¡Bienvenido! Soy tu asistente de argumentos Toulmin. Te ayudaré a construir un argumento bien estructurado paso a paso.\n\nComencemos con tu **Afirmación** - la proposición principal que quieres que otros acepten como verdadera.\n\n¿Qué estás tratando de argumentar? ¿Qué posición quieres tomar?",
       "untitledArgument": "Argumento sin título",

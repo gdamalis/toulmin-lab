@@ -24,12 +24,20 @@ import {
   SESSION_STATUS,
   ToulminStep,
 } from '@/types/coach';
+import { ToulminArgumentPart } from '@/types/toulmin';
+import { updateDraftFromEditor as updateDraftService } from '@/lib/services/coach';
 import { ToulminArgument } from '@/types/client';
 import { 
   validateCreateSession, 
   validateDraftUpdate,
 } from '@/lib/validation/coach';
 import { ApiResponse } from '@/lib/api/responses';
+import { 
+  checkRateLimit, 
+  SESSION_CREATE_RATE_LIMIT, 
+  FINALIZE_RATE_LIMIT,
+  TITLE_GENERATION_RATE_LIMIT,
+} from '@/lib/api/rateLimit';
 import { getLocale, getTranslations } from 'next-intl/server';
 
 /**
@@ -112,6 +120,15 @@ export async function createSession(
     const userId = await getAuthenticatedUserId();
     if (!userId) {
       return { success: false, error: 'Authentication required' };
+    }
+
+    // Rate limiting
+    const rateLimitResult = checkRateLimit(`session:${userId}`, SESSION_CREATE_RATE_LIMIT);
+    if (!rateLimitResult.allowed) {
+      return { 
+        success: false, 
+        error: `rate_limit_exceeded:${rateLimitResult.retryAfter ?? 60}`,
+      };
     }
 
     const validation = validateCreateSession(formData ?? {});
@@ -288,16 +305,29 @@ export async function saveDraftField(
       });
 
       if (currentDraft && (!currentDraft.name || currentDraft.name === untitledName)) {
-        try {
-          // Get locale for title generation
-          const rawLocale = await getLocale();
-          const locale: SupportedLocale = rawLocale === 'es' ? 'es' : 'en';
-          
-          generatedTitle = await generateArgumentTitle(value, locale);
-          updateFields.name = generatedTitle;
-        } catch (titleError) {
-          // Log but don't fail the save if title generation fails
-          console.warn('Failed to generate title:', titleError);
+        // Rate limit title generation to prevent abuse
+        const titleRateLimitResult = checkRateLimit(`title:${userId}`, TITLE_GENERATION_RATE_LIMIT);
+        if (titleRateLimitResult.allowed) {
+          try {
+            // Get locale for title generation
+            const rawLocale = await getLocale();
+            const locale: SupportedLocale = rawLocale === 'es' ? 'es' : 'en';
+            
+            // Timeout safeguard: don't let title generation block the save for too long
+            const TITLE_GENERATION_TIMEOUT_MS = 5000;
+            const titlePromise = generateArgumentTitle(value, locale);
+            const timeoutPromise = new Promise<never>((_, reject) => 
+              setTimeout(() => reject(new Error('Title generation timed out')), TITLE_GENERATION_TIMEOUT_MS)
+            );
+            
+            generatedTitle = await Promise.race([titlePromise, timeoutPromise]);
+            updateFields.name = generatedTitle;
+          } catch {
+            // Log but don't fail the save if title generation fails or times out
+            console.warn('Failed to generate title (may have timed out)');
+          }
+        } else {
+          console.warn('Title generation rate limited, skipping');
         }
       }
     }
@@ -434,6 +464,15 @@ export async function addMessage(
 /**
  * Finalize argument from draft - converts draft to permanent argument
  * Returns the new argument ID for navigation
+ * 
+ * This operation is idempotent: if the session is already COMPLETED with an argumentId,
+ * it returns that argumentId without re-creating the argument.
+ * 
+ * Write order (safe without transactions):
+ * 1. Check idempotency (return existing if COMPLETED)
+ * 2. Create permanent argument
+ * 3. Update session to COMPLETED + argumentId
+ * 4. Best-effort cleanup of draft/messages
  */
 export async function finalizeArgumentFromDraft(
   sessionId: string
@@ -444,13 +483,37 @@ export async function finalizeArgumentFromDraft(
       return { success: false, error: 'Authentication required' };
     }
 
+    // Rate limiting (idempotency guard allows repeated calls, but rate limit prevents spam)
+    const rateLimitResult = checkRateLimit(`finalize:${userId}`, FINALIZE_RATE_LIMIT);
+    if (!rateLimitResult.allowed) {
+      return { 
+        success: false, 
+        error: `rate_limit_exceeded:${rateLimitResult.retryAfter ?? 60}`,
+      };
+    }
+
     if (!ObjectId.isValid(sessionId)) {
       return { success: false, error: 'Invalid session ID' };
     }
 
-    const draftsCol = await getArgumentDraftsCollection();
-    const sessionsCol = await getCoachSessionsCollection();
     const objectId = new ObjectId(sessionId);
+    const sessionsCol = await getCoachSessionsCollection();
+
+    // Idempotency guard: if session is already COMPLETED with argumentId, return it
+    const existingSession = await sessionsCol.findOne({ _id: objectId, userId });
+    if (!existingSession) {
+      return { success: false, error: 'Session not found' };
+    }
+    
+    if (existingSession.status === SESSION_STATUS.COMPLETED && existingSession.argumentId) {
+      // Already finalized - return existing argumentId
+      return { 
+        success: true, 
+        data: { argumentId: existingSession.argumentId } 
+      };
+    }
+
+    const draftsCol = await getArgumentDraftsCollection();
 
     // Fetch draft
     const draft = await draftsCol.findOne({ sessionId: objectId, userId });
@@ -485,21 +548,11 @@ export async function finalizeArgumentFromDraft(
       updatedAt: new Date(),
     };
 
-    // Create the permanent argument
+    // Step 1: Create the permanent argument
     const argumentId = await createToulminArgument(argument, userId);
 
-    // Clean up draft and messages (best-effort, don't block on failure)
-    const messagesCol = await getCoachMessagesCollection();
-    try {
-      await Promise.allSettled([
-        draftsCol.deleteOne({ sessionId: objectId }),
-        messagesCol.deleteMany({ sessionId: objectId }),
-      ]);
-    } catch (cleanupError) {
-      console.warn('Failed to clean up draft/messages after finalization:', cleanupError);
-    }
-
-    // Update session status
+    // Step 2: Update session to COMPLETED + argumentId BEFORE cleanup
+    // This ensures we don't end up with ACTIVE session + missing draft
     await sessionsCol.updateOne(
       { _id: objectId, userId },
       { 
@@ -510,6 +563,15 @@ export async function finalizeArgumentFromDraft(
         } 
       }
     );
+
+    // Step 3: Best-effort cleanup of draft and messages (non-blocking)
+    const messagesCol = await getCoachMessagesCollection();
+    Promise.allSettled([
+      draftsCol.deleteOne({ sessionId: objectId }),
+      messagesCol.deleteMany({ sessionId: objectId }),
+    ]).catch((cleanupError) => {
+      console.warn('Failed to clean up draft/messages after finalization:', cleanupError);
+    });
 
     revalidatePath('/dashboard');
     revalidatePath(`/argument/view/${argumentId}`);
@@ -552,5 +614,75 @@ export async function getActiveSessions(): Promise<ApiResponse<ClientChatSession
   } catch (error) {
     console.error('Error fetching active sessions:', error);
     return { success: false, error: 'Failed to fetch sessions' };
+  }
+}
+
+/**
+ * Validate draft editor update data
+ * Returns error message if invalid, null if valid
+ */
+function validateDraftEditorUpdate(data: {
+  name: string;
+  parts: ToulminArgumentPart;
+  version: number;
+}): string | null {
+  if (!data.name || typeof data.name !== 'string') {
+    return 'Name is required';
+  }
+  if (!data.parts || typeof data.parts !== 'object') {
+    return 'Parts are required';
+  }
+  if (typeof data.version !== 'number' || data.version < 0) {
+    return 'Invalid version';
+  }
+
+  // Validate parts fields (max length 2000 each to match Zod schema)
+  const maxFieldLength = 2000;
+  const partFields = ['claim', 'grounds', 'warrant', 'groundsBacking', 'warrantBacking', 'qualifier', 'rebuttal'] as const;
+  for (const field of partFields) {
+    const value = data.parts[field];
+    if (typeof value !== 'string') {
+      return `Invalid ${field} value`;
+    }
+    if (value.length > maxFieldLength) {
+      return `${field} exceeds maximum length of ${maxFieldLength} characters`;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Update a draft from the diagram editor
+ * Server action wrapper for updateDraftFromEditor service
+ */
+export async function updateDraftFromEditorAction(
+  sessionId: string,
+  data: {
+    name: string;
+    parts: ToulminArgumentPart;
+    version: number;
+  }
+): Promise<ApiResponse<{ version: number }>> {
+  try {
+    const userId = await getAuthenticatedUserId();
+    if (!userId) {
+      return { success: false, error: 'Authentication required' };
+    }
+
+    if (!ObjectId.isValid(sessionId)) {
+      return { success: false, error: 'Invalid session ID' };
+    }
+
+    const validationError = validateDraftEditorUpdate(data);
+    if (validationError) {
+      return { success: false, error: validationError };
+    }
+
+    const result = await updateDraftService(sessionId, userId, data);
+    return result;
+  } catch (error) {
+    console.error('Error updating draft from editor:', error);
+    return { success: false, error: 'Failed to update draft' };
   }
 }

@@ -1,5 +1,18 @@
 'use client';
 
+/**
+ * ChatPanel - Main coach conversation interface
+ * 
+ * Handles streaming AI responses and displays ProposedUpdateCard when the AI
+ * includes a proposedUpdate in its response. See docs/coach-tools.md for the
+ * full tool contract and trigger rules.
+ * 
+ * ProposedUpdateCard triggers:
+ * 1. User confirms/accepts a suggestion ("yes", "ok", "use that")
+ * 2. User requests explicit rewrite ("rewrite", "improve", "fix")
+ * 3. AI proactively detects weak/misaligned text in the current step
+ */
+
 import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { MessageBubble } from './MessageBubble';
 import { ChatInput } from './ChatInput';
@@ -21,7 +34,6 @@ import { getCurrentUserToken } from '@/lib/auth/utils';
 import { 
   saveDraftField, 
   updateSessionStep, 
-  addMessage,
   finalizeArgumentFromDraft,
 } from '@/app/(user)/argument/coach/actions';
 import { useTranslations, useLocale } from 'next-intl';
@@ -31,6 +43,39 @@ interface ChatPanelProps {
   readonly sessionId: string;
   readonly initialMessages: ClientChatMessage[];
   readonly initialStep: ToulminStep;
+}
+
+/**
+ * Known server error codes and their handling
+ */
+type ErrorCode = 
+  | 'coach_stream_failed'
+  | 'coach_validation_failed'
+  | 'coach_empty_response'
+  | 'coach_step_mismatch'
+  | 'rate_limit_exceeded';
+
+/**
+ * Parse error response to extract error code and details
+ */
+function parseErrorResponse(error: string): { code: ErrorCode | 'unknown'; retryAfter?: number } {
+  if (error.startsWith('rate_limit_exceeded:')) {
+    const retryAfter = Number.parseInt(error.split(':')[1], 10);
+    return { code: 'rate_limit_exceeded', retryAfter: Number.isNaN(retryAfter) ? 60 : retryAfter };
+  }
+  
+  const knownCodes: ErrorCode[] = [
+    'coach_stream_failed',
+    'coach_validation_failed', 
+    'coach_empty_response',
+    'coach_step_mismatch',
+  ];
+  
+  if (knownCodes.includes(error as ErrorCode)) {
+    return { code: error as ErrorCode };
+  }
+  
+  return { code: 'unknown' };
 }
 
 export function ChatPanel({
@@ -123,6 +168,28 @@ export function ChatPanel({
   }, []);
 
   /**
+   * Get user-friendly error message from error code
+   */
+  const getErrorMessage = useCallback((errorCode: string): string => {
+    const parsed = parseErrorResponse(errorCode);
+    
+    switch (parsed.code) {
+      case 'rate_limit_exceeded':
+        return t('error.rateLimitExceeded', { seconds: parsed.retryAfter ?? 60 });
+      case 'coach_validation_failed':
+        return t('error.validationFailed');
+      case 'coach_empty_response':
+        return t('error.emptyResponse');
+      case 'coach_step_mismatch':
+        return t('error.stepMismatch');
+      case 'coach_stream_failed':
+        return t('error.streamFailed');
+      default:
+        return t('error.processingFailed');
+    }
+  }, [t]);
+
+  /**
    * Try to parse a line as CoachAIResult
    */
   const tryParseCoachResult = useCallback((line: string): CoachAIResult | null => {
@@ -147,7 +214,7 @@ export function ChatPanel({
     if (!parsed) return currentResult;
     
     if (isCoachErrorLine(parsed)) {
-      setStreamError(t('error.processingFailed'));
+      setStreamError(getErrorMessage(parsed.error));
       return currentResult;
     }
     
@@ -155,7 +222,7 @@ export function ChatPanel({
       setStreamingContent(parsed.assistantText);
     }
     return parsed;
-  }, [isCoachErrorLine, t]);
+  }, [isCoachErrorLine, getErrorMessage]);
 
   /**
    * Parse NDJSON stream and return the final result
@@ -186,13 +253,24 @@ export function ChatPanel({
 
   /**
    * Process the AI result after streaming completes
+   * Note: Assistant messages are now persisted server-side in /api/coach
+   * The result may include assistantMessageId for reconciliation
    */
-  const processAIResult = useCallback(async (result: CoachAIResult) => {
-    const assistantMessage = createMessage('assistant', result.assistantText, currentStep);
+  const processAIResult = useCallback(async (result: CoachAIResult & { assistantMessageId?: string }) => {
+    // Use the server-provided messageId if available, otherwise generate a client-side one
+    const messageId = result.assistantMessageId ?? `assistant-${Date.now()}`;
+    const assistantMessage: ClientChatMessage = {
+      id: messageId,
+      sessionId,
+      role: 'assistant',
+      content: result.assistantText,
+      createdAt: new Date().toISOString(),
+      step: currentStep,
+    };
     setMessages((prev) => [...prev, assistantMessage]);
     setStreamingContent('');
 
-    await addMessage(sessionId, 'assistant', result.assistantText, currentStep);
+    // Note: addMessage() for assistant is no longer needed - server persists it
 
     // Only accept proposedUpdate when the field matches the current step
     // This prevents the model from proposing updates to wrong fields
@@ -224,7 +302,7 @@ export function ChatPanel({
     if (result.isComplete) {
       await handleFinalization();
     }
-  }, [sessionId, currentStep, draft, createMessage, handleFinalization]);
+  }, [sessionId, currentStep, draft, handleFinalization]);
 
   /**
    * Request a coach response from the API
@@ -272,6 +350,14 @@ export function ChatPanel({
 
       if (!response.ok) {
         const errorData = await response.json();
+        
+        // Handle rate limiting with specific message
+        if (response.status === 429) {
+          const retryAfter = errorData.retryAfter ?? Number.parseInt(response.headers.get('Retry-After') ?? '60', 10);
+          setStreamError(t('error.rateLimitExceeded', { seconds: retryAfter }));
+          return;
+        }
+        
         throw new Error(errorData.error ?? 'Failed to get response');
       }
 

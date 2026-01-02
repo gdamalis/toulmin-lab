@@ -39,6 +39,7 @@ export function ProposedUpdateCard({
       
       <div className="mt-3 flex gap-2">
         <Button
+          type="button"
           onClick={onConfirm}
           variant="primary"
           size="sm"
@@ -48,6 +49,7 @@ export function ProposedUpdateCard({
           {t('useThis')}
         </Button>
         <Button
+          type="button"
           onClick={onReject}
           variant="outline"
           size="sm"
