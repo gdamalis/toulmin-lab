@@ -8,23 +8,37 @@ import {
   ClientArgumentDraft,
 } from '@/types/coach';
 import { ToulminArgument } from '@/types/client';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
+import { CoachProvider, useCoach } from '@/contexts/CoachContext';
 
 interface CoachViewProps {
-  session: ClientChatSession;
-  messages: ClientChatMessage[];
-  draft: ClientArgumentDraft;
+  readonly session: ClientChatSession;
+  readonly messages: ClientChatMessage[];
+  readonly draft: ClientArgumentDraft;
 }
 
-export function CoachView({ session, messages, draft: initialDraft }: CoachViewProps) {
+export function CoachView({ session, messages, draft }: CoachViewProps) {
+  return (
+    <CoachProvider initialDraft={draft}>
+      <CoachViewContent session={session} messages={messages} />
+    </CoachProvider>
+  );
+}
+
+interface CoachViewContentProps {
+  readonly session: ClientChatSession;
+  readonly messages: ClientChatMessage[];
+}
+
+function CoachViewContent({ session, messages }: CoachViewContentProps) {
   const t = useTranslations('pages.coach');
-  const [draft, setDraft] = useState<ClientArgumentDraft>(initialDraft);
+  const { draft } = useCoach();
 
   /**
    * Convert ArgumentDraft to ToulminArgument format for diagram preview
    */
-  const draftToArgument = (d: ClientArgumentDraft): ToulminArgument => ({
+  const draftToArgument = useCallback((d: ClientArgumentDraft): ToulminArgument => ({
     _id: d.id,
     name: d.name?.trim() || t('untitledArgument'),
     author: {
@@ -43,22 +57,10 @@ export function CoachView({ session, messages, draft: initialDraft }: CoachViewP
     },
     createdAt: d.createdAt,
     updatedAt: d.updatedAt,
-  });
+  }), [t]);
 
-  // Convert draft to argument format for diagram
-  const argumentData = useMemo(() => draftToArgument(draft), [draft, t]);
-
-  // Listen for draft updates from ChatPanel
-  useEffect(() => {
-    const handleDraftUpdate = (event: CustomEvent<ClientArgumentDraft>) => {
-      setDraft(event.detail);
-    };
-
-    window.addEventListener('draftUpdated' as any, handleDraftUpdate);
-    return () => {
-      window.removeEventListener('draftUpdated' as any, handleDraftUpdate);
-    };
-  }, []);
+  // Convert draft to argument format for diagram - memoized
+  const argumentData = useMemo(() => draftToArgument(draft), [draftToArgument, draft]);
 
   return (
     <div className="flex h-[calc(100vh-8rem)] gap-4">
@@ -67,7 +69,6 @@ export function CoachView({ session, messages, draft: initialDraft }: CoachViewP
         <ChatPanel
           sessionId={session.id}
           initialMessages={messages}
-          initialDraft={draft}
           initialStep={session.currentStep}
         />
       </div>

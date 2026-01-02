@@ -119,5 +119,6 @@ export async function generateArgumentTitle(
     temperature: 0.5,
   });
 
-  return object.title;
+  const result = await object;
+  return result.title;
 }

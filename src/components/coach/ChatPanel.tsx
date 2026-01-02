@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { MessageBubble } from './MessageBubble';
 import { ChatInput } from './ChatInput';
 import { StepIndicator } from './StepIndicator';
@@ -9,7 +9,6 @@ import { ProposedUpdateCard } from './ProposedUpdateCard';
 import { CompletionCard } from './CompletionCard';
 import { 
   ClientChatMessage, 
-  ClientArgumentDraft, 
   ToulminStep,
   CoachAIResult,
   ProposedUpdate,
@@ -26,25 +25,27 @@ import {
   finalizeArgumentFromDraft,
 } from '@/app/(user)/argument/coach/actions';
 import { useTranslations, useLocale } from 'next-intl';
+import { useCoach } from '@/contexts/CoachContext';
 
 interface ChatPanelProps {
   readonly sessionId: string;
   readonly initialMessages: ClientChatMessage[];
-  readonly initialDraft: ClientArgumentDraft;
   readonly initialStep: ToulminStep;
 }
 
 export function ChatPanel({
   sessionId,
   initialMessages,
-  initialDraft,
   initialStep,
 }: Readonly<ChatPanelProps>) {
   const t = useTranslations('pages.coach');
   const rawLocale = useLocale();
   const locale: ValidationLocale = rawLocale === 'es' ? 'es' : 'en';
+  
+  // Get draft and abort controller from context
+  const { draft, updateDraft, createAbortController, abortControllerRef } = useCoach();
+  
   const [messages, setMessages] = useState<ClientChatMessage[]>(initialMessages);
-  const [draft, setDraft] = useState<ClientArgumentDraft>(initialDraft);
   const [currentStep, setCurrentStep] = useState<ToulminStep>(initialStep);
   const [isLoading, setIsLoading] = useState(false);
   const [streamingContent, setStreamingContent] = useState<string>('');
@@ -58,14 +59,25 @@ export function ChatPanel({
   const [editingStepFrom, setEditingStepFrom] = useState<ToulminStep | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Cleanup: abort any in-flight request on unmount
+  useEffect(() => {
+    const controller = abortControllerRef.current;
+    return () => {
+      controller?.abort();
+    };
+  }, [abortControllerRef]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, streamingContent]);
 
-  // Calculate completed steps using typed helper
-  const completedSteps = getStepCompletionStatus(draft, locale);
+  // Calculate completed steps using typed helper - memoized to avoid recalc on every render
+  const completedSteps = useMemo(
+    () => getStepCompletionStatus(draft, locale),
+    [draft, locale]
+  );
 
   const handleFinalization = useCallback(async () => {
     if (isComplete || argumentId) return;
@@ -125,6 +137,27 @@ export function ChatPanel({
   }, []);
 
   /**
+   * Process a single parsed result, updating state as needed.
+   * Returns the result if valid, null otherwise.
+   */
+  const processStreamLine = useCallback((
+    parsed: CoachAIResult | null,
+    currentResult: CoachAIResult | null
+  ): CoachAIResult | null => {
+    if (!parsed) return currentResult;
+    
+    if (isCoachErrorLine(parsed)) {
+      setStreamError(t('error.processingFailed'));
+      return currentResult;
+    }
+    
+    if (parsed.assistantText) {
+      setStreamingContent(parsed.assistantText);
+    }
+    return parsed;
+  }, [isCoachErrorLine, t]);
+
+  /**
    * Parse NDJSON stream and return the final result
    */
   const parseNDJSONStream = useCallback(async (
@@ -143,29 +176,13 @@ export function ChatPanel({
       buffer = lines.pop() ?? '';
 
       for (const line of lines) {
-        const parsed = tryParseCoachResult(line);
-        if (parsed) {
-          // Check if this is an error line from the server
-          if (isCoachErrorLine(parsed)) {
-            setStreamError(t('error.processingFailed'));
-            continue;
-          }
-          parsedResult = parsed;
-          if (parsed.assistantText) {
-            setStreamingContent(parsed.assistantText);
-          }
-        }
+        parsedResult = processStreamLine(tryParseCoachResult(line), parsedResult);
       }
     }
 
     // Process remaining buffer
-    const finalResult = tryParseCoachResult(buffer);
-    if (finalResult && isCoachErrorLine(finalResult)) {
-      setStreamError(t('error.processingFailed'));
-      return parsedResult; // Return last valid result if any
-    }
-    return finalResult ?? parsedResult;
-  }, [tryParseCoachResult, isCoachErrorLine, t]);
+    return processStreamLine(tryParseCoachResult(buffer), parsedResult);
+  }, [tryParseCoachResult, processStreamLine]);
 
   /**
    * Process the AI result after streaming completes
@@ -179,7 +196,7 @@ export function ChatPanel({
 
     // Only accept proposedUpdate when the field matches the current step
     // This prevents the model from proposing updates to wrong fields
-    if (result.proposedUpdate && result.proposedUpdate.field === currentStep) {
+    if (result.proposedUpdate?.field === currentStep) {
       setProposedUpdate(result.proposedUpdate);
     } else if (result.proposedUpdate) {
       console.warn(`Ignoring proposedUpdate for field '${result.proposedUpdate.field}' - expected '${currentStep}'`);
@@ -207,7 +224,7 @@ export function ChatPanel({
     if (result.isComplete) {
       await handleFinalization();
     }
-  }, [sessionId, currentStep, createMessage, handleFinalization]);
+  }, [sessionId, currentStep, draft, createMessage, handleFinalization]);
 
   /**
    * Request a coach response from the API
@@ -239,6 +256,9 @@ export function ChatPanel({
       setMessages((prev) => [...prev, userMessage]);
     }
 
+    // Create abort controller for this request
+    const abortController = createAbortController();
+
     try {
       const response = await fetch('/api/coach', {
         method: 'POST',
@@ -247,6 +267,7 @@ export function ChatPanel({
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ sessionId, message }),
+        signal: abortController.signal,
       });
 
       if (!response.ok) {
@@ -273,18 +294,18 @@ export function ChatPanel({
         setStreamError(t('error.processingFailed'));
       }
     } catch (error) {
+      // Don't show error for aborted requests
+      if (error instanceof Error && error.name === 'AbortError') {
+        return;
+      }
       console.error('Error sending message:', error);
       // Set error but keep any streaming content that was already displayed
       setStreamError(t('error.processingFailed'));
     } finally {
       setIsLoading(false);
-      // Only clear streaming content if we don't have an error
-      // This preserves partial content on stream failures
-      if (!streamError) {
-        setStreamingContent('');
-      }
+      setStreamingContent('');
     }
-  }, [sessionId, currentStep, createMessage, parseNDJSONStream, processAIResult, t, streamError]);
+  }, [sessionId, currentStep, createMessage, createAbortController, parseNDJSONStream, processAIResult, t]);
 
   const handleSendMessage = useCallback(async (content: string) => {
     if (isLoading || isComplete) return;
@@ -314,20 +335,16 @@ export function ChatPanel({
       );
 
       if (result.success && result.data) {
-        const updatedDraft: ClientArgumentDraft = {
+        const updatedDraft = {
           ...draft,
           [proposedUpdate.field]: proposedUpdate.value,
           version: result.data.version,
           // Update name if a title was generated
           ...(result.data.name && { name: result.data.name }),
         };
-        setDraft(updatedDraft);
+        // Update draft via context - this will sync the diagram automatically
+        updateDraft(updatedDraft);
         setProposedUpdate(null);
-        
-        // Notify CoachView to update the diagram preview
-        window.dispatchEvent(
-          new CustomEvent('draftUpdated', { detail: updatedDraft })
-        );
 
         // Determine if we should advance to the next step
         const isRebuttal = currentStep === TOULMIN_STEPS.REBUTTAL;
@@ -365,7 +382,7 @@ export function ChatPanel({
       console.error('Error saving draft:', error);
       setIsLoading(false);
     }
-  }, [sessionId, proposedUpdate, draft, isLoading, currentStep, requestCoachResponse, handleFinalization, t]);
+  }, [sessionId, proposedUpdate, draft, isLoading, currentStep, updateDraft, requestCoachResponse, handleFinalization, t]);
 
   const handleRejectProposal = useCallback(() => {
     setProposedUpdate(null);

@@ -16,6 +16,137 @@ const MIN_AI_CONFIDENCE = 0.7;
 const MIN_FIELD_LENGTH = 10;
 
 /**
+ * Pre-compiled regex patterns for validation heuristics.
+ * Built once at module load to avoid per-call overhead.
+ */
+const PATTERNS = {
+  en: {
+    evidenceStarters: /^(studies show|according to|research indicates|data shows|statistics|\d+%)/i,
+    factPatterns: /^(the sky is blue|water is wet|\d+ \+ \d+ =)/i,
+    evidenceIndicators: [
+      /\d+%/,
+      /\d+\s*(people|percent|million|billion|thousand)/i,
+      /according to/i,
+      /study|research|survey|report/i,
+      /for example|for instance|such as/i,
+      /observed|found|discovered|measured/i,
+      /data|evidence|statistics/i,
+    ],
+    warrantIndicators: [
+      /if\s+.+\s+then/i,
+      /when\s+.+\s+(it|we|they|this)/i,
+      /because\s+.+\s+(leads to|results in|causes|means)/i,
+      /generally|typically|usually|often/i,
+      /principle|rule|law|theory/i,
+      /implies|suggests|indicates|demonstrates/i,
+      /therefore|thus|hence|consequently/i,
+      /the more.+the more/i,
+      /leads to|results in|causes|enables/i,
+    ],
+    backingIndicators: [
+      /according to/i,
+      /\(\d{4}\)/,
+      /et al\./i,
+      /study|research|publication|paper|article/i,
+      /expert|authority|specialist/i,
+      /law|regulation|policy|standard/i,
+      /bible|scripture|quran|torah/i,
+      /constitution|amendment|statute/i,
+      /theory of|principle of|law of/i,
+      /professor|doctor|dr\./i,
+      /university|institute|organization/i,
+      /source:|citation:|reference:/i,
+    ],
+    qualifierIndicators: [
+      /probably|likely|possibly|perhaps/i,
+      /most|many|some|few/i,
+      /usually|typically|generally|often/i,
+      /in most cases|in many situations/i,
+      /under (normal|certain|these) conditions/i,
+      /tends to|is likely to/i,
+      /with (high|some|reasonable) (probability|certainty|confidence)/i,
+      /assuming|given that|provided that/i,
+      /almost|nearly|virtually/i,
+      /to a (large|certain|significant) extent/i,
+    ],
+    rebuttalIndicators: [
+      /unless|except|however|but/i,
+      /would not (apply|hold|work)/i,
+      /exception|counter|objection/i,
+      /on the other hand/i,
+      /might argue|could argue|some say/i,
+      /in cases where|when.+does not/i,
+      /fails when|breaks down when/i,
+      /limitation|weakness|flaw/i,
+      /critic|opponent|skeptic/i,
+      /challenge|question|dispute/i,
+    ],
+  },
+  es: {
+    evidenceStarters: /^(los estudios muestran|según|la investigación indica|los datos muestran|estadísticas|\d+%)/i,
+    factPatterns: /^(el cielo es azul|el agua está mojada|\d+ \+ \d+ =)/i,
+    evidenceIndicators: [
+      /\d+%/,
+      /\d+\s*(personas|por ciento|millones|miles)/i,
+      /según|de acuerdo con/i,
+      /estudio|investigación|encuesta|informe/i,
+      /por ejemplo|como por ejemplo|tales como/i,
+      /observó|encontró|descubrió|midió/i,
+      /datos|evidencia|estadísticas/i,
+    ],
+    warrantIndicators: [
+      /si\s+.+\s+entonces/i,
+      /cuando\s+.+\s+(esto|nosotros|ellos|se)/i,
+      /porque\s+.+\s+(conduce a|resulta en|causa|significa)/i,
+      /generalmente|típicamente|usualmente|a menudo/i,
+      /principio|regla|ley|teoría/i,
+      /implica|sugiere|indica|demuestra/i,
+      /por lo tanto|así|por ende|en consecuencia/i,
+      /cuanto más.+más/i,
+      /conduce a|resulta en|causa|permite/i,
+    ],
+    backingIndicators: [
+      /según|de acuerdo con/i,
+      /\(\d{4}\)/,
+      /et al\./i,
+      /estudio|investigación|publicación|artículo/i,
+      /experto|autoridad|especialista/i,
+      /ley|regulación|política|norma|estándar/i,
+      /biblia|escritura|corán|torá/i,
+      /constitución|enmienda|estatuto/i,
+      /teoría de|principio de|ley de/i,
+      /profesor|doctor|dra?\./i,
+      /universidad|instituto|organización/i,
+      /fuente:|cita:|referencia:/i,
+    ],
+    qualifierIndicators: [
+      /probablemente|posiblemente|quizás|tal vez/i,
+      /la mayoría|muchos|algunos|pocos/i,
+      /usualmente|típicamente|generalmente|a menudo/i,
+      /en la mayoría de los casos|en muchas situaciones/i,
+      /bajo (condiciones|circunstancias) (normales|ciertas|estas)/i,
+      /tiende a|es probable que/i,
+      /con (alta|cierta|razonable) (probabilidad|certeza|confianza)/i,
+      /asumiendo|dado que|siempre que/i,
+      /casi|prácticamente|virtualmente/i,
+      /en (gran|cierta|significativa) medida/i,
+    ],
+    rebuttalIndicators: [
+      /a menos que|excepto|sin embargo|pero/i,
+      /no (aplicaría|funcionaría|serviría)/i,
+      /excepción|contra|objeción/i,
+      /por otro lado|por otra parte/i,
+      /podría argumentar|algunos dicen|se podría decir/i,
+      /en casos donde|cuando.+no/i,
+      /falla cuando|no funciona cuando/i,
+      /limitación|debilidad|defecto/i,
+      /crítico|oponente|escéptico/i,
+      /desafío|cuestionamiento|disputa/i,
+    ],
+  },
+} as const;
+
+/**
  * Check if text looks like a claim (single assertion, not evidence)
  * A good claim:
  * - Is a single declarative statement
@@ -28,17 +159,14 @@ export function isValidClaim(text: string, locale: ValidationLocale = 'en'): boo
   
   if (trimmed.length < MIN_FIELD_LENGTH) return false;
   
-  // Should not start with evidence indicators (locale-aware)
-  const evidenceStarters = locale === 'es'
-    ? /^(los estudios muestran|según|la investigación indica|los datos muestran|estadísticas|\d+%)/i
-    : /^(studies show|according to|research indicates|data shows|statistics|\d+%)/i;
-  if (evidenceStarters.test(trimmed)) return false;
+  // Use pre-compiled patterns for the locale
+  const patterns = PATTERNS[locale];
+  
+  // Should not start with evidence indicators
+  if (patterns.evidenceStarters.test(trimmed)) return false;
   
   // Should not be a simple fact with no argument
-  const factPatterns = locale === 'es'
-    ? /^(el cielo es azul|el agua está mojada|\d+ \+ \d+ =)/i
-    : /^(the sky is blue|water is wet|\d+ \+ \d+ =)/i;
-  if (factPatterns.test(trimmed)) return false;
+  if (patterns.factPatterns.test(trimmed)) return false;
   
   return true;
 }
@@ -55,29 +183,8 @@ export function isValidGrounds(text: string, locale: ValidationLocale = 'en'): b
   
   if (trimmed.length < MIN_FIELD_LENGTH) return false;
   
-  // Look for evidence indicators (positive signals) - locale-aware
-  const evidenceIndicatorsEN = [
-    /\d+%/, // percentages
-    /\d+\s*(people|percent|million|billion|thousand)/i, // numbers with units
-    /according to/i,
-    /study|research|survey|report/i,
-    /for example|for instance|such as/i,
-    /observed|found|discovered|measured/i,
-    /data|evidence|statistics/i,
-  ];
-  
-  const evidenceIndicatorsES = [
-    /\d+%/, // percentages (universal)
-    /\d+\s*(personas|por ciento|millones|miles)/i, // numbers with units
-    /según|de acuerdo con/i,
-    /estudio|investigación|encuesta|informe/i,
-    /por ejemplo|como por ejemplo|tales como/i,
-    /observó|encontró|descubrió|midió/i,
-    /datos|evidencia|estadísticas/i,
-  ];
-  
-  const evidenceIndicators = locale === 'es' ? evidenceIndicatorsES : evidenceIndicatorsEN;
-  const hasEvidenceSignal = evidenceIndicators.some(pattern => pattern.test(trimmed));
+  // Use pre-compiled patterns for the locale
+  const hasEvidenceSignal = PATTERNS[locale].evidenceIndicators.some(pattern => pattern.test(trimmed));
   
   // Even without explicit markers, longer concrete text is acceptable
   return hasEvidenceSignal || trimmed.length > 50;
@@ -95,33 +202,8 @@ export function isValidWarrant(text: string, locale: ValidationLocale = 'en'): b
   
   if (trimmed.length < MIN_FIELD_LENGTH) return false;
   
-  // Look for warrant indicators - locale-aware
-  const warrantIndicatorsEN = [
-    /if\s+.+\s+then/i,
-    /when\s+.+\s+(it|we|they|this)/i,
-    /because\s+.+\s+(leads to|results in|causes|means)/i,
-    /generally|typically|usually|often/i,
-    /principle|rule|law|theory/i,
-    /implies|suggests|indicates|demonstrates/i,
-    /therefore|thus|hence|consequently/i,
-    /the more.+the more/i,
-    /leads to|results in|causes|enables/i,
-  ];
-  
-  const warrantIndicatorsES = [
-    /si\s+.+\s+entonces/i,
-    /cuando\s+.+\s+(esto|nosotros|ellos|se)/i,
-    /porque\s+.+\s+(conduce a|resulta en|causa|significa)/i,
-    /generalmente|típicamente|usualmente|a menudo/i,
-    /principio|regla|ley|teoría/i,
-    /implica|sugiere|indica|demuestra/i,
-    /por lo tanto|así|por ende|en consecuencia/i,
-    /cuanto más.+más/i,
-    /conduce a|resulta en|causa|permite/i,
-  ];
-  
-  const warrantIndicators = locale === 'es' ? warrantIndicatorsES : warrantIndicatorsEN;
-  const hasWarrantSignal = warrantIndicators.some(pattern => pattern.test(trimmed));
+  // Use pre-compiled patterns for the locale
+  const hasWarrantSignal = PATTERNS[locale].warrantIndicators.some(pattern => pattern.test(trimmed));
   
   // Warrants should express a general principle
   return hasWarrantSignal || trimmed.length > 40;
@@ -138,39 +220,8 @@ export function isValidBacking(text: string, locale: ValidationLocale = 'en'): b
   
   if (trimmed.length < MIN_FIELD_LENGTH) return false;
   
-  // Look for backing indicators - locale-aware
-  const backingIndicatorsEN = [
-    /according to/i,
-    /\(\d{4}\)/, // year citations
-    /et al\./i,
-    /study|research|publication|paper|article/i,
-    /expert|authority|specialist/i,
-    /law|regulation|policy|standard/i,
-    /bible|scripture|quran|torah/i, // religious texts
-    /constitution|amendment|statute/i,
-    /theory of|principle of|law of/i,
-    /professor|doctor|dr\./i,
-    /university|institute|organization/i,
-    /source:|citation:|reference:/i,
-  ];
-  
-  const backingIndicatorsES = [
-    /según|de acuerdo con/i,
-    /\(\d{4}\)/, // year citations (universal)
-    /et al\./i, // universal
-    /estudio|investigación|publicación|artículo/i,
-    /experto|autoridad|especialista/i,
-    /ley|regulación|política|norma|estándar/i,
-    /biblia|escritura|corán|torá/i, // religious texts
-    /constitución|enmienda|estatuto/i,
-    /teoría de|principio de|ley de/i,
-    /profesor|doctor|dra?\./i,
-    /universidad|instituto|organización/i,
-    /fuente:|cita:|referencia:/i,
-  ];
-  
-  const backingIndicators = locale === 'es' ? backingIndicatorsES : backingIndicatorsEN;
-  const hasBackingSignal = backingIndicators.some(pattern => pattern.test(trimmed));
+  // Use pre-compiled patterns for the locale
+  const hasBackingSignal = PATTERNS[locale].backingIndicators.some(pattern => pattern.test(trimmed));
   
   return hasBackingSignal || trimmed.length > 30;
 }
@@ -187,35 +238,8 @@ export function isValidQualifier(text: string, locale: ValidationLocale = 'en'):
   
   if (trimmed.length < 5) return false; // Qualifiers can be short
   
-  // Look for qualifier indicators - locale-aware
-  const qualifierIndicatorsEN = [
-    /probably|likely|possibly|perhaps/i,
-    /most|many|some|few/i,
-    /usually|typically|generally|often/i,
-    /in most cases|in many situations/i,
-    /under (normal|certain|these) conditions/i,
-    /tends to|is likely to/i,
-    /with (high|some|reasonable) (probability|certainty|confidence)/i,
-    /assuming|given that|provided that/i,
-    /almost|nearly|virtually/i,
-    /to a (large|certain|significant) extent/i,
-  ];
-  
-  const qualifierIndicatorsES = [
-    /probablemente|posiblemente|quizás|tal vez/i,
-    /la mayoría|muchos|algunos|pocos/i,
-    /usualmente|típicamente|generalmente|a menudo/i,
-    /en la mayoría de los casos|en muchas situaciones/i,
-    /bajo (condiciones|circunstancias) (normales|ciertas|estas)/i,
-    /tiende a|es probable que/i,
-    /con (alta|cierta|razonable) (probabilidad|certeza|confianza)/i,
-    /asumiendo|dado que|siempre que/i,
-    /casi|prácticamente|virtualmente/i,
-    /en (gran|cierta|significativa) medida/i,
-  ];
-  
-  const qualifierIndicators = locale === 'es' ? qualifierIndicatorsES : qualifierIndicatorsEN;
-  const hasQualifierSignal = qualifierIndicators.some(pattern => pattern.test(trimmed));
+  // Use pre-compiled patterns for the locale
+  const hasQualifierSignal = PATTERNS[locale].qualifierIndicators.some(pattern => pattern.test(trimmed));
   
   return hasQualifierSignal || trimmed.length >= 5;
 }
@@ -231,35 +255,8 @@ export function isValidRebuttal(text: string, locale: ValidationLocale = 'en'): 
   
   if (trimmed.length < MIN_FIELD_LENGTH) return false;
   
-  // Look for rebuttal indicators - locale-aware
-  const rebuttalIndicatorsEN = [
-    /unless|except|however|but/i,
-    /would not (apply|hold|work)/i,
-    /exception|counter|objection/i,
-    /on the other hand/i,
-    /might argue|could argue|some say/i,
-    /in cases where|when.+does not/i,
-    /fails when|breaks down when/i,
-    /limitation|weakness|flaw/i,
-    /critic|opponent|skeptic/i,
-    /challenge|question|dispute/i,
-  ];
-  
-  const rebuttalIndicatorsES = [
-    /a menos que|excepto|sin embargo|pero/i,
-    /no (aplicaría|funcionaría|serviría)/i,
-    /excepción|contra|objeción/i,
-    /por otro lado|por otra parte/i,
-    /podría argumentar|algunos dicen|se podría decir/i,
-    /en casos donde|cuando.+no/i,
-    /falla cuando|no funciona cuando/i,
-    /limitación|debilidad|defecto/i,
-    /crítico|oponente|escéptico/i,
-    /desafío|cuestionamiento|disputa/i,
-  ];
-  
-  const rebuttalIndicators = locale === 'es' ? rebuttalIndicatorsES : rebuttalIndicatorsEN;
-  const hasRebuttalSignal = rebuttalIndicators.some(pattern => pattern.test(trimmed));
+  // Use pre-compiled patterns for the locale
+  const hasRebuttalSignal = PATTERNS[locale].rebuttalIndicators.some(pattern => pattern.test(trimmed));
   
   return hasRebuttalSignal || trimmed.length > 30;
 }
