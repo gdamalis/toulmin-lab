@@ -63,7 +63,7 @@ function CoachViewContent({ session, messages }: CoachViewContentProps) {
   const argumentData = useMemo(() => draftToArgument(draft), [draftToArgument, draft]);
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] gap-4">
+    <div className="flex h-[calc(100vh-10rem)] gap-4">
       {/* Left: Chat Panel */}
       <div className="w-1/2 flex flex-col rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
         <ChatPanel
@@ -82,7 +82,7 @@ function CoachViewContent({ session, messages }: CoachViewContentProps) {
             </h2>
             <p className="text-sm text-gray-500">{t('livePreview')}</p>
           </div>
-          <div className="flex-1 min-h-0">
+          <div className="flex-1">
             <ToulminDiagram
               data={argumentData}
               showExportButtons={false}

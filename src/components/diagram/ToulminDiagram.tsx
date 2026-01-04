@@ -68,7 +68,7 @@ function ToulminDiagram({
   }, [setNodes, updatedNodes]);
 
   return (
-    <div className="space-y-4">
+    <div className="flex-1 space-y-4 h-full">
       {showExportButtons && (
         <ExportButtonGroup
           onExportPNG={exportAsPNG}
@@ -80,7 +80,7 @@ function ToulminDiagram({
       <div
         ref={diagramRef}
         aria-label="Toulmin argument diagram"
-        className="overflow-hidden h-[600px] bg-white"
+        className="overflow-hidden h-[inherit] bg-white"
       >
         <ReactFlow
           nodes={nodes}
