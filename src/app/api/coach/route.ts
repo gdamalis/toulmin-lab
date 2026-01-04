@@ -265,10 +265,26 @@ export async function POST(request: NextRequest) {
       const model = provider.getModel();
       const systemPrompt = getCoachSystemPrompt(currentStep, draft as ArgumentDraft, locale, stepInfo);
 
-      // Build messages for AI, including rewrite context if detected
-      const userContent = isRewriteRequest
-        ? `[CONTEXT: User is requesting a rewrite/improvement of their text. If the current step field has content, propose an improved version in proposedUpdate.]\n\n${sanitizedMessage}`
-        : sanitizedMessage;
+      // Get current draft field value
+      const draftFieldValue = (draft[currentStep] as string) ?? '';
+
+      // Detect if this is the first user turn for the current step
+      // Count prior user messages for this step (excluding the message we just inserted)
+      const priorUserMessagesForStep = recentMessages.filter(
+        (msg) => msg.role === 'user' && msg.step === currentStep
+      );
+      const isFirstAttemptForStep = priorUserMessagesForStep.length === 0;
+
+      // Build messages for AI, including context hints based on situation
+      let userContent = sanitizedMessage;
+      
+      if (isRewriteRequest) {
+        // User explicitly requested rewrite - allow proposedUpdate
+        userContent = `[CONTEXT: User is requesting a rewrite/improvement of their text. If the current step field has content, propose an improved version in proposedUpdate.]\n\n${sanitizedMessage}`;
+      } else if (isFirstAttemptForStep) {
+        // First user turn for this step - bias toward coaching feedback
+        userContent = `[CONTEXT: This is the user's first attempt for this step. Prefer coaching feedback and a guiding question (Pattern A response). Only include proposedUpdate if the text is already excellent and you are very confident (confidence >= 0.8).]\n\n${sanitizedMessage}`;
+      }
 
       const messages = [
         ...conversationHistory,
@@ -298,12 +314,13 @@ export async function POST(request: NextRequest) {
             
             // Emit final complete object, coerced to match session's current step
             const rawFinalObject = await result.object;
-            const draftFieldValue = (draft[currentStep] as string) ?? '';
             const coercedFinal = coerceResultToCurrentStep(
               rawFinalObject as unknown as Record<string, unknown>,
               currentStep,
               draftFieldValue,
-              locale
+              locale,
+              isFirstAttemptForStep,
+              isRewriteRequest
             );
 
             // Validate the coerced result
@@ -315,8 +332,17 @@ export async function POST(request: NextRequest) {
               return;
             }
 
+            // Ensure user always sees a guiding question by appending nextQuestion to assistantText
+            let assistantText = coercedFinal.assistantText as string;
+            const nextQuestion = coercedFinal.nextQuestion as string | undefined;
+            
+            if (nextQuestion && nextQuestion.trim() !== '') {
+              // Append question to assistantText so it's always visible to user
+              assistantText = `${assistantText}\n\n${nextQuestion.trim()}`;
+              coercedFinal.assistantText = assistantText;
+            }
+
             // Persist assistant message server-side (eliminates out-of-band client persistence)
-            const assistantText = coercedFinal.assistantText as string;
             const assistantMessage: Omit<ChatMessage, '_id'> = {
               sessionId: objectId,
               role: 'assistant',
@@ -340,15 +366,29 @@ export async function POST(request: NextRequest) {
             const salvaged = trySalvageCoachResult(error_);
             if (salvaged) {
               // Also coerce the salvaged result
-              const draftValue = (draft[currentStep] as string) ?? '';
-              const coerced = coerceResultToCurrentStep(salvaged, currentStep, draftValue, locale);
+              const coerced = coerceResultToCurrentStep(
+                salvaged, 
+                currentStep, 
+                draftFieldValue, 
+                locale,
+                isFirstAttemptForStep,
+                isRewriteRequest
+              );
               
               // Validate the salvaged result
               const validationError = validateCoachResult(coerced, currentStep);
               if (!validationError) {
                 // Persist assistant message for salvaged result too
                 try {
-                  const assistantText = coerced.assistantText as string;
+                  // Ensure user sees nextQuestion by appending to assistantText
+                  let assistantText = coerced.assistantText as string;
+                  const nextQuestion = coerced.nextQuestion as string | undefined;
+                  
+                  if (nextQuestion && nextQuestion.trim() !== '') {
+                    assistantText = `${assistantText}\n\n${nextQuestion.trim()}`;
+                    coerced.assistantText = assistantText;
+                  }
+
                   const assistantMessage: Omit<ChatMessage, '_id'> = {
                     sessionId: objectId,
                     role: 'assistant',

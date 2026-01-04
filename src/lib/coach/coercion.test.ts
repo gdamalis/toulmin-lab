@@ -366,3 +366,131 @@ describe('shouldAllowAdvancement', () => {
   });
 });
 
+describe('first-attempt bias', () => {
+  it('should strip proposedUpdate on first turn with low confidence', () => {
+    const result = {
+      assistantText: 'Good start!',
+      step: TOULMIN_STEPS.CLAIM,
+      confidence: 0.6, // Below 0.8 threshold for first turn
+      proposedUpdate: {
+        field: TOULMIN_STEPS.CLAIM,
+        value: 'Some claim text',
+        rationale: 'Some rationale',
+      },
+    };
+    
+    // isFirstAttempt=true means first user turn for this step
+    const coerced = coerceResultToCurrentStep(
+      result, 
+      TOULMIN_STEPS.CLAIM, 
+      '', // draftFieldValue 
+      'en', 
+      true, // isFirstAttempt
+      false // isRewriteRequest
+    );
+    
+    expect(coerced.proposedUpdate).toBeUndefined();
+    expect(coerced.assistantText).toBe('Good start!');
+  });
+  
+  it('should strip proposedUpdate on first turn with undefined confidence', () => {
+    const result = {
+      assistantText: 'Good start!',
+      step: TOULMIN_STEPS.CLAIM,
+      // No confidence provided
+      proposedUpdate: {
+        field: TOULMIN_STEPS.CLAIM,
+        value: 'Some claim text',
+        rationale: 'Some rationale',
+      },
+    };
+    
+    const coerced = coerceResultToCurrentStep(
+      result, 
+      TOULMIN_STEPS.CLAIM, 
+      '', 
+      'en', 
+      true, // First turn
+      false
+    );
+    
+    expect(coerced.proposedUpdate).toBeUndefined();
+  });
+  
+  it('should keep proposedUpdate on first turn with high confidence', () => {
+    const result = {
+      assistantText: 'Excellent claim!',
+      step: TOULMIN_STEPS.CLAIM,
+      confidence: 0.9, // Above 0.8 threshold
+      proposedUpdate: {
+        field: TOULMIN_STEPS.CLAIM,
+        value: 'Universities should require critical thinking courses for all students.',
+        rationale: 'Clear debatable assertion',
+      },
+    };
+    
+    const coerced = coerceResultToCurrentStep(
+      result, 
+      TOULMIN_STEPS.CLAIM, 
+      '', 
+      'en', 
+      true, // First turn but high confidence
+      false
+    );
+    
+    expect(coerced.proposedUpdate).toBeDefined();
+    const update = coerced.proposedUpdate as { value: string };
+    expect(update.value).toBe('Universities should require critical thinking courses for all students.');
+  });
+  
+  it('should keep proposedUpdate on second turn even with low confidence', () => {
+    const result = {
+      assistantText: 'Here is an improved version',
+      step: TOULMIN_STEPS.CLAIM,
+      confidence: 0.5, // Low confidence, but NOT first turn
+      proposedUpdate: {
+        field: TOULMIN_STEPS.CLAIM,
+        value: 'Improved claim text',
+        rationale: 'Some rationale',
+      },
+    };
+    
+    // isFirstAttempt=false means user has sent at least one message for this step already
+    const coerced = coerceResultToCurrentStep(
+      result, 
+      TOULMIN_STEPS.CLAIM, 
+      'Original claim text',
+      'en',
+      false, // NOT first turn
+      false
+    );
+    
+    expect(coerced.proposedUpdate).toBeDefined();
+  });
+  
+  it('should keep proposedUpdate on first turn if explicit rewrite request', () => {
+    const result = {
+      assistantText: 'Here is a better version',
+      step: TOULMIN_STEPS.CLAIM,
+      confidence: 0.5, // Low confidence
+      proposedUpdate: {
+        field: TOULMIN_STEPS.CLAIM,
+        value: 'Improved claim text',
+        rationale: 'Clearer wording',
+      },
+    };
+    
+    // Even on first turn, if user asked for rewrite, allow proposal
+    const coerced = coerceResultToCurrentStep(
+      result, 
+      TOULMIN_STEPS.CLAIM, 
+      '',
+      'en',
+      true, // First turn
+      true  // BUT explicit rewrite request
+    );
+    
+    expect(coerced.proposedUpdate).toBeDefined();
+  });
+});
+

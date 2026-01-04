@@ -83,12 +83,16 @@ export function shouldAllowAdvancement(
  * This prevents the model from proposing updates to wrong fields or skipping steps
  * @param draftFieldValue - The current value of the draft field for this step (empty string if not set)
  * @param locale - Locale for step validation heuristics
+ * @param isFirstAttempt - True if this is the first user turn for this step
+ * @param isRewriteRequest - True if the user explicitly asked for a rewrite
  */
 export function coerceResultToCurrentStep(
   result: Record<string, unknown>,
   sessionCurrentStep: ToulminStep,
   draftFieldValue: string = '',
-  locale: ValidationLocale = 'en'
+  locale: ValidationLocale = 'en',
+  isFirstAttempt: boolean = false,
+  isRewriteRequest: boolean = false
 ): Record<string, unknown> {
   const coerced = { ...result };
 
@@ -104,7 +108,22 @@ export function coerceResultToCurrentStep(
   }
 
   // Validate and sanitize proposedUpdate
-  sanitizeProposedUpdate(coerced, sessionCurrentStep);
+  const hasProposal = sanitizeProposedUpdate(coerced, sessionCurrentStep);
+
+  // First-attempt bias: Only apply on true first attempt (not subsequent turns)
+  // If it's a first attempt, not a rewrite request, and confidence is low, strip the proposal
+  if (hasProposal && isFirstAttempt && !isRewriteRequest) {
+    const confidence = coerced.confidence as number | undefined;
+    const MIN_CONFIDENCE_FOR_FIRST_ATTEMPT_PROPOSAL = 0.8;
+    
+    if (confidence === undefined || confidence < MIN_CONFIDENCE_FOR_FIRST_ATTEMPT_PROPOSAL) {
+      console.warn(
+        `Stripping proposedUpdate on first attempt: confidence ${confidence ?? 'undefined'} ` +
+        `below threshold ${MIN_CONFIDENCE_FOR_FIRST_ATTEMPT_PROPOSAL}`
+      );
+      delete coerced.proposedUpdate;
+    }
+  }
 
   // Process advancement logic
   if (coerced.shouldAdvance !== true) {

@@ -82,12 +82,30 @@ When the current step field contains text that is:
 
 **AI may** proactively suggest improvements with explanation.
 
+### 4. Strong First Attempt (High Confidence)
+
+When the user's first attempt is already excellent and complete:
+- Text clearly fits the Toulmin element definition
+- No significant improvements needed
+- **AI confidence >= 0.8**
+
+**AI may** propose the text directly for confirmation. But if there's room for improvement, prefer coaching feedback.
+
 ### When NOT to Include proposedUpdate
 
-- Current step field is empty (guide user to write first)
+- This is the user's **first turn** for the current step (guide them first with questions!)
 - No text provided for this step yet
 - Just asking a clarifying question
 - User hasn't engaged with the current step
+- Text is decent but could be better (coach them to improve it themselves)
+- Confidence < 0.8 on a first turn for the step
+
+## Response Display
+
+The API automatically **combines** `assistantText` and `nextQuestion` before persisting the assistant message:
+- If `nextQuestion` is present and non-empty, it is appended to `assistantText` with line breaks
+- This ensures the user always sees guiding questions without requiring client-side logic
+- The combined text is what gets displayed in the chat UI and stored in the database
 
 ## Server-Side Validation
 
@@ -95,11 +113,20 @@ The API (`/api/coach`) enforces the contract:
 
 1. **Step coercion**: `step` and `proposedUpdate.field` are forced to match the session's current step
 2. **Empty value removal**: `proposedUpdate` with empty `value` is stripped
-3. **shouldAdvance guards**: 
+3. **First-turn bias**: When this is the first user turn for the current step:
+   - A prompt hint is added encouraging coaching feedback over proposals
+   - `proposedUpdate` is stripped if `confidence < 0.8` (unless explicit rewrite request)
+   - This prevents rushing to proposals before the user has been properly guided
+4. **shouldAdvance guards**: 
    - Stripped if no `proposedUpdate` and draft field is empty
+   - Stripped if text doesn't pass step validation heuristics
+   - Stripped if `confidence < 0.6`
    - Converted to `isComplete=true` on rebuttal step
-4. **nextStep correction**: Automatically set to correct next step when `shouldAdvance=true`
-5. **Schema validation**: Final result must pass `CoachAIResultSchema`
+5. **nextStep correction**: Automatically set to correct next step when `shouldAdvance=true`
+6. **Schema validation**: Final result must pass `CoachAIResultSchema`
+7. **Question appending**: If `nextQuestion` is present, it's appended to `assistantText` before persistence
+
+**Note**: "First turn" means the first user message for the current step, not whether the draft field is empty. This allows proper coaching across multiple conversational turns before a proposal is made.
 
 ## UI Handling (ChatPanel)
 
