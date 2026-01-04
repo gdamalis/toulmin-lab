@@ -17,6 +17,8 @@ interface ArgumentListItemProps {
 interface DraftListItemProps {
   draft: DraftOverview;
   onDelete: (draft: DraftOverview) => void;
+  canUseAI?: boolean;
+  aiDisabledTooltip?: string;
 }
 
 export function ArgumentListItem({
@@ -78,6 +80,8 @@ export function ArgumentListItem({
 export function DraftListItem({
   draft,
   onDelete,
+  canUseAI = true,
+  aiDisabledTooltip,
 }: Readonly<DraftListItemProps>) {
   const t = useTranslations("pages.argument");
   const commonT = useTranslations("common");
@@ -129,6 +133,8 @@ export function DraftListItem({
           href={`/argument/coach/${draft.sessionId}`}
           variant="primary"
           size="sm"
+          disabled={!canUseAI}
+          tooltip={aiDisabledTooltip}
         >
           <SparklesIcon className="-ml-0.5 mr-1.5 h-4 w-4" aria-hidden="true" />
           {t("finishWithAI")}

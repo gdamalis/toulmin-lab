@@ -328,6 +328,7 @@
         "saveFailedRetry": "Failed to save. Please try again.",
         "unexpectedError": "An unexpected error occurred. Please try again.",
         "rateLimitExceeded": "You're sending messages too quickly. Please wait {seconds} seconds before trying again.",
+        "monthlyQuotaExceeded": "You've reached your monthly AI coach limit. Resets on {resetDate} (UTC). You can continue editing your argument manually.",
         "validationFailed": "I couldn't understand that response. Please try rephrasing your message.",
         "emptyResponse": "I didn't receive a proper response. Please try again.",
         "stepMismatch": "There was a synchronization issue. Please refresh and try again.",
@@ -340,6 +341,12 @@
       "autoContinue": "I've confirmed this. Please continue to the next step.",
       "editStep": "I'd like to revise this step. Please guide me.",
       "editingStep": "Editing: {step}",
+      "continueEditing": "Continue editing without AI",
+      "quota": {
+        "usage": "AI messages used",
+        "resets": "Resets",
+        "exhausted": "Monthly limit reached. You can continue editing manually."
+      },
       "preview": {
         "claim": "(Claim will appear here)",
         "grounds": "(Grounds will appear here)",

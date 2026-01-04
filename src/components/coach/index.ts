@@ -6,3 +6,4 @@ export { ElementHelper } from './ElementHelper';
 export { ProposedUpdateCard } from './ProposedUpdateCard';
 export { CompletionCard } from './CompletionCard';
 export { CoachView } from './CoachView';
+export { CoachUsageMeter } from './CoachUsageMeter';

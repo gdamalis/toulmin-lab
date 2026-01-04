@@ -41,6 +41,7 @@ export interface ButtonProps
   href?: string;
   isExternal?: boolean;
   isLoading?: boolean;
+  tooltip?: string;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -54,6 +55,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       href,
       isExternal = false,
       isLoading = false,
+      tooltip,
       ...props
     },
     ref
@@ -62,9 +64,23 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const buttonClasses = cn(
       buttonVariants({ variant, size, className }),
       isLoading && 'opacity-70 cursor-wait',
+      disabled && href && 'opacity-50 cursor-not-allowed pointer-events-none',
     );
 
     if (href) {
+      // If disabled with href, render as non-interactive span
+      if (disabled) {
+        return (
+          <span 
+            className={buttonClasses}
+            aria-disabled="true"
+            title={tooltip}
+          >
+            {children}
+          </span>
+        );
+      }
+      
       if (isExternal) {
         return (
           <a
@@ -72,6 +88,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             target="_blank"
             rel="noopener noreferrer"
             className={buttonClasses}
+            title={tooltip}
           >
             {children}
           </a>
@@ -83,6 +100,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           href={href}
           className={buttonClasses}
           onClick={() => startNavigation()}
+          title={tooltip}
         >
           {children}
         </Link>
@@ -94,6 +112,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={buttonClasses}
+        title={tooltip}
         {...props}
       >
         {isLoading ? (

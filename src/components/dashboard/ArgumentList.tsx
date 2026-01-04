@@ -25,6 +25,8 @@ interface ArgumentListProps {
   onDeleteArgument: (argument: ToulminArgument) => void;
   onDeleteDraft?: (draft: DraftOverview) => void;
   itemsPerPage?: number;
+  canUseAI?: boolean;
+  aiDisabledTooltip?: string;
 }
 
 export function ArgumentList({
@@ -35,6 +37,8 @@ export function ArgumentList({
   onDeleteArgument,
   onDeleteDraft,
   itemsPerPage = 10,
+  canUseAI = true,
+  aiDisabledTooltip,
 }: Readonly<ArgumentListProps>) {
   const t = useTranslations("pages.argument");
   const commonT = useTranslations("common");
@@ -115,6 +119,8 @@ export function ArgumentList({
               key={item.id}
               draft={item.data as DraftOverview}
               onDelete={onDeleteDraft ?? (() => {})}
+              canUseAI={canUseAI}
+              aiDisabledTooltip={aiDisabledTooltip}
             />
           )
         )}

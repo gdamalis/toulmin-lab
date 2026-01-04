@@ -3,10 +3,11 @@
 import { ArgumentList, DeleteArgumentModal } from "@/components/dashboard";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { useArgumentOverview } from "@/hooks/useArgumentOverview";
+import { useCoachQuota } from "@/hooks/useCoachQuota";
 import { ToulminArgument } from "@/types/client";
 import { DraftOverview } from "@/lib/services/coach";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { SparklesIcon } from "@heroicons/react/24/outline";
 
 type DeleteTarget =
@@ -15,6 +16,7 @@ type DeleteTarget =
 
 export default function ArgumentsPage() {
   const t = useTranslations("pages.argument");
+  const coachT = useTranslations("pages.coach");
   
   const {
     toulminArguments,
@@ -27,8 +29,24 @@ export default function ArgumentsPage() {
     isDeletingDraft,
   } = useArgumentOverview();
   
+  const { canUseAI, quotaStatus } = useCoachQuota();
+  
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
+
+  // Generate tooltip text for disabled AI button
+  const aiButtonTooltip = useMemo(() => {
+    if (canUseAI || !quotaStatus) return undefined;
+    
+    const resetDate = new Date(quotaStatus.resetAt);
+    const resetDateStr = resetDate.toLocaleDateString(undefined, {
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC',
+    });
+    
+    return coachT('error.monthlyQuotaExceeded', { resetDate: resetDateStr });
+  }, [canUseAI, quotaStatus, coachT]);
 
   const handleOpenDeleteModal = (item: ToulminArgument | DraftOverview, type: "argument" | "draft") => {
     setDeleteTarget({ type, item } as DeleteTarget);
@@ -80,6 +98,8 @@ export default function ArgumentsPage() {
             href: "/argument/coach",
             variant: "secondary",
             icon: SparklesIcon,
+            disabled: !canUseAI,
+            tooltip: aiButtonTooltip,
           },
         ]}
       />
@@ -91,6 +111,8 @@ export default function ArgumentsPage() {
         error={error}
         onDeleteArgument={(arg) => handleOpenDeleteModal(arg, "argument")}
         onDeleteDraft={(draft) => handleOpenDeleteModal(draft, "draft")}
+        canUseAI={canUseAI}
+        aiDisabledTooltip={aiButtonTooltip}
       />
 
       {/* Delete confirmation modal */}

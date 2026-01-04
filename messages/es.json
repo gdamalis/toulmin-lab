@@ -328,6 +328,7 @@
         "saveFailedRetry": "Error al guardar. Por favor intenta de nuevo.",
         "unexpectedError": "Ocurrió un error inesperado. Por favor intenta de nuevo.",
         "rateLimitExceeded": "Estás enviando mensajes muy rápido. Por favor espera {seconds} segundos antes de intentar de nuevo.",
+        "monthlyQuotaExceeded": "Has alcanzado tu límite mensual de asistente IA. Se reinicia el {resetDate} (UTC). Puedes continuar editando tu argumento manualmente.",
         "validationFailed": "No pude entender esa respuesta. Por favor intenta reformular tu mensaje.",
         "emptyResponse": "No recibí una respuesta válida. Por favor intenta de nuevo.",
         "stepMismatch": "Hubo un problema de sincronización. Por favor actualiza la página e intenta de nuevo.",
@@ -340,6 +341,12 @@
       "autoContinue": "He confirmado esto. Por favor continúa al siguiente paso.",
       "editStep": "Me gustaría revisar este paso. Por favor guíame.",
       "editingStep": "Editando: {step}",
+      "continueEditing": "Continuar editando sin IA",
+      "quota": {
+        "usage": "Mensajes IA usados",
+        "resets": "Se reinicia",
+        "exhausted": "Límite mensual alcanzado. Puedes continuar editando manualmente."
+      },
       "preview": {
         "claim": "(La afirmación aparecerá aquí)",
         "grounds": "(La evidencia aparecerá aquí)",

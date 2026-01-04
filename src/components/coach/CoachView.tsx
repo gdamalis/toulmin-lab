@@ -1,7 +1,7 @@
 'use client';
 
 import { ToulminDiagram } from '@/components/diagram';
-import { ChatPanel } from '@/components/coach';
+import { ChatPanel, CoachUsageMeter } from '@/components/coach';
 import { 
   ClientChatSession, 
   ClientChatMessage, 
@@ -65,12 +65,18 @@ function CoachViewContent({ session, messages }: CoachViewContentProps) {
   return (
     <div className="flex h-[calc(100vh-10rem)] gap-4">
       {/* Left: Chat Panel */}
-      <div className="w-1/2 flex flex-col rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
-        <ChatPanel
-          sessionId={session.id}
-          initialMessages={messages}
-          initialStep={session.currentStep}
-        />
+      <div className="w-1/2 flex flex-col gap-3">
+        {/* Usage meter at top */}
+        <CoachUsageMeter />
+        
+        {/* Chat interface */}
+        <div className="flex-1 flex flex-col rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+          <ChatPanel
+            sessionId={session.id}
+            initialMessages={messages}
+            initialStep={session.currentStep}
+          />
+        </div>
       </div>
 
       {/* Right: Diagram Preview */}

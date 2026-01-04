@@ -23,6 +23,7 @@ import {
   coerceResultToCurrentStep, 
   trySalvageCoachResult 
 } from '@/lib/coach/coercion';
+import { consumeCoachMonthlyQuota } from '@/lib/services/coach/quota';
 
 /**
  * Patterns for sanitizing user input to prevent prompt injection
@@ -153,7 +154,31 @@ function validateCoachResult(
  */
 export async function POST(request: NextRequest) {
   return withAuth(async (request, _context, auth) => {
-    // Rate limiting
+    // Monthly quota check (before any AI call to control costs)
+    const quotaResult = await consumeCoachMonthlyQuota(auth.userId, auth.role);
+    
+    if (!quotaResult.allowed) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'monthly_quota_exceeded',
+          resetAt: quotaResult.resetAt.toISOString(),
+          limit: quotaResult.limit,
+          used: quotaResult.used,
+        }),
+        { 
+          status: 429, 
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Coach-Quota-Limit': String(quotaResult.limit ?? 'unlimited'),
+            'X-Coach-Quota-Remaining': String(quotaResult.remaining ?? 'unlimited'),
+            'X-Coach-Quota-Used': String(quotaResult.used),
+            'X-Coach-Quota-Reset': quotaResult.resetAt.toISOString(),
+          },
+        }
+      );
+    }
+    
+    // Short-window rate limiting (UX protection)
     const rateLimitResult = checkRateLimit(auth.userId, COACH_RATE_LIMIT);
     
     if (!rateLimitResult.allowed) {
@@ -167,6 +192,10 @@ export async function POST(request: NextRequest) {
           headers: {
             'Content-Type': 'application/json',
             ...createRateLimitHeaders(rateLimitResult),
+            'X-Coach-Quota-Limit': String(quotaResult.limit ?? 'unlimited'),
+            'X-Coach-Quota-Remaining': String(quotaResult.remaining ?? 'unlimited'),
+            'X-Coach-Quota-Used': String(quotaResult.used),
+            'X-Coach-Quota-Reset': quotaResult.resetAt.toISOString(),
           },
         }
       );
@@ -426,6 +455,10 @@ export async function POST(request: NextRequest) {
           'Content-Type': 'application/x-ndjson; charset=utf-8',
           'Cache-Control': 'no-cache, no-transform',
           ...createRateLimitHeaders(rateLimitResult),
+          'X-Coach-Quota-Limit': String(quotaResult.limit ?? 'unlimited'),
+          'X-Coach-Quota-Remaining': String(quotaResult.remaining ?? 'unlimited'),
+          'X-Coach-Quota-Used': String(quotaResult.used),
+          'X-Coach-Quota-Reset': quotaResult.resetAt.toISOString(),
         },
       });
     } catch (error) {

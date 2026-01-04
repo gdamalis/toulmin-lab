@@ -9,6 +9,40 @@ import { CoachModelProvider, AI_PROVIDERS } from './types';
 const DEFAULT_GEMINI_MODEL = 'gemini-2.0-flash';
 
 /**
+ * Allowlist of permitted Gemini models for production
+ * Only flash-class models are allowed to control costs
+ */
+const ALLOWED_GEMINI_MODELS = [
+  'gemini-2.0-flash',
+  'gemini-2.0-flash-exp',
+  'gemini-1.5-flash',
+  'gemini-1.5-flash-8b',
+] as const;
+
+/**
+ * Validate and sanitize model ID to prevent expensive model usage
+ * Falls back to default if model is not in allowlist
+ */
+function validateModelId(modelId: string | undefined): string {
+  if (!modelId) {
+    return DEFAULT_GEMINI_MODEL;
+  }
+  
+  // Check if model is in allowlist
+  if (ALLOWED_GEMINI_MODELS.includes(modelId as typeof ALLOWED_GEMINI_MODELS[number])) {
+    return modelId;
+  }
+  
+  // Log warning for production awareness
+  console.warn(
+    `Model "${modelId}" is not in allowlist. Falling back to ${DEFAULT_GEMINI_MODEL}. ` +
+    `Allowed models: ${ALLOWED_GEMINI_MODELS.join(', ')}`
+  );
+  
+  return DEFAULT_GEMINI_MODEL;
+}
+
+/**
  * Get the API key from environment variables
  * Supports both GEMINI_API_KEY and GOOGLE_GENERATIVE_AI_API_KEY
  */
@@ -47,7 +81,7 @@ function getGeminiProviderName(): string {
  * Create a Gemini provider instance (functional factory)
  */
 export function createGeminiProvider(modelId?: string): CoachModelProvider {
-  const resolvedModelId = modelId ?? DEFAULT_GEMINI_MODEL;
+  const resolvedModelId = validateModelId(modelId);
 
   return {
     getModel: () => getGeminiModel(resolvedModelId),

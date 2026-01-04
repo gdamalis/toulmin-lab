@@ -87,8 +87,8 @@ export function ChatPanel({
   const rawLocale = useLocale();
   const locale: ValidationLocale = rawLocale === 'es' ? 'es' : 'en';
   
-  // Get draft and abort controller from context
-  const { draft, updateDraft, createAbortController, abortControllerRef } = useCoach();
+  // Get draft, abort controller, and quota state from context
+  const { draft, updateDraft, createAbortController, abortControllerRef, updateQuotaState } = useCoach();
   
   const [messages, setMessages] = useState<ClientChatMessage[]>(initialMessages);
   const [currentStep, setCurrentStep] = useState<ToulminStep>(initialStep);
@@ -348,8 +348,37 @@ export function ChatPanel({
         signal: abortController.signal,
       });
 
+      // Update quota state from response headers immediately
+      const quotaLimit = response.headers.get('X-Coach-Quota-Limit');
+      const quotaRemaining = response.headers.get('X-Coach-Quota-Remaining');
+      const quotaUsed = response.headers.get('X-Coach-Quota-Used');
+      const quotaReset = response.headers.get('X-Coach-Quota-Reset');
+
+      if (quotaLimit && quotaRemaining && quotaUsed && quotaReset) {
+        const isUnlimited = quotaLimit === 'unlimited';
+        updateQuotaState({
+          used: isUnlimited ? 0 : Number.parseInt(quotaUsed, 10),
+          limit: isUnlimited ? null : Number.parseInt(quotaLimit, 10),
+          remaining: isUnlimited ? null : Number.parseInt(quotaRemaining, 10),
+          resetAt: quotaReset,
+          isUnlimited,
+        });
+      }
+
       if (!response.ok) {
         const errorData = await response.json();
+        
+        // Handle monthly quota exhausted
+        if (response.status === 429 && errorData.error === 'monthly_quota_exceeded') {
+          const resetDate = errorData.resetAt ? new Date(errorData.resetAt) : null;
+          const resetDateStr = resetDate?.toLocaleDateString(undefined, {
+            month: 'long',
+            day: 'numeric',
+            timeZone: 'UTC',
+          }) ?? '';
+          setStreamError(t('error.monthlyQuotaExceeded', { resetDate: resetDateStr }));
+          return;
+        }
         
         // Handle rate limiting with specific message
         if (response.status === 429) {
@@ -391,7 +420,7 @@ export function ChatPanel({
       setIsLoading(false);
       setStreamingContent('');
     }
-  }, [sessionId, currentStep, createMessage, createAbortController, parseNDJSONStream, processAIResult, t]);
+  }, [sessionId, currentStep, createMessage, createAbortController, parseNDJSONStream, processAIResult, updateQuotaState, t]);
 
   const handleSendMessage = useCallback(async (content: string) => {
     if (isLoading || isComplete) return;
@@ -595,8 +624,16 @@ export function ChatPanel({
 
         {/* Stream error */}
         {streamError && (
-          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700">
-            {streamError}
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <p className="text-sm text-amber-700 mb-2">{streamError}</p>
+            {streamError.includes(t('error.monthlyQuotaExceeded', { resetDate: '' }).split(' ')[0]) && (
+              <a
+                href={`/argument/edit/${sessionId}?draft=true`}
+                className="inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-700"
+              >
+                {t('continueEditing')} →
+              </a>
+            )}
           </div>
         )}
 

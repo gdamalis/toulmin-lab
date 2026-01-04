@@ -8,6 +8,7 @@ export const COLLECTIONS = {
   COACH_SESSIONS: "coachSessions",
   COACH_MESSAGES: "coachMessages",
   ARGUMENT_DRAFTS: "argumentDrafts",
+  COACH_USAGE: "coachUsage",
 };
 
 // TTL for coach data retention (30 days in seconds)
