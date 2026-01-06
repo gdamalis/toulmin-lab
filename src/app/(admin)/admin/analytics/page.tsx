@@ -1,6 +1,6 @@
 "use client";
 
-import { AnalyticsOverview } from "@/components/admin";
+import { AnalyticsOverview, AiAnalyticsOverview } from "@/components/admin";
 import { useTranslations } from "next-intl";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -30,12 +30,18 @@ export default function AnalyticsPage() {
         </p>
       </PageHeader>
 
-      <div className="mt-8">
+      <div className="mt-8 space-y-12">
+        {/* Existing overview stats (users, diagrams) */}
         <AnalyticsOverview 
           analyticsData={analyticsData}
           isLoading={isLoading}
           error={error}
         />
+        
+        {/* AI Usage Analytics */}
+        <div className="border-t border-gray-200 pt-8">
+          <AiAnalyticsOverview />
+        </div>
       </div>
     </>
   );

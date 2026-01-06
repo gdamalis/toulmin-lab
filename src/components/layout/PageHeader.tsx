@@ -10,6 +10,8 @@ interface ButtonProps {
   variant?: "primary" | "secondary";
   icon?: React.ElementType;
   isLoading?: boolean;
+  disabled?: boolean;
+  tooltip?: string;
 }
 
 interface PageHeaderProps {
@@ -46,6 +48,8 @@ export function PageHeader({
                 href={button.href}
                 variant={buttonVariant}
                 isLoading={button.isLoading}
+                disabled={button.disabled}
+                tooltip={button.tooltip}
               >
                 {button.icon && <button.icon className="w-4 h-4 mr-1" />}
                 {button.text}

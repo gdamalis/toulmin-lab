@@ -2,34 +2,85 @@
 
 import { ArgumentList, DeleteArgumentModal } from "@/components/dashboard";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { useArguments } from "@/hooks/useArguments";
+import { useArgumentOverview } from "@/hooks/useArgumentOverview";
+import { useCoachQuota } from "@/hooks/useCoachQuota";
 import { ToulminArgument } from "@/types/client";
+import { DraftOverview } from "@/lib/services/coach";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { SparklesIcon } from "@heroicons/react/24/outline";
+
+type DeleteTarget =
+  | { type: "argument"; item: ToulminArgument }
+  | { type: "draft"; item: DraftOverview };
 
 export default function ArgumentsPage() {
   const t = useTranslations("pages.argument");
+  const coachT = useTranslations("pages.coach");
   
-  const { toulminArguments, isLoading, error, deleteArgument, isDeleting } =
-    useArguments();
+  const {
+    toulminArguments,
+    drafts,
+    isLoading,
+    error,
+    deleteArgument,
+    deleteDraft,
+    isDeletingArgument,
+    isDeletingDraft,
+  } = useArgumentOverview();
+  
+  const { canUseAI, quotaStatus } = useCoachQuota();
+  
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [argumentToDelete, setArgumentToDelete] =
-    useState<ToulminArgument | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
 
-  const handleOpenDeleteModal = (arg: ToulminArgument) => {
-    setArgumentToDelete(arg);
+  // Generate tooltip text for disabled AI button
+  const aiButtonTooltip = useMemo(() => {
+    if (canUseAI || !quotaStatus) return undefined;
+    
+    const resetDate = new Date(quotaStatus.resetAt);
+    const resetDateStr = resetDate.toLocaleDateString(undefined, {
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC',
+    });
+    
+    return coachT('error.monthlyQuotaExceeded', { resetDate: resetDateStr });
+  }, [canUseAI, quotaStatus, coachT]);
+
+  const handleOpenDeleteModal = (item: ToulminArgument | DraftOverview, type: "argument" | "draft") => {
+    setDeleteTarget({ type, item } as DeleteTarget);
     setIsDeleteModalOpen(true);
   };
   
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
-    setArgumentToDelete(null);
+    setDeleteTarget(null);
   };
   
-  const handleDeleteArgument = async () => {
-    if (!argumentToDelete?._id) return;
-    const success = await deleteArgument(argumentToDelete._id.toString());
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    
+    let success = false;
+    if (deleteTarget.type === "argument") {
+      const argId = (deleteTarget.item as ToulminArgument)._id?.toString();
+      if (argId) {
+        success = await deleteArgument(argId);
+      }
+    } else {
+      const sessionId = (deleteTarget.item as DraftOverview).sessionId;
+      success = await deleteDraft(sessionId);
+    }
+    
     if (success) handleCloseDeleteModal();
+  };
+
+  const getDeleteTargetName = (): string => {
+    if (!deleteTarget) return t("untitled");
+    if (deleteTarget.type === "argument") {
+      return (deleteTarget.item as ToulminArgument).name || t("untitled");
+    }
+    return (deleteTarget.item as DraftOverview).name || t("untitled");
   };
 
   return (
@@ -42,23 +93,35 @@ export default function ArgumentsPage() {
             href: "/argument/create",
             variant: "primary",
           },
+          {
+            text: t("createWithAI"),
+            href: "/argument/coach",
+            variant: "secondary",
+            icon: SparklesIcon,
+            disabled: !canUseAI,
+            tooltip: aiButtonTooltip,
+          },
         ]}
       />
       
       <ArgumentList 
         arguments={toulminArguments}
+        drafts={drafts}
         isLoading={isLoading}
         error={error}
-        onDeleteArgument={handleOpenDeleteModal}
+        onDeleteArgument={(arg) => handleOpenDeleteModal(arg, "argument")}
+        onDeleteDraft={(draft) => handleOpenDeleteModal(draft, "draft")}
+        canUseAI={canUseAI}
+        aiDisabledTooltip={aiButtonTooltip}
       />
 
       {/* Delete confirmation modal */}
       <DeleteArgumentModal
         isOpen={isDeleteModalOpen}
         onClose={handleCloseDeleteModal}
-        onDelete={handleDeleteArgument}
-        argumentName={argumentToDelete?.name || t("untitled")}
-        isDeleting={isDeleting}
+        onDelete={handleDelete}
+        argumentName={getDeleteTargetName()}
+        isDeleting={isDeletingArgument || isDeletingDraft}
       />
     </>
   );

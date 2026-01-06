@@ -55,6 +55,7 @@ export async function UserInvitationEmail({
             borderBottom: "1px solid #e2e8f0",
           }}
         >
+          {/* eslint-disable-next-line @next/next/no-img-element -- Email clients don't support Next Image */}
           <img
             src={`${baseUrl}/logo.png`}
             alt="Toulmin Lab Logo"

@@ -2,12 +2,19 @@
 
 import { ToulminDiagram } from "@/components/diagram";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { Badge } from "@/components/ui";
 import { Typography } from "@/components/ui/Typography";
-import { useArguments } from "@/hooks/useArguments";
 import { ToulminArgument } from "@/types/client";
+import { ClientArgumentDraft } from "@/types/coach";
+import { getCurrentUserToken } from "@/lib/auth/utils";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { use, useCallback, useEffect, useState } from "react";
+interface ResolvedData {
+  kind: "argument" | "draft";
+  argument?: ToulminArgument;
+  draft?: ClientArgumentDraft;
+}
 
 export default function ToulminArgumentViewPage({
   params,
@@ -17,24 +24,88 @@ export default function ToulminArgumentViewPage({
   const t = useTranslations("pages.argument");
   const commonT = useTranslations("common");
   
-  const [toulminArgument, setToulminArgument] = useState<ToulminArgument | null>(null);
-  const { getArgumentById, isLoading, error } = useArguments();
+  const [resolvedData, setResolvedData] = useState<ResolvedData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isDraftQuery = searchParams.get("draft") === "true";
 
   const unwrappedParams = use(params);
-  const toulminArgumentId = unwrappedParams.id;
+  const id = unwrappedParams.id;
+
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const token = await getCurrentUserToken();
+      if (!token) {
+        throw new Error("Authentication required");
+      }
+
+      const response = await fetch(`/api/argument/resolve/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error ?? "Failed to fetch data");
+      }
+
+      const { data } = await response.json();
+      setResolvedData(data);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [id]);
 
   useEffect(() => {
-    const fetchArgument = async () => {
-      const argument = await getArgumentById(toulminArgumentId);
-      setToulminArgument(argument);
-    };
+    fetchData();
+  }, [fetchData]);
 
-    fetchArgument();
-  }, [toulminArgumentId, getArgumentById]);
+  // Convert draft to ToulminArgument format for the diagram
+  const getToulminArgument = (): ToulminArgument | null => {
+    if (!resolvedData) return null;
+    
+    if (resolvedData.kind === "argument" && resolvedData.argument) {
+      return resolvedData.argument;
+    }
+    
+    if (resolvedData.kind === "draft" && resolvedData.draft) {
+      const draft = resolvedData.draft;
+      return {
+        _id: draft.id,
+        name: draft.name,
+        parts: {
+          claim: draft.claim ?? "",
+          grounds: draft.grounds ?? "",
+          warrant: draft.warrant ?? "",
+          groundsBacking: draft.groundsBacking ?? "",
+          warrantBacking: draft.warrantBacking ?? "",
+          qualifier: draft.qualifier ?? "",
+          rebuttal: draft.rebuttal ?? "",
+        },
+        author: { _id: "", userId: "", name: "" },
+        createdAt: new Date(draft.createdAt),
+        updatedAt: new Date(draft.updatedAt),
+      };
+    }
+    
+    return null;
+  };
 
   const handleEdit = () => {
-    router.push(`/argument/edit/${toulminArgumentId}`);
+    if (resolvedData?.kind === "draft") {
+      router.push(`/argument/edit/${id}?draft=true`);
+    } else {
+      router.push(`/argument/edit/${id}`);
+    }
   };
 
   const renderContent = () => {
@@ -56,6 +127,7 @@ export default function ToulminArgumentViewPage({
       );
     }
 
+    const toulminArgument = getToulminArgument();
     if (toulminArgument) {
       return <ToulminDiagram data={toulminArgument} />;
     }
@@ -67,9 +139,27 @@ export default function ToulminArgumentViewPage({
     );
   };
 
-  const pageTitle =
-    toulminArgument?.name ||
-    `${t("diagram")} ${toulminArgumentId.substring(0, 8)}`;
+  const pageTitle = (() => {
+    if (resolvedData?.kind === "argument" && resolvedData.argument) {
+      return resolvedData.argument.name || `${t("diagram")} ${id.substring(0, 8)}`;
+    }
+    if (resolvedData?.kind === "draft" && resolvedData.draft) {
+      return resolvedData.draft.name || `${t("diagram")} ${id.substring(0, 8)}`;
+    }
+    return `${t("diagram")} ${id.substring(0, 8)}`;
+  })();
+
+  const updatedAt = (() => {
+    if (resolvedData?.kind === "argument" && resolvedData.argument) {
+      return new Date(resolvedData.argument.updatedAt).toLocaleString();
+    }
+    if (resolvedData?.kind === "draft" && resolvedData.draft) {
+      return new Date(resolvedData.draft.updatedAt).toLocaleString();
+    }
+    return null;
+  })();
+
+  const isDraft = resolvedData?.kind === "draft" || isDraftQuery;
 
   const headerButtons = [
     {
@@ -83,12 +173,14 @@ export default function ToulminArgumentViewPage({
     <div className="mx-auto max-w-8xl pb-12">
       <div className="flex flex-col gap-4 mb-6">
         <PageHeader title={pageTitle} buttons={headerButtons}>
-          {toulminArgument && (
-            <Typography textColor="muted" className="mt-1">
-              {t("lastUpdated")}:{" "}
-              {new Date(toulminArgument.updatedAt).toLocaleString()}
-            </Typography>
-          )}
+          <div className="flex items-center gap-2 mt-1">
+            {isDraft && <Badge variant="yellow">{t("draft")}</Badge>}
+            {updatedAt && (
+              <Typography textColor="muted">
+                {t("lastUpdated")}: {updatedAt}
+              </Typography>
+            )}
+          </div>
         </PageHeader>
       </div>
 

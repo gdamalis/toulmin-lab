@@ -11,8 +11,11 @@ export function TitlePanel({
   data,
   className = "",
 }: Readonly<TitlePanelProps>) {
-  const t = useTranslations('pages.auth');
+  const t = useTranslations('pages.argument');
   const commonT = useTranslations('common');
+
+  // Treat empty/whitespace-only names as untitled
+  const displayName = data.name?.trim() ? data.name : t('untitled');
   
   return (
     <Panel
@@ -21,7 +24,7 @@ export function TitlePanel({
       data-export-include="true"
     >
       <h3 className="text-sm font-semibold text-gray-900 truncate">
-        {data.name ?? t('untitledArgument')}
+        {displayName}
       </h3>
       {data.author && (
         <p className="text-xs text-gray-500 mt-0.5 truncate">

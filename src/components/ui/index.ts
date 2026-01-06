@@ -25,3 +25,4 @@ export { DotSeparator } from './DotSeparator';
 export { StatCard, StatCardGrid } from './StatCard';
 export { SubscribeForm } from './SubscribeForm';
 export { SlimBanner } from './SlimBanner';
+export { Tooltip } from './Tooltip';

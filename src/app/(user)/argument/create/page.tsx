@@ -45,8 +45,8 @@ export default function ToulminArgumentBuilder() {
   };
 
   return (
-    <div className="mx-auto max-w-8xl">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="mx-auto max-w-8xl h-[calc(100vh-10rem)]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
         <div className="md:overflow-y-auto">
           <ToulminForm
             onSubmit={handleSave}
@@ -54,7 +54,7 @@ export default function ToulminArgumentBuilder() {
             initialData={toulminArgument}
           />
         </div>
-        <div>
+        <div className="h-full flex flex-col">
           <ToulminDiagram data={toulminArgument} showExportButtons={false} />
         </div>
       </div>

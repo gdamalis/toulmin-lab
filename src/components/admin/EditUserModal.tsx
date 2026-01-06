@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -32,25 +32,26 @@ export function EditUserModal({
   const t = useTranslations("admin.users");
   const commonT = useTranslations("common");
   const cancelButtonRef = useRef(null);
-  const [formData, setFormData] = useState<{
-    name: string;
-    email: string;
-    role: Role;
-  }>({
-    name: "",
-    email: "",
-    role: Role.USER,
+  
+  // Form state initialized with user data
+  const [formData, setFormData] = useState({
+    name: user?.name ?? "",
+    email: user?.email ?? "",
+    role: user?.role ?? Role.USER,
   });
 
-  useEffect(() => {
-    if (user) {
-      setFormData({
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      });
-    }
-  }, [user]);
+  // Store the user id that the form was last synced with
+  const [syncedUserId, setSyncedUserId] = useState(user?.userId);
+
+  // Sync form data when a different user is selected
+  if (user?.userId !== syncedUserId) {
+    setSyncedUserId(user?.userId);
+    setFormData({
+      name: user?.name ?? "",
+      email: user?.email ?? "",
+      role: user?.role ?? Role.USER,
+    });
+  }
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
