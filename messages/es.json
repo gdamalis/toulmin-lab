@@ -75,19 +75,29 @@
       "learnMore": "Saber más",
       "hero": {
         "title": "Crea argumentos visualmente más fuertes",
-        "description": "Crea, analiza y comparte argumentos estructurados utilizando el método Toulmin. Haz que tu razonamiento sea claro, identifica puntos débiles y persuade eficazmente.",
+        "description": "Crea, analiza y comparte argumentos estructurados utilizando el método Toulmin. Perfecto para universidades, institutos bíblicos e investigadores.",
         "badge": {
-          "text": "Beta cerrada",
-          "label": "Únete a nuestra lista de espera para acceder cuando abramos el acceso a nuevos usuarios."
+          "text": "Ya Disponible",
+          "label": "Gratis para educadores y estudiantes"
         },
-        "subscribe": {
-          "title": "Únete a nuestra lista de espera",
-          "description": "Recibe una notificación cuando abramos el acceso a nuevos usuarios",
-          "emailPlaceholder": "Tu dirección de correo electrónico",
-          "buttonText": "Suscribirse",
-          "success": "¡Gracias! Te notificaremos cuando el acceso esté disponible.",
-          "error": "No se pudo suscribir. Por favor, inténtelo de nuevo.",
-          "subscribeAgain": "Suscribirse de nuevo"
+        "cta": "Crea Tu Primer Diagrama — Gratis"
+      },
+      "howItWorks": {
+        "heading": "Proceso Simple",
+        "subheading": "Comienza en minutos",
+        "steps": {
+          "signIn": {
+            "title": "Inicia sesión con Google",
+            "description": "Autenticación rápida y segura con tu cuenta de Google"
+          },
+          "build": {
+            "title": "Construye tu argumento",
+            "description": "Usa nuestra interfaz guiada o el coach de IA para estructurar tu razonamiento"
+          },
+          "share": {
+            "title": "Exporta y comparte",
+            "description": "Descarga como PNG, PDF o comparte directamente con tu clase"
+          }
         }
       },
       "featureSection": {
@@ -113,9 +123,96 @@
           "description": "Crea hermosos diagramas que pueden ser fácilmente compartidos, exportados e incrustados en presentaciones o documentos."
         }
       },
+      "useCases": {
+        "heading": "Diseñado para la Educación",
+        "subheading": "Perfecto para tu institución",
+        "universities": {
+          "title": "Universidades",
+          "headline": "Mejora los cursos de pensamiento crítico",
+          "description": "Ayuda a los estudiantes a dominar las habilidades de argumentación con diagramas visuales que hacen el método Toulmin intuitivo y atractivo.",
+          "features": [
+            "Perfecto para cursos de filosofía, retórica y escritura",
+            "Los estudiantes pueden colaborar en el análisis de argumentos",
+            "Exporta diagramas para trabajos y presentaciones"
+          ],
+          "imageAlt": "Aula universitaria"
+        },
+        "bibleInstitutes": {
+          "title": "Institutos Bíblicos",
+          "headline": "Fortalece el razonamiento teológico",
+          "description": "Equipa a los estudiantes para construir y analizar argumentos teológicos con el mismo rigor utilizado en la filosofía académica.",
+          "features": [
+            "Ideal para cursos de apologética y hermenéutica",
+            "Visualiza argumentos doctrinales complejos",
+            "Fundamenta la interpretación bíblica en estructura lógica"
+          ],
+          "imageAlt": "Aula de seminario"
+        },
+        "researchers": {
+          "title": "Investigadores",
+          "headline": "Clarifica tus argumentos de investigación",
+          "description": "Usa la argumentación visual para fortalecer propuestas de investigación, declaraciones de tesis y artículos académicos.",
+          "features": [
+            "Estructura argumentos de revisión bibliográfica",
+            "Visualiza la justificación de la metodología de investigación",
+            "Comunica hallazgos con claridad"
+          ],
+          "imageAlt": "Espacio de trabajo de investigación"
+        }
+      },
+      "testimonials": {
+        "heading": "Confiado por Educadores",
+        "subheading": "Lo que dicen nuestros usuarios",
+        "items": [
+          {
+            "quote": "Toulmin Lab ha transformado cómo mis estudiantes entienden la argumentación. El enfoque visual hace que los conceptos abstractos sean tangibles.",
+            "author": "Dra. Sarah Mitchell",
+            "role": "Profesora de Filosofía",
+            "institution": "Universidad Estatal"
+          },
+          {
+            "quote": "Nuestros estudiantes de apologética ahora construyen argumentos mucho más sólidos. La función de coach de IA es particularmente útil para principiantes.",
+            "author": "Rev. James Chen",
+            "role": "Decano Académico",
+            "institution": "Seminario Teológico Grace"
+          },
+          {
+            "quote": "Finalmente, una herramienta que hace el modelo Toulmin accesible para estudiantes universitarios. La función de exportación es perfecta para tareas.",
+            "author": "Prof. María Rodríguez",
+            "role": "Instructora de Retórica",
+            "institution": "Colegio de Artes Liberales"
+          }
+        ]
+      },
+      "faq": {
+        "heading": "Preguntas Frecuentes",
+        "subheading": "Preguntas comunes",
+        "items": [
+          {
+            "question": "¿Es Toulmin Lab gratis?",
+            "answer": "¡Sí! Toulmin Lab es gratis para todos los educadores y estudiantes. Simplemente inicia sesión con tu cuenta de Google para comenzar. Podemos introducir funciones premium en el futuro, pero la funcionalidad principal siempre será gratuita."
+          },
+          {
+            "question": "¿Qué es el modelo Toulmin de argumentación?",
+            "answer": "El modelo Toulmin, desarrollado por el filósofo Stephen Toulmin, descompone los argumentos en seis componentes: Afirmación, Fundamentos, Garantía, Respaldo, Calificador y Refutación. Esta estructura ayuda a analizar y construir argumentos lógicos de manera más efectiva."
+          },
+          {
+            "question": "¿Puedo usar esto para mi clase?",
+            "answer": "¡Absolutamente! Toulmin Lab está diseñado específicamente para uso educativo. Los estudiantes pueden crear sus propias cuentas, construir diagramas y exportarlos para tareas. Los profesores pueden usar los diagramas de muestra para enseñar."
+          },
+          {
+            "question": "¿Qué es la función de Coach de IA?",
+            "answer": "El Coach de IA te guía paso a paso para construir un argumento Toulmin. Hace preguntas sobre cada componente, proporciona retroalimentación y te ayuda a fortalecer tu razonamiento—perfecto para estudiantes que aprenden el método."
+          },
+          {
+            "question": "¿Puedo exportar mis diagramas?",
+            "answer": "¡Sí! Puedes exportar tus diagramas como imágenes PNG o documentos PDF. Estas exportaciones son de alta calidad y perfectas para incluir en trabajos, presentaciones o materiales de curso."
+          }
+        ]
+      },
       "ctaSection": {
         "title": "¿Listo para fortalecer tus argumentos?",
-        "description": "Únete a miles de académicos, estudiantes y profesionales que utilizan nuestra herramienta para construir argumentos convincentes."
+        "description": "Únete a miles de educadores y estudiantes que usan Toulmin Lab para construir argumentos convincentes y bien estructurados."
       }
     },
     "auth": {
@@ -360,6 +457,104 @@
     "modals": {
       "deleteArgument": "Eliminar Argumento",
       "deleteConfirmation": "¿Estás seguro de que deseas eliminar \"{name}\"? Todos los datos del argumento se eliminarán permanentemente. Esta acción no se puede deshacer."
+    },
+    "terms": {
+      "title": "Términos de Servicio",
+      "description": "Términos y condiciones para usar Toulmin Lab",
+      "lastUpdated": "Última actualización: Enero 2026",
+      "sections": {
+        "acceptance": {
+          "title": "1. Aceptación de los Términos",
+          "content": "Al acceder y usar Toulmin Lab, aceptas y acuerdas estar sujeto a los términos y disposiciones de este acuerdo. Si no estás de acuerdo con estos términos, por favor no uses este servicio."
+        },
+        "description": {
+          "title": "2. Descripción del Servicio",
+          "content": "Toulmin Lab es una plataforma en línea que permite a los usuarios crear, analizar y compartir argumentos estructurados usando el modelo Toulmin de argumentación. El servicio incluye una función de coaching impulsada por IA para ayudar a los usuarios a construir argumentos bien razonados."
+        },
+        "accounts": {
+          "title": "3. Cuentas de Usuario",
+          "content": "Para usar ciertas funciones de Toulmin Lab, debes crear una cuenta usando la autenticación de Google. Eres responsable de mantener la confidencialidad de tu cuenta y de todas las actividades que ocurran bajo tu cuenta."
+        },
+        "useLicense": {
+          "title": "4. Licencia de Uso",
+          "content": "Se concede permiso para usar temporalmente Toulmin Lab con fines personales, educativos y no comerciales. Esta licencia no incluye modificar o copiar los materiales, usar los materiales con fines comerciales, o intentar descompilar o realizar ingeniería inversa de cualquier software contenido en el servicio."
+        },
+        "userContent": {
+          "title": "5. Contenido del Usuario",
+          "content": "Conservas la propiedad de cualquier argumento, diagrama u otro contenido que crees usando Toulmin Lab. Al usar el servicio, nos otorgas una licencia limitada para almacenar y mostrar tu contenido según sea necesario para proporcionar el servicio."
+        },
+        "prohibitedUses": {
+          "title": "6. Usos Prohibidos",
+          "content": "No puedes usar Toulmin Lab para ningún propósito ilegal, para acosar o dañar a otros, para hacerte pasar por cualquier persona o entidad, para interferir con la operación del servicio, o para intentar obtener acceso no autorizado a cualquier parte del servicio."
+        },
+        "disclaimer": {
+          "title": "7. Descargo de Responsabilidad",
+          "content": "Los materiales en Toulmin Lab se proporcionan 'tal cual'. No ofrecemos garantías, expresas o implícitas, y por la presente rechazamos y negamos todas las demás garantías, incluyendo, sin limitación, garantías implícitas o condiciones de comerciabilidad, idoneidad para un propósito particular, o no infracción de propiedad intelectual."
+        },
+        "limitations": {
+          "title": "8. Limitaciones",
+          "content": "En ningún caso Toulmin Lab o sus proveedores serán responsables de ningún daño (incluyendo, sin limitación, daños por pérdida de datos o ganancias, o debido a interrupción del negocio) que surja del uso o la incapacidad de usar Toulmin Lab."
+        },
+        "changes": {
+          "title": "9. Cambios en los Términos",
+          "content": "Nos reservamos el derecho de modificar estos términos en cualquier momento. Notificaremos a los usuarios de cualquier cambio material publicando los nuevos términos en esta página. Tu uso continuado del servicio después de tales modificaciones constituye tu aceptación de los nuevos términos."
+        },
+        "contact": {
+          "title": "10. Información de Contacto",
+          "content": "Si tienes alguna pregunta sobre estos Términos de Servicio, por favor contáctanos a través de nuestros canales de soporte."
+        }
+      }
+    },
+    "privacy": {
+      "title": "Política de Privacidad",
+      "description": "Cómo recopilamos, usamos y protegemos tu información",
+      "lastUpdated": "Última actualización: Enero 2026",
+      "sections": {
+        "introduction": {
+          "title": "1. Introducción",
+          "content": "En Toulmin Lab, respetamos tu privacidad y estamos comprometidos a proteger tus datos personales. Esta política de privacidad explica cómo recopilamos, usamos y protegemos tu información cuando usas nuestro servicio."
+        },
+        "dataCollection": {
+          "title": "2. Información que Recopilamos",
+          "content": "Recopilamos información que nos proporcionas directamente, incluyendo tu nombre y dirección de correo electrónico cuando inicias sesión con Google. También recopilamos información sobre tu uso del servicio, incluyendo los argumentos y diagramas que creas."
+        },
+        "dataUsage": {
+          "title": "3. Cómo Usamos Tu Información",
+          "content": "Usamos tu información para proporcionar y mejorar nuestro servicio, para comunicarnos contigo sobre tu cuenta, para responder a tus solicitudes y para enviarte actualizaciones sobre el servicio. También podemos usar datos agregados y anonimizados con fines analíticos."
+        },
+        "dataStorage": {
+          "title": "4. Almacenamiento y Seguridad de Datos",
+          "content": "Tus datos se almacenan de forma segura usando encriptación y prácticas de seguridad estándar de la industria. Usamos proveedores de servicios en la nube de confianza para alojar nuestro servicio y almacenar tus datos. Conservamos tus datos mientras tu cuenta esté activa o según sea necesario para proporcionarte nuestros servicios."
+        },
+        "cookies": {
+          "title": "5. Cookies y Seguimiento",
+          "content": "Usamos cookies y tecnologías similares para mantener tu sesión, recordar tus preferencias y analizar cómo se usa nuestro servicio. Puedes controlar la configuración de cookies a través de las preferencias de tu navegador."
+        },
+        "thirdParties": {
+          "title": "6. Servicios de Terceros",
+          "content": "Usamos servicios de terceros para autenticación (Google), análisis (Vercel Analytics) y funciones de IA (OpenAI). Estos servicios pueden recopilar información sobre ti de acuerdo con sus propias políticas de privacidad."
+        },
+        "userRights": {
+          "title": "7. Tus Derechos",
+          "content": "Tienes derecho a acceder, corregir o eliminar tus datos personales. También puedes solicitar una copia de tus datos o pedirnos que restrinjamos el procesamiento. Para ejercer estos derechos, por favor contáctanos a través de nuestros canales de soporte."
+        },
+        "security": {
+          "title": "8. Medidas de Seguridad",
+          "content": "Implementamos medidas técnicas y organizativas apropiadas para proteger tus datos personales contra acceso no autorizado, alteración, divulgación o destrucción."
+        },
+        "children": {
+          "title": "9. Privacidad de los Niños",
+          "content": "Toulmin Lab está destinado para uso de estudiantes y educadores. Si eres menor de 13 años, por favor usa el servicio solo con supervisión de un padre o tutor. No recopilamos conscientemente información personal de niños menores de 13 años sin consentimiento de los padres."
+        },
+        "changes": {
+          "title": "10. Cambios a Esta Política",
+          "content": "Podemos actualizar esta política de privacidad de vez en cuando. Te notificaremos de cualquier cambio publicando la nueva política en esta página y actualizando la fecha de 'Última actualización'."
+        },
+        "contact": {
+          "title": "11. Contáctanos",
+          "content": "Si tienes alguna pregunta sobre esta Política de Privacidad, por favor contáctanos a través de nuestros canales de soporte."
+        }
+      }
     }
   },
   "admin": {
@@ -434,6 +629,26 @@
       },
       "support": "Si tienes alguna pregunta, no dudes en contactar a nuestro equipo de soporte.",
       "footer": "Saludos cordiales,<br/>El equipo de Toulmin Lab"
+    }
+  },
+  "footer": {
+    "tagline": "La herramienta de argumentación visual para educadores y estudiantes",
+    "copyright": "© {year} Toulmin Lab. Todos los derechos reservados.",
+    "product": {
+      "title": "Producto",
+      "features": "Características",
+      "useCases": "Casos de Uso",
+      "faq": "Preguntas Frecuentes"
+    },
+    "resources": {
+      "title": "Recursos",
+      "documentation": "Documentación",
+      "support": "Soporte"
+    },
+    "legal": {
+      "title": "Legal",
+      "terms": "Términos de Servicio",
+      "privacy": "Política de Privacidad"
     }
   }
 }

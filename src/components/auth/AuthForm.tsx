@@ -9,6 +9,7 @@ import { FormDivider } from "./ui/FormDivider";
 import { AuthMode, AuthFormProps, FormState } from "./types";
 import { useTranslations } from "next-intl";
 import { Loader } from "@/components/ui/Loader";
+import { track } from "@vercel/analytics";
 
 export function AuthForm({
   redirectPath = "/dashboard",
@@ -16,7 +17,7 @@ export function AuthForm({
   const t = useTranslations("pages.auth");
   const commonT = useTranslations("common");
   const errorT = useTranslations("errors.auth");
-  const [mode] = useState<AuthMode>("signin");
+  const [mode, setMode] = useState<AuthMode>("signin");
   const {
     error,
     setError,
@@ -27,10 +28,10 @@ export function AuthForm({
     handleEmailAuth,
   } = useAuth(redirectPath);
 
-  // const toggleMode = () => {
-  //   setMode((prevMode) => (prevMode === "signin" ? "signup" : "signin"));
-  //   setError("");
-  // };
+  const toggleMode = () => {
+    setMode((prevMode) => (prevMode === "signin" ? "signup" : "signin"));
+    setError("");
+  };
 
   const handleSubmit = (formData: FormState) => {
     // Validation for sign up
@@ -54,7 +55,13 @@ export function AuthForm({
       }
     }
 
+    track("auth_started", { method: "email", mode });
     handleEmailAuth(mode, formData);
+  };
+
+  const handleGoogleClick = () => {
+    track("auth_started", { method: "google", mode });
+    handleGoogleAuth();
   };
 
   if (isAuthenticating) {
@@ -88,13 +95,13 @@ export function AuthForm({
           <div className="mt-6 grid grid-cols-1 gap-4">
             <GoogleAuthButton
               isLoading={isGoogleLoading}
-              onClick={handleGoogleAuth}
+              onClick={handleGoogleClick}
             />
           </div>
         </div>
       </div>
 
-      {/* <p className="mt-10 text-center text-sm/6 text-gray-500">
+      <p className="mt-10 text-center text-sm/6 text-gray-500">
         {mode === "signin" ? t("noAccount") : t("haveAccount")}{" "}
         <button
           type="button"
@@ -103,7 +110,7 @@ export function AuthForm({
         >
           {mode === "signin" ? t("signUp") : t("signIn")}
         </button>
-      </p> */}
+      </p>
     </div>
   );
 }
