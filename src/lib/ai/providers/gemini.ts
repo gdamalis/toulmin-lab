@@ -86,5 +86,6 @@ export function createGeminiProvider(modelId?: string): CoachModelProvider {
   return {
     getModel: () => getGeminiModel(resolvedModelId),
     getProviderName: getGeminiProviderName,
+    getModelId: () => resolvedModelId,
   };
 }

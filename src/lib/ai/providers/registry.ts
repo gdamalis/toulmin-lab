@@ -53,3 +53,12 @@ export function getCoachProvider(): CoachModelProvider {
 export function getCurrentProviderName(): string {
   return AI_PROVIDER_ENV;
 }
+
+/**
+ * Get the current model ID for logging/analytics
+ * Returns the resolved model ID (after allowlist validation)
+ */
+export function getCurrentModelId(): string {
+  const provider = getCoachProvider();
+  return provider.getModelId();
+}

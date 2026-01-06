@@ -315,7 +315,7 @@ export async function saveDraftField(
             
             // Timeout safeguard: don't let title generation block the save for too long
             const TITLE_GENERATION_TIMEOUT_MS = 5000;
-            const titlePromise = generateArgumentTitle(value, locale);
+            const titlePromise = generateArgumentTitle(value, locale, userId);
             const timeoutPromise = new Promise<never>((_, reject) => 
               setTimeout(() => reject(new Error('Title generation timed out')), TITLE_GENERATION_TIMEOUT_MS)
             );

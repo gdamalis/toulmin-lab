@@ -24,6 +24,12 @@ import {
   trySalvageCoachResult 
 } from '@/lib/coach/coercion';
 import { consumeCoachMonthlyQuota } from '@/lib/services/coach/quota';
+import { 
+  logAiRequest, 
+  createRequestTimer, 
+  AI_REQUEST_STATUS, 
+  AI_FEATURE 
+} from '@/lib/services/ai-usage';
 
 /**
  * Patterns for sanitizing user input to prevent prompt injection
@@ -154,10 +160,24 @@ function validateCoachResult(
  */
 export async function POST(request: NextRequest) {
   return withAuth(async (request, _context, auth) => {
+    // Get provider info early for logging (even on denied requests)
+    const provider = getCoachProvider();
+    const providerName = provider.getProviderName();
+    const modelId = provider.getModelId();
+    
     // Monthly quota check (before any AI call to control costs)
     const quotaResult = await consumeCoachMonthlyQuota(auth.userId, auth.role);
     
     if (!quotaResult.allowed) {
+      // Log quota denied event
+      logAiRequest({
+        uid: auth.userId,
+        feature: AI_FEATURE.COACH_CHAT,
+        provider: providerName,
+        model: modelId,
+        status: AI_REQUEST_STATUS.QUOTA_DENIED,
+      });
+      
       return new Response(
         JSON.stringify({ 
           error: 'monthly_quota_exceeded',
@@ -182,6 +202,15 @@ export async function POST(request: NextRequest) {
     const rateLimitResult = checkRateLimit(auth.userId, COACH_RATE_LIMIT);
     
     if (!rateLimitResult.allowed) {
+      // Log rate limited event
+      logAiRequest({
+        uid: auth.userId,
+        feature: AI_FEATURE.COACH_CHAT,
+        provider: providerName,
+        model: modelId,
+        status: AI_REQUEST_STATUS.RATE_LIMITED,
+      });
+      
       return new Response(
         JSON.stringify({ 
           error: 'Too many requests. Please wait before sending another message.',
@@ -200,6 +229,9 @@ export async function POST(request: NextRequest) {
         }
       );
     }
+
+    // Start request timer for duration tracking
+    const requestTimer = createRequestTimer();
 
     try {
       // Parse and validate request
@@ -289,8 +321,7 @@ export async function POST(request: NextRequest) {
         antiPattern: t(`stepInfo.${currentStep}.antiPattern`),
       };
 
-      // Get AI provider and system prompt
-      const provider = getCoachProvider();
+      // Get AI model and system prompt (provider already obtained above)
       const model = provider.getModel();
       const systemPrompt = getCoachSystemPrompt(currentStep, draft as ArgumentDraft, locale, stepInfo);
 
@@ -387,6 +418,17 @@ export async function POST(request: NextRequest) {
             const finalLine = JSON.stringify(finalWithId) + '\n';
             controller.enqueue(encoder.encode(finalLine));
             
+            // Log successful AI request
+            logAiRequest({
+              uid: auth.userId,
+              feature: AI_FEATURE.COACH_CHAT,
+              provider: providerName,
+              model: modelId,
+              status: AI_REQUEST_STATUS.OK,
+              durationMs: requestTimer.elapsed(),
+              sessionId,
+            });
+            
             controller.close();
           } catch (error_) {
             console.error('Stream error:', error_);
@@ -430,16 +472,49 @@ export async function POST(request: NextRequest) {
                   const salvagedWithId = { ...coerced, assistantMessageId };
                   const salvagedLine = JSON.stringify(salvagedWithId) + '\n';
                   controller.enqueue(encoder.encode(salvagedLine));
+                  
+                  // Log successful AI request (salvaged)
+                  logAiRequest({
+                    uid: auth.userId,
+                    feature: AI_FEATURE.COACH_CHAT,
+                    provider: providerName,
+                    model: modelId,
+                    status: AI_REQUEST_STATUS.OK,
+                    durationMs: requestTimer.elapsed(),
+                    sessionId,
+                  });
                 } catch {
                   console.error('Failed to persist salvaged assistant message');
                   // Still emit the result without ID
                   const salvagedLine = JSON.stringify(coerced) + '\n';
                   controller.enqueue(encoder.encode(salvagedLine));
+                  
+                  // Log successful AI request (salvaged, no persistence)
+                  logAiRequest({
+                    uid: auth.userId,
+                    feature: AI_FEATURE.COACH_CHAT,
+                    provider: providerName,
+                    model: modelId,
+                    status: AI_REQUEST_STATUS.OK,
+                    durationMs: requestTimer.elapsed(),
+                    sessionId,
+                  });
                 }
                 controller.close();
                 return;
               }
             }
+            
+            // Log error AI request
+            logAiRequest({
+              uid: auth.userId,
+              feature: AI_FEATURE.COACH_CHAT,
+              provider: providerName,
+              model: modelId,
+              status: AI_REQUEST_STATUS.ERROR,
+              durationMs: requestTimer.elapsed(),
+              sessionId,
+            });
             
             // Emit error as NDJSON line for client to handle
             const errorLine = JSON.stringify({ error: 'coach_stream_failed' }) + '\n';

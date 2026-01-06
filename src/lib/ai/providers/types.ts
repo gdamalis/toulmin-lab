@@ -34,4 +34,9 @@ export interface CoachModelProvider {
    * Get the provider name for logging/debugging
    */
   getProviderName(): string;
+  
+  /**
+   * Get the model ID for logging/analytics
+   */
+  getModelId(): string;
 }

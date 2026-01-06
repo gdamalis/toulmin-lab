@@ -4,6 +4,12 @@ import { getCoachProvider } from './providers';
 import { getCoachSystemPrompt, SupportedLocale } from './prompts/coachSystemPrompt';
 import { CoachAIResultSchema } from '@/lib/validation/coach';
 import { ToulminStep, ArgumentDraft } from '@/types/coach';
+import { 
+  logAiRequest, 
+  createRequestTimer, 
+  AI_REQUEST_STATUS, 
+  AI_FEATURE 
+} from '@/lib/services/ai-usage';
 
 /**
  * Context passed to the AI for generating responses
@@ -103,23 +109,52 @@ const TITLE_PROMPTS: Record<SupportedLocale, { system: string; user: (claim: str
  * 
  * @param claim - The claim text to generate a title from
  * @param locale - The user's locale for response language (default: 'en')
+ * @param userId - Optional user ID for analytics tracking
  * @returns The generated title string
  */
 export async function generateArgumentTitle(
   claim: string,
-  locale: SupportedLocale = 'en'
+  locale: SupportedLocale = 'en',
+  userId?: string
 ): Promise<string> {
   const provider = getCoachProvider();
   const model = provider.getModel();
+  const providerName = provider.getProviderName();
+  const modelId = provider.getModelId();
   const prompts = TITLE_PROMPTS[locale];
+  const timer = createRequestTimer();
 
-  const { object } = await generateObject({
-    model,
-    schema: TitleGenerationSchema,
-    system: prompts.system,
-    messages: [{ role: 'user', content: prompts.user(claim) }],
-    temperature: 0.5,
-  });
+  try {
+    const { object } = await generateObject({
+      model,
+      schema: TitleGenerationSchema,
+      system: prompts.system,
+      messages: [{ role: 'user', content: prompts.user(claim) }],
+      temperature: 0.5,
+    });
 
-  return object.title;
+    // Log successful AI request
+    logAiRequest({
+      uid: userId ?? null,
+      feature: AI_FEATURE.COACH_TITLE,
+      provider: providerName,
+      model: modelId,
+      status: AI_REQUEST_STATUS.OK,
+      durationMs: timer.elapsed(),
+    });
+
+    return object.title;
+  } catch (error) {
+    // Log failed AI request
+    logAiRequest({
+      uid: userId ?? null,
+      feature: AI_FEATURE.COACH_TITLE,
+      provider: providerName,
+      model: modelId,
+      status: AI_REQUEST_STATUS.ERROR,
+      durationMs: timer.elapsed(),
+    });
+
+    throw error;
+  }
 }
