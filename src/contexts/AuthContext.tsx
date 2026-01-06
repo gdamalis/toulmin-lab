@@ -29,9 +29,12 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
   const [user, setUser] = useState<User | null>(null);
-  const [userRole, setUserRole] = useState<Role | null>(null);
+  const [firebaseRole, setFirebaseRole] = useState<Role | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { data: session } = useSession();
+  
+  // Derive userRole from session (priority) or Firebase claims
+  const userRole = session?.user?.role ?? firebaseRole;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -44,13 +47,13 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
           const roleClaim = idTokenResult.claims.role as Role | undefined;
           
           // Set the role from claims or default to USER
-          setUserRole(roleClaim ?? Role.USER);
+          setFirebaseRole(roleClaim ?? Role.USER);
         } catch (error) {
           console.error('Error getting auth token claims:', error);
-          setUserRole(Role.USER);
+          setFirebaseRole(Role.USER);
         }
       } else {
-        setUserRole(null);
+        setFirebaseRole(null);
       }
       
       setIsLoading(false);
@@ -59,12 +62,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
     return () => unsubscribe();
   }, []);
 
-  // Update user role if available from NextAuth session
-  useEffect(() => {
-    if (session?.user?.role) {
-      setUserRole(session.user.role);
-    }
-  }, [session]);
+
 
   const signOutUser = useCallback(async () => {
     try {

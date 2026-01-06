@@ -1,5 +1,5 @@
 import { useReactFlow, useNodesInitialized, Node } from "@xyflow/react";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 // Configuration constants
 const FLOW_OPTIONS = {
@@ -210,12 +210,13 @@ const updateNodesPositions = (nodes: Node[]): Node[] => {
 export default function useLayout() {
   const { getNodes } = useReactFlow();
   const nodesInitialized = useNodesInitialized(FLOW_OPTIONS);
-  const [nodes, setNodes] = useState(getNodes());
 
-  useEffect(() => {
+  // Derive positioned nodes from initialization state
+  const nodes = useMemo(() => {
     if (nodesInitialized) {
-      setNodes(updateNodesPositions(getNodes()));
+      return updateNodesPositions(getNodes());
     }
+    return getNodes();
   }, [nodesInitialized, getNodes]);
 
   return nodes;

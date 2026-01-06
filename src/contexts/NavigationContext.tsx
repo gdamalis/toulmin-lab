@@ -12,11 +12,15 @@ import {
 interface NavigationContextType {
   isNavigating: boolean;
   startNavigation: () => void;
+  push: (...args: Parameters<ReturnType<typeof useRouter>['push']>) => void;
+  replace: (...args: Parameters<ReturnType<typeof useRouter>['replace']>) => void;
 }
 
 const NavigationContext = createContext<NavigationContextType>({
   isNavigating: false,
   startNavigation: () => {},
+  push: () => {},
+  replace: () => {},
 });
 
 export const useNavigation = () => useContext(NavigationContext);
@@ -46,32 +50,17 @@ export function NavigationProvider({ children }: NavigationProviderProps) {
     setIsNavigating(true);
   };
 
-  // Intercept router.push, router.replace, and router.prefetch
-  useEffect(() => {
-    // Store original implementations
-    const originalPush = router.push;
-    const originalReplace = router.replace;
-    const originalPrefetch = router.prefetch;
+  // Wrapper for router.push that triggers navigation state
+  const push = (...args: Parameters<typeof router.push>) => {
+    setIsNavigating(true);
+    return router.push(...args);
+  };
 
-    // Override router.push
-    router.push = (...args: Parameters<typeof router.push>) => {
-      setIsNavigating(true);
-      return originalPush.apply(router, args);
-    };
-    
-    // Override router.replace
-    router.replace = (...args: Parameters<typeof router.replace>) => {
-      setIsNavigating(true);
-      return originalReplace.apply(router, args);
-    };
-
-    // Clean up
-    return () => {
-      router.push = originalPush;
-      router.replace = originalReplace;
-      router.prefetch = originalPrefetch;
-    };
-  }, [router]);
+  // Wrapper for router.replace that triggers navigation state
+  const replace = (...args: Parameters<typeof router.replace>) => {
+    setIsNavigating(true);
+    return router.replace(...args);
+  };
 
   // Attach event listeners for navigation
   useEffect(() => {
@@ -114,7 +103,7 @@ export function NavigationProvider({ children }: NavigationProviderProps) {
   }, []);
 
   return (
-    <NavigationContext.Provider value={{ isNavigating, startNavigation }}>
+    <NavigationContext.Provider value={{ isNavigating, startNavigation, push, replace }}>
       {children}
     </NavigationContext.Provider>
   );

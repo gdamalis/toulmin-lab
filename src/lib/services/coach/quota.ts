@@ -154,8 +154,6 @@ export async function consumeCoachMonthlyQuota(
     {
       upsert: true,
       returnDocument: 'after',
-      // Set initial values on insert
-      setDefaultsOnInsert: true,
     }
   );
   

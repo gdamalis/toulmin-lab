@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSubscribe } from "@/hooks/useSubscribe";
 
 interface SubscribeFormProps {
@@ -16,19 +16,16 @@ export function SubscribeForm({
   
   const { status, error, subscribe } = useSubscribe();
 
-  // Reset the form when status changes to success
-  useEffect(() => {
-    if (status === "success") {
-      setEmail("");
-    }
-  }, [status]);
-
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email) return;
     
-    await subscribe(email);
+    const success = await subscribe(email);
+    // Reset email on success
+    if (success) {
+      setEmail("");
+    }
   };
 
   return (
