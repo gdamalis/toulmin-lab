@@ -1,3 +1,10 @@
+## [0.31.0](https://github.com/gdamalis/toulmin-lab/compare/v0.30.0...v0.31.0) (2026-01-06)
+
+
+### Features
+
+* **TL-29:** implement AI Coach ([#6](https://github.com/gdamalis/toulmin-lab/issues/6)) ([c29fb4d](https://github.com/gdamalis/toulmin-lab/commit/c29fb4d96b7779d116433f548c31b4f8c6283938))
+
 ## [0.30.0](https://github.com/gdamalis/toulmin-lab/compare/v0.29.2...v0.30.0) (2025-12-26)
 
 
@@ -20,6 +27,4 @@
 ### Features
 
 * **email:** implement user invitation email functionality with Resend integration ([6dd8675](https://github.com/gdamalis/toulmin-lab/commit/6dd8675c9212679048dbf39affbb10aa55cf3875))
-
-## [0.28.2](https://github.com/gdamalis/toulmin-lab/compare/v0.28.1...v0.28.2) (2025-05-22)
 
