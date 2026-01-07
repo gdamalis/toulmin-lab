@@ -82,14 +82,14 @@ export function Footer({ sections, copyright, tagline }: FooterProps) {
           </div>
 
           {/* Link sections */}
-          <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
+          <div className="mt-12 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
             <div className="md:grid md:grid-cols-2 md:gap-8">
               {sections.slice(0, 2).map((section) => (
-                <div key={section.title}>
+                <div key={section.title} className="mb-10 sm:mb-0">
                   <h3 className="text-sm font-semibold leading-6 text-white">
                     {section.title}
                   </h3>
-                  <ul role="list" className="mt-6 space-y-4">
+                  <ul className="mt-4 md:mt-6 space-y-4">
                     {section.links.map((link) => (
                       <li key={link.label}>
                         <Link
@@ -110,7 +110,7 @@ export function Footer({ sections, copyright, tagline }: FooterProps) {
                   <h3 className="text-sm font-semibold leading-6 text-white">
                     {section.title}
                   </h3>
-                  <ul role="list" className="mt-6 space-y-4">
+                  <ul className="mt-4 md:mt-6 space-y-4">
                     {section.links.map((link) => (
                       <li key={link.label}>
                         <Link
