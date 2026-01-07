@@ -1,3 +1,10 @@
+## [0.32.0](https://github.com/gdamalis/toulmin-lab/compare/v0.31.0...v0.32.0) (2026-01-07)
+
+
+### Features
+
+* **TL-33:** revamp home landing page ([#7](https://github.com/gdamalis/toulmin-lab/issues/7)) ([8f8f584](https://github.com/gdamalis/toulmin-lab/commit/8f8f5843b8827a6d29917d0868358bba0b36826d))
+
 ## [0.31.0](https://github.com/gdamalis/toulmin-lab/compare/v0.30.0...v0.31.0) (2026-01-06)
 
 
@@ -20,11 +27,4 @@
 ## [0.29.2](https://github.com/gdamalis/toulmin-lab/compare/v0.29.1...v0.29.2) (2025-07-04)
 
 ## [0.29.1](https://github.com/gdamalis/toulmin-lab/compare/v0.29.0...v0.29.1) (2025-05-28)
-
-## [0.29.0](https://github.com/gdamalis/toulmin-lab/compare/v0.28.2...v0.29.0) (2025-05-28)
-
-
-### Features
-
-* **email:** implement user invitation email functionality with Resend integration ([6dd8675](https://github.com/gdamalis/toulmin-lab/commit/6dd8675c9212679048dbf39affbb10aa55cf3875))
 
