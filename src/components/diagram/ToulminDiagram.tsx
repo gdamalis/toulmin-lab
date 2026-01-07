@@ -25,6 +25,7 @@ interface ToulminDiagramProps {
   readonly showExportButtons?: boolean;
   readonly showControls?: boolean;
   readonly showTitle?: boolean;
+  readonly fillContainer?: boolean;
 }
 
 const snapGrid: [number, number] = [6, 6];
@@ -34,6 +35,7 @@ function ToulminDiagram({
   showExportButtons = true,
   showControls = true,
   showTitle = true,
+  fillContainer = false,
 }: Readonly<ToulminDiagramProps>) {
   const diagramRef = useRef<HTMLDivElement>(null);
   const { initialNodes, initialEdges, nodeTypes } = useToulminGraph(data);
@@ -80,7 +82,7 @@ function ToulminDiagram({
       <div
         ref={diagramRef}
         aria-label="Toulmin argument diagram"
-        className="h-150 bg-white"
+        className={fillContainer ? "h-full bg-white" : "h-150 bg-white"}
       >
         <ReactFlow
           nodes={nodes}

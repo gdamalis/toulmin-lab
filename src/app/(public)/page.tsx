@@ -1,14 +1,21 @@
-import { Header } from "@/components/layout";
+import { Footer, Header } from "@/components/layout";
 import {
+  AnimatedSection,
   ChartIcon,
   CheckBadgeIcon,
   CTASection,
+  FAQSection,
   FeatureSection,
   HeroSection,
+  HowItWorksSection,
   LightningIcon,
   ShareIcon,
-  SlimBanner,
+  // TestimonialsSection,
+  UseCaseIcons,
+  UseCasesSection,
 } from "@/components/ui";
+import { createFooterCopyright, createFooterSections } from "@/lib/footer-config";
+import type { Step } from "@/components/ui/HowItWorksSection";
 import { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -45,7 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function Home() {
   const t = useTranslations("pages.home");
-  const commonT = useTranslations("common");
+  const footerT = useTranslations("footer");
 
   const features = [
     {
@@ -70,30 +77,168 @@ export default function Home() {
     },
   ];
 
+  const howItWorksSteps: Step[] = [
+    {
+      number: 1,
+      title: t("howItWorks.steps.signIn.title"),
+      description: t("howItWorks.steps.signIn.description"),
+      icon: "signIn",
+    },
+    {
+      number: 2,
+      title: t("howItWorks.steps.build.title"),
+      description: t("howItWorks.steps.build.description"),
+      icon: "build",
+    },
+    {
+      number: 3,
+      title: t("howItWorks.steps.share.title"),
+      description: t("howItWorks.steps.share.description"),
+      icon: "share",
+    },
+  ];
+
+  const useCases = [
+    {
+      id: "universities",
+      icon: UseCaseIcons.universities,
+      title: t("useCases.universities.title"),
+      headline: t("useCases.universities.headline"),
+      description: t("useCases.universities.description"),
+      features: [
+        t("useCases.universities.features.0"),
+        t("useCases.universities.features.1"),
+        t("useCases.universities.features.2"),
+      ],
+      imageSrc: "/images/usecase-university.jpg",
+      imageAlt: t("useCases.universities.imageAlt"),
+    },
+    {
+      id: "bible-institutes",
+      icon: UseCaseIcons.bibleInstitutes,
+      title: t("useCases.bibleInstitutes.title"),
+      headline: t("useCases.bibleInstitutes.headline"),
+      description: t("useCases.bibleInstitutes.description"),
+      features: [
+        t("useCases.bibleInstitutes.features.0"),
+        t("useCases.bibleInstitutes.features.1"),
+        t("useCases.bibleInstitutes.features.2"),
+      ],
+      imageSrc: "/images/usecase-bible.jpg",
+      imageAlt: t("useCases.bibleInstitutes.imageAlt"),
+    },
+    {
+      id: "researchers",
+      icon: UseCaseIcons.researchers,
+      title: t("useCases.researchers.title"),
+      headline: t("useCases.researchers.headline"),
+      description: t("useCases.researchers.description"),
+      features: [
+        t("useCases.researchers.features.0"),
+        t("useCases.researchers.features.1"),
+        t("useCases.researchers.features.2"),
+      ],
+      imageSrc: "/images/usecase-research.jpg",
+      imageAlt: t("useCases.researchers.imageAlt"),
+    },
+  ];
+
+  // const testimonials = [
+  //   {
+  //     quote: t("testimonials.items.0.quote"),
+  //     author: t("testimonials.items.0.author"),
+  //     role: t("testimonials.items.0.role"),
+  //     institution: t("testimonials.items.0.institution"),
+  //   },
+  //   {
+  //     quote: t("testimonials.items.1.quote"),
+  //     author: t("testimonials.items.1.author"),
+  //     role: t("testimonials.items.1.role"),
+  //     institution: t("testimonials.items.1.institution"),
+  //   },
+  //   {
+  //     quote: t("testimonials.items.2.quote"),
+  //     author: t("testimonials.items.2.author"),
+  //     role: t("testimonials.items.2.role"),
+  //     institution: t("testimonials.items.2.institution"),
+  //   },
+  // ];
+
+  const faqs = [
+    {
+      question: t("faq.items.0.question"),
+      answer: t("faq.items.0.answer"),
+    },
+    {
+      question: t("faq.items.1.question"),
+      answer: t("faq.items.1.answer"),
+    },
+    {
+      question: t("faq.items.2.question"),
+      answer: t("faq.items.2.answer"),
+    },
+    {
+      question: t("faq.items.3.question"),
+      answer: t("faq.items.3.answer"),
+    },
+    {
+      question: t("faq.items.4.question"),
+      answer: t("faq.items.4.answer"),
+    },
+  ];
+
+  const footerSections = createFooterSections(footerT, { includeResources: false });
+
   return (
     <div className="bg-white">
-      <SlimBanner 
-        bgColor="bg-primary-700"
-        textColor="text-white"
-        emphasizedText={commonT("banner.closedBeta.emphasis")}
-        dismissible
-      >
-        {commonT("banner.closedBeta.message")}
-      </SlimBanner>
-      
       <Header />
 
       <HeroSection
         title={t("hero.title")}
         description={t("hero.description")}
+        badgeText={t("hero.badge.text")}
+        badgeLabel={t("hero.badge.label")}
+        ctaText={t("hero.cta")}
+        ctaHref="/auth"
+      />
+
+      <HowItWorksSection
+        heading={t("howItWorks.heading")}
+        subheading={t("howItWorks.subheading")}
+        steps={howItWorksSteps}
       />
 
       <div id="features">
-        <FeatureSection
-          heading={t("featureSection.heading")}
-          subheading={t("featureSection.subheading")}
-          description={t("featureSection.description")}
-          features={features}
+        <AnimatedSection>
+          <FeatureSection
+            heading={t("featureSection.heading")}
+            subheading={t("featureSection.subheading")}
+            description={t("featureSection.description")}
+            features={features}
+          />
+        </AnimatedSection>
+      </div>
+
+      <div id="use-cases">
+        <UseCasesSection
+          heading={t("useCases.heading")}
+          subheading={t("useCases.subheading")}
+          useCases={useCases}
+        />
+      </div>
+      {/* 
+Disabling for now until we collect testimonials
+      <TestimonialsSection
+        heading={t("testimonials.heading")}
+        subheading={t("testimonials.subheading")}
+        testimonials={testimonials}
+      /> */}
+
+      <div id="faq">
+        <FAQSection
+          heading={t("faq.heading")}
+          subheading={t("faq.subheading")}
+          faqs={faqs}
         />
       </div>
 
@@ -102,6 +247,12 @@ export default function Home() {
         description={t("ctaSection.description")}
         buttonText={t("getStarted")}
         buttonHref="/auth"
+      />
+
+      <Footer
+        sections={footerSections}
+        copyright={createFooterCopyright(footerT)}
+        tagline={footerT("tagline")}
       />
     </div>
   );
