@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { motion, Variants } from "framer-motion";
+import { motion, useReducedMotion, Variants } from "framer-motion";
 import { ReactNode } from "react";
 
 interface AnimatedSectionProps {
@@ -24,24 +24,33 @@ export function AnimatedSection({
   delay = 0,
   direction = "up",
 }: AnimatedSectionProps) {
+  const prefersReducedMotion = useReducedMotion();
   const offset = directionOffsets[direction];
 
-  const variants: Variants = {
-    hidden: {
-      opacity: 0,
-      ...offset,
-    },
-    visible: {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut",
-        delay,
-      },
-    },
-  };
+  const variants: Variants = prefersReducedMotion
+    ? {
+        hidden: { opacity: 0 },
+        visible: {
+          opacity: 1,
+          transition: { duration: 0.01 },
+        },
+      }
+    : {
+        hidden: {
+          opacity: 0,
+          ...offset,
+        },
+        visible: {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          transition: {
+            duration: 0.5,
+            ease: "easeOut",
+            delay,
+          },
+        },
+      };
 
   return (
     <motion.section
@@ -67,15 +76,25 @@ export function StaggeredContainer({
   className,
   staggerDelay = 0.1,
 }: StaggeredContainerProps) {
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: staggerDelay,
-      },
-    },
-  };
+  const prefersReducedMotion = useReducedMotion();
+
+  const containerVariants: Variants = prefersReducedMotion
+    ? {
+        hidden: { opacity: 0 },
+        visible: {
+          opacity: 1,
+          transition: { duration: 0.01 },
+        },
+      }
+    : {
+        hidden: { opacity: 0 },
+        visible: {
+          opacity: 1,
+          transition: {
+            staggerChildren: staggerDelay,
+          },
+        },
+      };
 
   return (
     <motion.div
@@ -96,17 +115,27 @@ interface StaggeredItemProps {
 }
 
 export function StaggeredItem({ children, className }: StaggeredItemProps) {
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 24 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut",
-      },
-    },
-  };
+  const prefersReducedMotion = useReducedMotion();
+
+  const itemVariants: Variants = prefersReducedMotion
+    ? {
+        hidden: { opacity: 0 },
+        visible: {
+          opacity: 1,
+          transition: { duration: 0.01 },
+        },
+      }
+    : {
+        hidden: { opacity: 0, y: 24 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: {
+            duration: 0.5,
+            ease: "easeOut",
+          },
+        },
+      };
 
   return (
     <motion.div variants={itemVariants} className={cn(className)}>
