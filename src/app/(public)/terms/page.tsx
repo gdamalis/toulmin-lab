@@ -1,5 +1,6 @@
 import { Footer, Header } from "@/components/layout";
 import { Container } from "@/components/ui";
+import { createFooterCopyright, createFooterSections } from "@/lib/footer-config";
 import { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 
@@ -18,30 +19,7 @@ export default async function TermsPage() {
   const t = await getTranslations({ locale, namespace: "pages.terms" });
   const footerT = await getTranslations({ locale, namespace: "footer" });
 
-  const footerSections = [
-    {
-      title: footerT("product.title"),
-      links: [
-        { label: footerT("product.features"), href: "/#features" },
-        { label: footerT("product.useCases"), href: "/#use-cases" },
-        { label: footerT("product.faq"), href: "/#faq" },
-      ],
-    },
-    {
-      title: footerT("resources.title"),
-      links: [
-        { label: footerT("resources.documentation"), href: "/docs" },
-        { label: footerT("resources.support"), href: "/support" },
-      ],
-    },
-    {
-      title: footerT("legal.title"),
-      links: [
-        { label: footerT("legal.terms"), href: "/terms" },
-        { label: footerT("legal.privacy"), href: "/privacy" },
-      ],
-    },
-  ];
+  const footerSections = createFooterSections(footerT);
 
   return (
     <div className="bg-white">
@@ -108,7 +86,7 @@ export default async function TermsPage() {
       </Container>
       <Footer
         sections={footerSections}
-        copyright={footerT("copyright", { year: new Date().getFullYear() })}
+        copyright={createFooterCopyright(footerT)}
         tagline={footerT("tagline")}
       />
     </div>
