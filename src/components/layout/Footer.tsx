@@ -40,8 +40,8 @@ export function Footer({ sections, copyright, tagline }: FooterProps) {
             {tagline && (
               <p className="text-sm leading-6 text-gray-300">{tagline}</p>
             )}
-            <div className="flex space-x-6">
-              {/* Social icons */}
+            {/* Social icons */}
+            {/* <div className="flex space-x-6">
               <a
                 href="https://github.com"
                 target="_blank"
@@ -78,7 +78,7 @@ export function Footer({ sections, copyright, tagline }: FooterProps) {
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
               </a>
-            </div>
+            </div> */}
           </div>
 
           {/* Link sections */}
@@ -131,8 +131,7 @@ export function Footer({ sections, copyright, tagline }: FooterProps) {
         {/* Bottom section */}
         <div className="mt-16 border-t border-white/10 pt-8 sm:mt-20 lg:mt-24 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs leading-5 text-gray-400">{copyright}</p>
-          <div className="flex items-center gap-4">
-          </div>
+          <div className="flex items-center gap-4"></div>
         </div>
       </div>
     </footer>
