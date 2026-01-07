@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import {
   ArrowLongRightIcon,
   ArrowRightCircleIcon,
@@ -8,13 +7,22 @@ import {
   ShareIcon,
 } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import { ComponentType, SVGProps } from "react";
 
-interface Step {
+// Icon registry - maps string keys to icon components
+const iconRegistry: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
+  signIn: ArrowRightCircleIcon,
+  build: PencilSquareIcon,
+  share: ShareIcon,
+};
+
+export type HowItWorksIconKey = keyof typeof iconRegistry;
+
+export interface Step {
   number: number;
   title: string;
   description: string;
-  icon: ReactNode;
+  icon: HowItWorksIconKey;
 }
 
 interface HowItWorksSectionProps {
@@ -60,8 +68,8 @@ export function HowItWorksSection({
                 {/* Connector line - only on desktop and not for last item */}
                 {index < steps.length - 1 && (
                   <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5">
-                    <div className="w-full h-full bg-gradient-to-r from-primary-300 to-primary-100" />
-                    <ArrowLongRightIcon className="absolute -right-2 -top-2.5 h-6 w-6 text-primary-300" />
+                    <div className="w-full h-full bg-linear-to-r from-primary-300 to-primary-300" />
+                    <ArrowLongRightIcon className="absolute -right-2 -top-3.25 h-7 w-7 text-primary-300" />
                   </div>
                 )}
 
@@ -69,7 +77,7 @@ export function HowItWorksSection({
                   {/* Number badge */}
                   <div className="relative">
                     <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary-600 shadow-lg shadow-primary-600/30">
-                      <span className="text-white">{step.icon}</span>
+                      <StepIcon iconKey={step.icon} />
                     </div>
                     <span className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm font-bold text-primary-600 shadow-md ring-2 ring-primary-600">
                       {step.number}
@@ -93,9 +101,9 @@ export function HowItWorksSection({
   );
 }
 
-// Pre-built icons for common use
-export const HowItWorksIcons = {
-  signIn: <ArrowRightCircleIcon className="h-10 w-10" />,
-  build: <PencilSquareIcon className="h-10 w-10" />,
-  share: <ShareIcon className="h-10 w-10" />,
-};
+// Internal component to render icons from the registry
+function StepIcon({ iconKey }: { iconKey: HowItWorksIconKey }) {
+  const IconComponent = iconRegistry[iconKey];
+  if (!IconComponent) return null;
+  return <IconComponent className="h-10 w-10 text-white" />;
+}

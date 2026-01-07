@@ -81,7 +81,7 @@ export function DiagramPreview({
         )}
       </div>
       <div className="px-4 pt-4 pb-4 relative bg-white">
-        <div className="aspect-[16/10] w-full bg-gray-100 rounded-md overflow-hidden relative">
+        <div className="aspect-video w-full bg-white rounded-md overflow-hidden relative">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSample.name}
@@ -89,12 +89,13 @@ export function DiagramPreview({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="p-4 flex flex-col absolute inset-0"
+              className="absolute inset-0"
             >
               <ToulminDiagram
                 data={currentSample}
                 showExportButtons={false}
                 showTitle={false}
+                fillContainer
               />
             </motion.div>
           </AnimatePresence>

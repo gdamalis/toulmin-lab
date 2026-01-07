@@ -9,7 +9,7 @@ export { DiagramPreview } from './DiagramPreview';
 export { FAQSection } from './FAQSection';
 export { FeatureSection } from './FeatureSection';
 export { HeroSection } from './HeroSection';
-export { HowItWorksSection, HowItWorksIcons } from './HowItWorksSection';
+export { HowItWorksSection } from './HowItWorksSection';
 export { 
   Icon, 
   LightningIcon, 

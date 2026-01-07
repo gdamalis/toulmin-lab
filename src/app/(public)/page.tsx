@@ -7,14 +7,14 @@ import {
   FAQSection,
   FeatureSection,
   HeroSection,
-  HowItWorksIcons,
   HowItWorksSection,
   LightningIcon,
   ShareIcon,
-  TestimonialsSection,
+  // TestimonialsSection,
   UseCaseIcons,
   UseCasesSection,
 } from "@/components/ui";
+import type { Step } from "@/components/ui/HowItWorksSection";
 import { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -76,24 +76,24 @@ export default function Home() {
     },
   ];
 
-  const howItWorksSteps = [
+  const howItWorksSteps: Step[] = [
     {
       number: 1,
       title: t("howItWorks.steps.signIn.title"),
       description: t("howItWorks.steps.signIn.description"),
-      icon: HowItWorksIcons.signIn,
+      icon: "signIn",
     },
     {
       number: 2,
       title: t("howItWorks.steps.build.title"),
       description: t("howItWorks.steps.build.description"),
-      icon: HowItWorksIcons.build,
+      icon: "build",
     },
     {
       number: 3,
       title: t("howItWorks.steps.share.title"),
       description: t("howItWorks.steps.share.description"),
-      icon: HowItWorksIcons.share,
+      icon: "share",
     },
   ];
 
@@ -142,26 +142,26 @@ export default function Home() {
     },
   ];
 
-  const testimonials = [
-    {
-      quote: t("testimonials.items.0.quote"),
-      author: t("testimonials.items.0.author"),
-      role: t("testimonials.items.0.role"),
-      institution: t("testimonials.items.0.institution"),
-    },
-    {
-      quote: t("testimonials.items.1.quote"),
-      author: t("testimonials.items.1.author"),
-      role: t("testimonials.items.1.role"),
-      institution: t("testimonials.items.1.institution"),
-    },
-    {
-      quote: t("testimonials.items.2.quote"),
-      author: t("testimonials.items.2.author"),
-      role: t("testimonials.items.2.role"),
-      institution: t("testimonials.items.2.institution"),
-    },
-  ];
+  // const testimonials = [
+  //   {
+  //     quote: t("testimonials.items.0.quote"),
+  //     author: t("testimonials.items.0.author"),
+  //     role: t("testimonials.items.0.role"),
+  //     institution: t("testimonials.items.0.institution"),
+  //   },
+  //   {
+  //     quote: t("testimonials.items.1.quote"),
+  //     author: t("testimonials.items.1.author"),
+  //     role: t("testimonials.items.1.role"),
+  //     institution: t("testimonials.items.1.institution"),
+  //   },
+  //   {
+  //     quote: t("testimonials.items.2.quote"),
+  //     author: t("testimonials.items.2.author"),
+  //     role: t("testimonials.items.2.role"),
+  //     institution: t("testimonials.items.2.institution"),
+  //   },
+  // ];
 
   const faqs = [
     {
@@ -195,13 +195,13 @@ export default function Home() {
         { label: footerT("product.faq"), href: "/#faq" },
       ],
     },
-    {
-      title: footerT("resources.title"),
-      links: [
-        { label: footerT("resources.documentation"), href: "/docs" },
-        { label: footerT("resources.support"), href: "/support" },
-      ],
-    },
+    // {
+    //   title: footerT("resources.title"),
+    //   links: [
+    //     { label: footerT("resources.documentation"), href: "/docs" },
+    //     { label: footerT("resources.support"), href: "/support" },
+    //   ],
+    // },
     {
       title: footerT("legal.title"),
       links: [
@@ -248,12 +248,13 @@ export default function Home() {
           useCases={useCases}
         />
       </div>
-
+      {/* 
+Disabling for now until we collect testimonials
       <TestimonialsSection
         heading={t("testimonials.heading")}
         subheading={t("testimonials.subheading")}
         testimonials={testimonials}
-      />
+      /> */}
 
       <div id="faq">
         <FAQSection

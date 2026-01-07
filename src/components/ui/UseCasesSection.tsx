@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import {
   AcademicCapIcon,
   BeakerIcon,
@@ -8,8 +7,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { track } from "@vercel/analytics";
 import { motion } from "framer-motion";
-import Image from "next/image";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./Tabs";
 
 interface UseCase {
@@ -34,7 +32,10 @@ export function UseCasesSection({
   subheading,
   useCases,
 }: UseCasesSectionProps) {
+  const [activeTab, setActiveTab] = useState(useCases[0]?.id ?? "universities");
+
   const handleTabChange = (value: string) => {
+    setActiveTab(value);
     track("use_case_tab_clicked", { tab: value });
   };
 
@@ -64,7 +65,8 @@ export function UseCasesSection({
           className="mt-16"
         >
           <Tabs
-            defaultValue={useCases[0]?.id ?? "universities"}
+            defaultValue={activeTab}
+            value={activeTab}
             onValueChange={handleTabChange}
             className="w-full"
           >
@@ -85,53 +87,33 @@ export function UseCasesSection({
 
             {useCases.map((useCase) => (
               <TabsContent key={useCase.id} value={useCase.id} className="mt-10">
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16 items-center">
-                  {/* Content */}
-                  <div className="lg:order-1">
-                    <h3 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                      {useCase.headline}
-                    </h3>
-                    <p className="mt-4 text-lg text-gray-600">
-                      {useCase.description}
-                    </p>
-                    <ul className="mt-8 space-y-3">
-                      {useCase.features.map((feature, index) => (
-                        <li key={index} className="flex items-start gap-3">
-                          <svg
-                            className="h-6 w-6 flex-shrink-0 text-primary-600"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={2}
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                          <span className="text-gray-700">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Image placeholder */}
-                  <div className="lg:order-2">
-                    <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 shadow-xl ring-1 ring-gray-200">
-                      {/* Placeholder with icon until real images are added */}
-                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100">
-                        <div className="text-center">
-                          <div className="mx-auto h-16 w-16 text-primary-400">
-                            {useCase.icon}
-                          </div>
-                          <p className="mt-4 text-sm text-primary-600 font-medium">
-                            {useCase.imageAlt}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <div className="mx-auto max-w-3xl">
+                  <h3 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl text-center">
+                    {useCase.headline}
+                  </h3>
+                  <p className="mt-4 text-lg text-gray-600 text-center">
+                    {useCase.description}
+                  </p>
+                  <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    {useCase.features.map((feature, index) => (
+                      <li key={index} className="flex items-start gap-3 rounded-lg bg-gray-50 p-4">
+                        <svg
+                          className="h-6 w-6 flex-shrink-0 text-primary-600"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <span className="text-gray-700">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </TabsContent>
             ))}
