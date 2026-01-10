@@ -1,3 +1,10 @@
+## [0.37.0](https://github.com/gdamalis/toulmin-lab/compare/v0.36.0...v0.37.0) (2026-01-10)
+
+
+### Features
+
+* **argument:** integrate AI button with quota management and tooltip ([e311ba6](https://github.com/gdamalis/toulmin-lab/commit/e311ba67ce9033181874477f90f9edb69fbeb52f))
+
 ## [0.36.0](https://github.com/gdamalis/toulmin-lab/compare/v0.35.0...v0.36.0) (2026-01-10)
 
 
@@ -25,11 +32,4 @@
 ### Features
 
 * **coach:** enhance AI coaching logic and user experience ([29b20a7](https://github.com/gdamalis/toulmin-lab/commit/29b20a75f3c87a075c0f3bd84915caf86dc7f6d8))
-
-## [0.32.0](https://github.com/gdamalis/toulmin-lab/compare/v0.31.0...v0.32.0) (2026-01-07)
-
-
-### Features
-
-* **TL-33:** revamp home landing page ([#7](https://github.com/gdamalis/toulmin-lab/issues/7)) ([8f8f584](https://github.com/gdamalis/toulmin-lab/commit/8f8f5843b8827a6d29917d0868358bba0b36826d))
 
