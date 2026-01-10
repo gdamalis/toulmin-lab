@@ -105,6 +105,18 @@ export interface ArgumentDraft {
 }
 
 /**
+ * Proposal status indicating what happened to the AI's proposedUpdate
+ */
+export type ProposalStatus = 
+  | 'kept'
+  | 'stripped-low-confidence'
+  | 'stripped-wrong-step'
+  | 'stripped-empty-value'
+  | 'stripped-first-attempt-no-confidence'
+  | 'stripped-first-attempt-failed-heuristics'
+  | 'none';
+
+/**
  * Proposed update from AI
  */
 export interface ProposedUpdate {
@@ -125,6 +137,8 @@ export interface CoachAIResult {
   shouldAdvance?: boolean;
   nextStep?: ToulminStep;
   isComplete?: boolean;
+  /** Debug field indicating what happened to the AI's proposedUpdate */
+  proposalStatus?: ProposalStatus;
 }
 
 /**

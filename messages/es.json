@@ -439,6 +439,7 @@
       "editStep": "Me gustaría revisar este paso. Por favor guíame.",
       "editingStep": "Editando: {step}",
       "continueEditing": "Continuar editando sin IA",
+      "requestRewrite": "Por favor reescribe tu sugerencia de manera más concisa, mantén mi voz, y pídeme confirmación.",
       "quota": {
         "usage": "Mensajes IA usados",
         "resets": "Se reinicia",

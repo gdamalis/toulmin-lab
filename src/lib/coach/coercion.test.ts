@@ -20,7 +20,7 @@ describe('coerceResultToCurrentStep', () => {
         step: 'grounds', // Wrong step
       };
       
-      const coerced = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
+      const { result: coerced } = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
       
       expect(coerced.step).toBe(TOULMIN_STEPS.CLAIM);
     });
@@ -31,7 +31,7 @@ describe('coerceResultToCurrentStep', () => {
         step: TOULMIN_STEPS.CLAIM,
       };
       
-      const coerced = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
+      const { result: coerced } = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
       
       expect(coerced.step).toBe(TOULMIN_STEPS.CLAIM);
     });
@@ -44,7 +44,7 @@ describe('coerceResultToCurrentStep', () => {
         step: TOULMIN_STEPS.CLAIM,
       };
       
-      const coerced = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
+      const { result: coerced } = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
       
       expect(coerced.assistantText).toBe('Test response');
     });
@@ -62,7 +62,7 @@ describe('coerceResultToCurrentStep', () => {
         },
       };
       
-      const coerced = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
+      const { result: coerced } = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
       
       expect(coerced.proposedUpdate).toBeUndefined();
     });
@@ -78,7 +78,7 @@ describe('coerceResultToCurrentStep', () => {
         },
       };
       
-      const coerced = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
+      const { result: coerced } = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
       
       expect(coerced.proposedUpdate).toBeUndefined();
     });
@@ -94,7 +94,7 @@ describe('coerceResultToCurrentStep', () => {
         },
       };
       
-      const coerced = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
+      const { result: coerced } = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
       
       expect(coerced.proposedUpdate).toBeDefined();
       const update = coerced.proposedUpdate as { value: string; rationale: string };
@@ -111,7 +111,7 @@ describe('coerceResultToCurrentStep', () => {
         shouldAdvance: false,
       };
       
-      const coerced = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
+      const { result: coerced } = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
       
       expect(coerced.shouldAdvance).toBe(false);
     });
@@ -124,7 +124,7 @@ describe('coerceResultToCurrentStep', () => {
         nextStep: 'invalid',
       };
       
-      const coerced = coerceResultToCurrentStep(result, TOULMIN_STEPS.REBUTTAL);
+      const { result: coerced } = coerceResultToCurrentStep(result, TOULMIN_STEPS.REBUTTAL);
       
       expect(coerced.shouldAdvance).toBe(false);
       expect(coerced.isComplete).toBe(true);
@@ -139,7 +139,7 @@ describe('coerceResultToCurrentStep', () => {
         nextStep: TOULMIN_STEPS.GROUNDS,
       };
       
-      const coerced = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM, '');
+      const { result: coerced } = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM, '');
       
       expect(coerced.shouldAdvance).toBe(false);
       expect(coerced.nextStep).toBeUndefined();
@@ -159,7 +159,7 @@ describe('coerceResultToCurrentStep', () => {
         },
       };
       
-      const coerced = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
+      const { result: coerced } = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
       
       expect(coerced.shouldAdvance).toBe(false);
       expect(coerced.nextStep).toBeUndefined();
@@ -179,7 +179,16 @@ describe('coerceResultToCurrentStep', () => {
         },
       };
       
-      const coerced = coerceResultToCurrentStep(result, TOULMIN_STEPS.CLAIM);
+      // Provide draft content + pass heuristics for save-driven advancement
+      const { result: coerced } = coerceResultToCurrentStep(
+        result, 
+        TOULMIN_STEPS.CLAIM,
+        'Universities should require critical thinking courses for all students.', // Draft has content
+        'en',
+        false, // Not first attempt
+        false, // Not rewrite request
+        true   // User text passes heuristics
+      );
       
       expect(coerced.nextStep).toBe(TOULMIN_STEPS.GROUNDS);
     });
@@ -252,13 +261,13 @@ describe('trySalvageCoachResult', () => {
 });
 
 describe('sanitizeProposedUpdate', () => {
-  it('should return false if no proposedUpdate', () => {
+  it('should return "none" if no proposedUpdate', () => {
     const coerced: Record<string, unknown> = {};
     const result = sanitizeProposedUpdate(coerced, TOULMIN_STEPS.CLAIM);
-    expect(result).toBe(false);
+    expect(result).toBe('none');
   });
   
-  it('should remove and return false if field mismatches', () => {
+  it('should remove and return "stripped-wrong-step" if field mismatches', () => {
     const coerced: Record<string, unknown> = {
       proposedUpdate: {
         field: TOULMIN_STEPS.GROUNDS,
@@ -269,11 +278,11 @@ describe('sanitizeProposedUpdate', () => {
     
     const result = sanitizeProposedUpdate(coerced, TOULMIN_STEPS.CLAIM);
     
-    expect(result).toBe(false);
+    expect(result).toBe('stripped-wrong-step');
     expect(coerced.proposedUpdate).toBeUndefined();
   });
   
-  it('should remove and return false if value is empty', () => {
+  it('should remove and return "stripped-empty-value" if value is empty', () => {
     const coerced: Record<string, unknown> = {
       proposedUpdate: {
         field: TOULMIN_STEPS.CLAIM,
@@ -284,11 +293,11 @@ describe('sanitizeProposedUpdate', () => {
     
     const result = sanitizeProposedUpdate(coerced, TOULMIN_STEPS.CLAIM);
     
-    expect(result).toBe(false);
+    expect(result).toBe('stripped-empty-value');
     expect(coerced.proposedUpdate).toBeUndefined();
   });
   
-  it('should return true and trim values for valid proposedUpdate', () => {
+  it('should return "kept" and trim values for valid proposedUpdate', () => {
     const coerced: Record<string, unknown> = {
       proposedUpdate: {
         field: TOULMIN_STEPS.CLAIM,
@@ -299,7 +308,7 @@ describe('sanitizeProposedUpdate', () => {
     
     const result = sanitizeProposedUpdate(coerced, TOULMIN_STEPS.CLAIM);
     
-    expect(result).toBe(true);
+    expect(result).toBe('kept');
     const update = coerced.proposedUpdate as { value: string; rationale: string };
     expect(update.value).toBe('trimmed value');
     expect(update.rationale).toBe('trimmed rationale');
@@ -380,7 +389,7 @@ describe('first-attempt bias', () => {
     };
     
     // isFirstAttempt=true means first user turn for this step
-    const coerced = coerceResultToCurrentStep(
+    const { result: coerced, proposalStatus } = coerceResultToCurrentStep(
       result, 
       TOULMIN_STEPS.CLAIM, 
       '', // draftFieldValue 
@@ -391,13 +400,14 @@ describe('first-attempt bias', () => {
     
     expect(coerced.proposedUpdate).toBeUndefined();
     expect(coerced.assistantText).toBe('Good start!');
+    expect(proposalStatus).toBe('stripped-low-confidence');
   });
   
-  it('should strip proposedUpdate on first turn with undefined confidence', () => {
+  it('should keep proposedUpdate on first turn with undefined confidence if user text passes heuristics', () => {
     const result = {
       assistantText: 'Good start!',
       step: TOULMIN_STEPS.CLAIM,
-      // No confidence provided
+      // No confidence provided - will be gated by user text heuristics
       proposedUpdate: {
         field: TOULMIN_STEPS.CLAIM,
         value: 'Some claim text',
@@ -405,16 +415,19 @@ describe('first-attempt bias', () => {
       },
     };
     
-    const coerced = coerceResultToCurrentStep(
+    const { result: coerced, proposalStatus } = coerceResultToCurrentStep(
       result, 
       TOULMIN_STEPS.CLAIM, 
       '', 
       'en', 
-      true, // First turn
-      false
+      true,  // First turn
+      false, // Not rewrite request
+      true   // User text PASSES heuristics - key for keeping proposal
     );
     
-    expect(coerced.proposedUpdate).toBeUndefined();
+    // With user text passing heuristics, undefined confidence proposal is kept
+    expect(coerced.proposedUpdate).toBeDefined();
+    expect(proposalStatus).toBe('kept');
   });
   
   it('should keep proposedUpdate on first turn with high confidence', () => {
@@ -429,7 +442,7 @@ describe('first-attempt bias', () => {
       },
     };
     
-    const coerced = coerceResultToCurrentStep(
+    const { result: coerced } = coerceResultToCurrentStep(
       result, 
       TOULMIN_STEPS.CLAIM, 
       '', 
@@ -456,7 +469,7 @@ describe('first-attempt bias', () => {
     };
     
     // isFirstAttempt=false means user has sent at least one message for this step already
-    const coerced = coerceResultToCurrentStep(
+    const { result: coerced } = coerceResultToCurrentStep(
       result, 
       TOULMIN_STEPS.CLAIM, 
       'Original claim text',
@@ -481,7 +494,7 @@ describe('first-attempt bias', () => {
     };
     
     // Even on first turn, if user asked for rewrite, allow proposal
-    const coerced = coerceResultToCurrentStep(
+    const { result: coerced } = coerceResultToCurrentStep(
       result, 
       TOULMIN_STEPS.CLAIM, 
       '',

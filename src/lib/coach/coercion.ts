@@ -3,32 +3,40 @@
  * Extracted for testability
  */
 
-import { ToulminStep, TOULMIN_STEPS, getNextStep } from '@/types/coach';
+import { ToulminStep, TOULMIN_STEPS, getNextStep, ProposalStatus } from '@/types/coach';
 import { getStepValidator, ValidationLocale } from '@/lib/services/coach/stepCriteria';
 
 /**
+ * Result of coercion including proposal status for debugging
+ */
+export interface CoercionResult {
+  result: Record<string, unknown>;
+  proposalStatus: ProposalStatus;
+}
+
+/**
  * Sanitize proposedUpdate in the result
- * Returns true if proposedUpdate is valid after sanitization, false if it was removed
+ * Returns the proposal status indicating what happened
  */
 export function sanitizeProposedUpdate(
   coerced: Record<string, unknown>,
   sessionCurrentStep: ToulminStep
-): boolean {
+): ProposalStatus {
   const proposedUpdate = coerced.proposedUpdate as { field?: string; value?: string; rationale?: string } | undefined;
-  if (!proposedUpdate) return false;
+  if (!proposedUpdate) return 'none';
 
   // Field must match current step
   if (proposedUpdate.field !== sessionCurrentStep) {
     console.warn(`Removing proposedUpdate for field '${proposedUpdate.field}' - expected '${sessionCurrentStep}'`);
     delete coerced.proposedUpdate;
-    return false;
+    return 'stripped-wrong-step';
   }
   
   // Value must be non-empty
   if (typeof proposedUpdate.value !== 'string' || proposedUpdate.value.trim() === '') {
     console.warn(`Removing proposedUpdate with empty value for '${sessionCurrentStep}'`);
     delete coerced.proposedUpdate;
-    return false;
+    return 'stripped-empty-value';
   }
 
   // Trim value and rationale
@@ -36,7 +44,7 @@ export function sanitizeProposedUpdate(
   if (typeof proposedUpdate.rationale === 'string') {
     proposedUpdate.rationale = proposedUpdate.rationale.trim();
   }
-  return true;
+  return 'kept';
 }
 
 /**
@@ -85,6 +93,8 @@ export function shouldAllowAdvancement(
  * @param locale - Locale for step validation heuristics
  * @param isFirstAttempt - True if this is the first user turn for this step
  * @param isRewriteRequest - True if the user explicitly asked for a rewrite
+ * @param userTextPassesHeuristics - True if the user's latest message passes step validation heuristics
+ * @returns CoercionResult with the coerced result and proposal status
  */
 export function coerceResultToCurrentStep(
   result: Record<string, unknown>,
@@ -92,8 +102,9 @@ export function coerceResultToCurrentStep(
   draftFieldValue: string = '',
   locale: ValidationLocale = 'en',
   isFirstAttempt: boolean = false,
-  isRewriteRequest: boolean = false
-): Record<string, unknown> {
+  isRewriteRequest: boolean = false,
+  userTextPassesHeuristics: boolean = false
+): CoercionResult {
   const coerced = { ...result };
 
   // Force step to match session's current step
@@ -108,26 +119,42 @@ export function coerceResultToCurrentStep(
   }
 
   // Validate and sanitize proposedUpdate
-  const hasProposal = sanitizeProposedUpdate(coerced, sessionCurrentStep);
+  let proposalStatus = sanitizeProposedUpdate(coerced, sessionCurrentStep);
 
-  // First-attempt bias: Only apply on true first attempt (not subsequent turns)
-  // If it's a first attempt, not a rewrite request, and confidence is low, strip the proposal
-  if (hasProposal && isFirstAttempt && !isRewriteRequest) {
+  // First-attempt bias: Apply strict gating on true first attempt (not subsequent turns)
+  // This prevents the AI from writing the argument for the user on first contact
+  if (proposalStatus === 'kept' && isFirstAttempt && !isRewriteRequest) {
     const confidence = coerced.confidence as number | undefined;
+    const proposedValue = (coerced.proposedUpdate as { value?: string } | undefined)?.value ?? '';
     const MIN_CONFIDENCE_FOR_FIRST_ATTEMPT_PROPOSAL = 0.8;
     
-    if (confidence === undefined || confidence < MIN_CONFIDENCE_FOR_FIRST_ATTEMPT_PROPOSAL) {
+    if (confidence !== undefined && confidence < MIN_CONFIDENCE_FOR_FIRST_ATTEMPT_PROPOSAL) {
+      // Explicit low confidence on first attempt - strip proposal
       console.warn(
-        `Stripping proposedUpdate on first attempt: confidence ${confidence ?? 'undefined'} ` +
+        `Stripping proposedUpdate on first attempt: confidence ${confidence} ` +
         `below threshold ${MIN_CONFIDENCE_FOR_FIRST_ATTEMPT_PROPOSAL}`
       );
       delete coerced.proposedUpdate;
+      proposalStatus = 'stripped-low-confidence';
+    } else if (confidence === undefined) {
+      // Missing confidence on first attempt - use user text heuristics as gatekeeper
+      // If user's text passes heuristics, allow proposal (user is making good progress)
+      // If it doesn't pass, strip proposal (coach them instead)
+      if (!userTextPassesHeuristics) {
+        console.warn(
+          `Stripping proposedUpdate on first attempt: missing confidence and user's text ` +
+          `doesn't pass ${sessionCurrentStep} validation heuristics`
+        );
+        delete coerced.proposedUpdate;
+        proposalStatus = 'stripped-first-attempt-failed-heuristics';
+      }
+      // If heuristics pass, keep the proposal (allows high-quality first-attempt proposals)
     }
   }
 
   // Process advancement logic
   if (coerced.shouldAdvance !== true) {
-    return coerced;
+    return { result: coerced, proposalStatus };
   }
 
   // Handle rebuttal (last step) - can't advance, set isComplete instead
@@ -135,14 +162,26 @@ export function coerceResultToCurrentStep(
     coerced.shouldAdvance = false;
     coerced.isComplete = true;
     delete coerced.nextStep;
-    return coerced;
+    return { result: coerced, proposalStatus };
   }
 
-  // Check if advancement should be allowed
+  // Save-driven advancement: force shouldAdvance=false if draft field is empty (new-content flow)
+  // User must click "Use this" on the proposal before we can advance
+  const stepHasContent = draftFieldValue.trim() !== '';
+  if (!stepHasContent) {
+    console.warn(
+      `Forcing shouldAdvance=false: draft.${sessionCurrentStep} is empty (save-driven advancement)`
+    );
+    coerced.shouldAdvance = false;
+    delete coerced.nextStep;
+    return { result: coerced, proposalStatus };
+  }
+
+  // Check if advancement should be allowed (additional heuristics)
   if (!shouldAllowAdvancement(coerced, sessionCurrentStep, draftFieldValue, locale)) {
     coerced.shouldAdvance = false;
     delete coerced.nextStep;
-    return coerced;
+    return { result: coerced, proposalStatus };
   }
 
   // Ensure nextStep is correct
@@ -152,7 +191,7 @@ export function coerceResultToCurrentStep(
     coerced.nextStep = correctNextStep;
   }
 
-  return coerced;
+  return { result: coerced, proposalStatus };
 }
 
 /**

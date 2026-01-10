@@ -25,6 +25,7 @@ import {
   ToulminStep,
   CoachAIResult,
   ProposedUpdate,
+  ProposalStatus,
   getNextStep,
   TOULMIN_STEPS,
   TOULMIN_STEP_ORDER,
@@ -95,6 +96,7 @@ export function ChatPanel({
   const [isLoading, setIsLoading] = useState(false);
   const [streamingContent, setStreamingContent] = useState<string>('');
   const [proposedUpdate, setProposedUpdate] = useState<ProposedUpdate | null>(null);
+  const [lastProposalStatus, setLastProposalStatus] = useState<ProposalStatus | null>(null);
   const [isComplete, setIsComplete] = useState(false);
   const [argumentId, setArgumentId] = useState<string | undefined>();
   const [finalizationError, setFinalizationError] = useState<string | undefined>();
@@ -254,9 +256,17 @@ export function ChatPanel({
   /**
    * Process the AI result after streaming completes
    * Note: Assistant messages are now persisted server-side in /api/coach
-   * The result may include assistantMessageId for reconciliation
+   * The result may include assistantMessageId and proposalStatus for reconciliation and debugging
    */
   const processAIResult = useCallback(async (result: CoachAIResult & { assistantMessageId?: string }) => {
+    // Log and track proposalStatus for debugging
+    if (result.proposalStatus) {
+      console.debug('[Coach] proposalStatus:', result.proposalStatus);
+      setLastProposalStatus(result.proposalStatus);
+    } else {
+      setLastProposalStatus(null);
+    }
+
     // Use the server-provided messageId if available, otherwise generate a client-side one
     const messageId = result.assistantMessageId ?? `assistant-${Date.now()}`;
     const assistantMessage: ClientChatMessage = {
@@ -499,9 +509,18 @@ export function ChatPanel({
     }
   }, [sessionId, proposedUpdate, draft, isLoading, currentStep, updateDraft, requestCoachResponse, handleFinalization, t]);
 
-  const handleRejectProposal = useCallback(() => {
+  const handleRejectProposal = useCallback(async () => {
+    if (isLoading) return;
+    
+    // Clear the current proposal
     setProposedUpdate(null);
-  }, []);
+    
+    // Trigger a hidden rewrite request to get an improved version
+    await requestCoachResponse(t('requestRewrite'), { 
+      emitUserMessage: false,
+      stepOverride: currentStep,
+    });
+  }, [isLoading, currentStep, requestCoachResponse, t]);
 
   /**
    * Handle clicking on a completed step to edit it
@@ -614,6 +633,7 @@ export function ChatPanel({
             isLoading={isLoading}
           />
         )}
+
 
         {/* Save error */}
         {saveError && (

@@ -36,6 +36,9 @@ export const CoachAIResultSchema = z.object({
   nextStep: ToulminStepSchema.optional().describe('The next step to advance to (required when shouldAdvance=true)'),
   isComplete: z.boolean().optional().describe('Whether the entire argument is complete'),
 }).superRefine((data, ctx) => {
+  // Note: confidence is now optional even when proposedUpdate is present
+  // Coercion layer will handle first-attempt gating based on confidence presence/absence
+
   // When shouldAdvance=true, nextStep is required and must be the correct next step
   if (data.shouldAdvance) {
     // On rebuttal (last step), shouldAdvance should not be true; use isComplete instead

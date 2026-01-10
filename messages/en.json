@@ -439,6 +439,7 @@
       "editStep": "I'd like to revise this step. Please guide me.",
       "editingStep": "Editing: {step}",
       "continueEditing": "Continue editing without AI",
+      "requestRewrite": "Please rewrite your suggested text more concisely, keep my voice, and ask me to confirm.",
       "quota": {
         "usage": "AI messages used",
         "resets": "Resets",

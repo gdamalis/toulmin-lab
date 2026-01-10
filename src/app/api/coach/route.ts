@@ -30,6 +30,7 @@ import {
   AI_REQUEST_STATUS, 
   AI_FEATURE 
 } from '@/lib/services/ai-usage';
+import { getStepValidator, type ValidationLocale } from '@/lib/services/coach/stepCriteria';
 
 /**
  * Patterns for sanitizing user input to prevent prompt injection
@@ -111,7 +112,9 @@ function sanitizeConversationHistory(
 function detectRewriteIntent(message: string): boolean {
   const rewritePatterns = [
     /\b(rewrite|re-write|rephrase|re-phrase|improve|fix|help me word|reword|re-word)\b/i,
+    /\b(try again|make it better|do it again|one more time)\b/i,
     /\b(reescrib|reescribe|mejora|arregla|ayúdame a redactar|reformula)\b/i, // Spanish
+    /\b(otra vez|hazlo mejor|inténtalo de nuevo|intenta de nuevo|una vez más)\b/i, // Spanish
     /\b(can you|could you|please).*(write|rewrite|improve|fix|rephrase)/i,
     /\b(puedes|podrías|por favor).*(escribir|reescribir|mejorar|arreglar)/i, // Spanish
   ];
@@ -311,6 +314,7 @@ export async function POST(request: NextRequest) {
       // Get locale for AI response language
       const rawLocale = await getLocale();
       const locale: SupportedLocale = rawLocale === 'es' ? 'es' : 'en';
+      const validationLocale: ValidationLocale = locale; // Same type
 
       // Get localized step info from translations
       const t = await getTranslations('pages.coach');
@@ -320,6 +324,10 @@ export async function POST(request: NextRequest) {
         example: t(`stepInfo.${currentStep}.example`),
         antiPattern: t(`stepInfo.${currentStep}.antiPattern`),
       };
+
+      // Check if the user's latest message passes step heuristics
+      const stepValidator = getStepValidator(currentStep, validationLocale);
+      const userTextPassesHeuristics = stepValidator(sanitizedMessage);
 
       // Get AI model and system prompt (provider already obtained above)
       const model = provider.getModel();
@@ -374,13 +382,14 @@ export async function POST(request: NextRequest) {
             
             // Emit final complete object, coerced to match session's current step
             const rawFinalObject = await result.object;
-            const coercedFinal = coerceResultToCurrentStep(
+            const { result: coercedFinal, proposalStatus } = coerceResultToCurrentStep(
               rawFinalObject as unknown as Record<string, unknown>,
               currentStep,
               draftFieldValue,
               locale,
               isFirstAttemptForStep,
-              isRewriteRequest
+              isRewriteRequest,
+              userTextPassesHeuristics
             );
 
             // Validate the coerced result
@@ -413,8 +422,8 @@ export async function POST(request: NextRequest) {
             const insertResult = await messagesCol.insertOne(assistantMessage as ChatMessage);
             const assistantMessageId = insertResult.insertedId.toString();
 
-            // Include assistantMessageId in final response for reconciliation
-            const finalWithId = { ...coercedFinal, assistantMessageId };
+            // Include assistantMessageId and proposalStatus in final response for reconciliation and debugging
+            const finalWithId = { ...coercedFinal, assistantMessageId, proposalStatus };
             const finalLine = JSON.stringify(finalWithId) + '\n';
             controller.enqueue(encoder.encode(finalLine));
             
@@ -437,27 +446,28 @@ export async function POST(request: NextRequest) {
             const salvaged = trySalvageCoachResult(error_);
             if (salvaged) {
               // Also coerce the salvaged result
-              const coerced = coerceResultToCurrentStep(
+              const { result: coercedSalvaged, proposalStatus: salvagedProposalStatus } = coerceResultToCurrentStep(
                 salvaged, 
                 currentStep, 
                 draftFieldValue, 
                 locale,
                 isFirstAttemptForStep,
-                isRewriteRequest
+                isRewriteRequest,
+                userTextPassesHeuristics
               );
               
               // Validate the salvaged result
-              const validationError = validateCoachResult(coerced, currentStep);
+              const validationError = validateCoachResult(coercedSalvaged, currentStep);
               if (!validationError) {
                 // Persist assistant message for salvaged result too
                 try {
                   // Ensure user sees nextQuestion by appending to assistantText
-                  let assistantText = coerced.assistantText as string;
-                  const nextQuestion = coerced.nextQuestion as string | undefined;
+                  let assistantText = coercedSalvaged.assistantText as string;
+                  const nextQuestion = coercedSalvaged.nextQuestion as string | undefined;
                   
                   if (nextQuestion && nextQuestion.trim() !== '') {
                     assistantText = `${assistantText}\n\n${nextQuestion.trim()}`;
-                    coerced.assistantText = assistantText;
+                    coercedSalvaged.assistantText = assistantText;
                   }
 
                   const assistantMessage: Omit<ChatMessage, '_id'> = {
@@ -469,7 +479,7 @@ export async function POST(request: NextRequest) {
                   };
                   const insertResult = await messagesCol.insertOne(assistantMessage as ChatMessage);
                   const assistantMessageId = insertResult.insertedId.toString();
-                  const salvagedWithId = { ...coerced, assistantMessageId };
+                  const salvagedWithId = { ...coercedSalvaged, assistantMessageId, proposalStatus: salvagedProposalStatus };
                   const salvagedLine = JSON.stringify(salvagedWithId) + '\n';
                   controller.enqueue(encoder.encode(salvagedLine));
                   
@@ -486,7 +496,7 @@ export async function POST(request: NextRequest) {
                 } catch {
                   console.error('Failed to persist salvaged assistant message');
                   // Still emit the result without ID
-                  const salvagedLine = JSON.stringify(coerced) + '\n';
+                  const salvagedLine = JSON.stringify({ ...coercedSalvaged, proposalStatus: salvagedProposalStatus }) + '\n';
                   controller.enqueue(encoder.encode(salvagedLine));
                   
                   // Log successful AI request (salvaged, no persistence)
