@@ -1,3 +1,10 @@
+## [0.33.0](https://github.com/gdamalis/toulmin-lab/compare/v0.32.0...v0.33.0) (2026-01-10)
+
+
+### Features
+
+* **coach:** enhance AI coaching logic and user experience ([29b20a7](https://github.com/gdamalis/toulmin-lab/commit/29b20a75f3c87a075c0f3bd84915caf86dc7f6d8))
+
 ## [0.32.0](https://github.com/gdamalis/toulmin-lab/compare/v0.31.0...v0.32.0) (2026-01-07)
 
 
@@ -25,6 +32,4 @@
 * solved release issue ([1c245a7](https://github.com/gdamalis/toulmin-lab/commit/1c245a7fbb964e7cedfefa3e6e78a175e12fc91c))
 
 ## [0.29.2](https://github.com/gdamalis/toulmin-lab/compare/v0.29.1...v0.29.2) (2025-07-04)
-
-## [0.29.1](https://github.com/gdamalis/toulmin-lab/compare/v0.29.0...v0.29.1) (2025-05-28)
 
