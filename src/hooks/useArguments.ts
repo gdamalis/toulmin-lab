@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { ToulminArgument } from "@/types/client";
-import { useNotification } from "@/contexts/NotificationContext";
 import { getCurrentUserToken } from "@/lib/auth/utils";
 import { auth } from "@/lib/firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
@@ -17,7 +16,6 @@ export function useArguments() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [authReady, setAuthReady] = useState(false);
-  const { addNotification } = useNotification();
 
   // Set up auth state listener
   useEffect(() => {
@@ -57,12 +55,11 @@ export function useArguments() {
       const errorMessage =
         err instanceof Error ? err.message : "An unknown error occurred";
       setError(errorMessage);
-      addNotification("error", "Error", errorMessage);
       console.error("Failed to load arguments:", err);
     } finally {
       setIsLoading(false);
     }
-  }, [addNotification]);
+  }, []);
 
   const getArgumentById = useCallback(async (id: string): Promise<ToulminArgument | null> => {
     setIsLoading(true);
@@ -92,13 +89,12 @@ export function useArguments() {
       const errorMessage =
         err instanceof Error ? err.message : "An unknown error occurred";
       setError(errorMessage);
-      addNotification("error", "Error", errorMessage);
       console.error(`Failed to fetch argument with ID ${id}:`, err);
       return null;
     } finally {
       setIsLoading(false);
     }
-  }, [addNotification]);
+  }, []);
 
   useEffect(() => {
     // Only fetch arguments when auth is ready
@@ -136,19 +132,17 @@ export function useArguments() {
       // Refresh arguments to include the new one
       await fetchArguments();
 
-      addNotification("success", "Success", "Argument created successfully");
       return data.id ?? data._id;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unknown error occurred";
       setError(errorMessage);
-      addNotification("error", "Error", errorMessage);
       console.error("Failed to create argument:", err);
       return null;
     } finally {
       setIsCreating(false);
     }
-  }, [addNotification, fetchArguments]);
+  }, [fetchArguments]);
 
   const deleteArgument = useCallback(async (argumentId: string) => {
     setIsDeleting(true);
@@ -176,19 +170,17 @@ export function useArguments() {
       setToulminArguments((prev) =>
         prev.filter((arg) => arg._id?.toString() !== argumentId)
       );
-      addNotification("success", "Success", "Argument deleted successfully");
       return true;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unknown error occurred";
       setError(errorMessage);
-      addNotification("error", "Error", errorMessage);
       console.error("Failed to delete argument:", err);
       return false;
     } finally {
       setIsDeleting(false);
     }
-  }, [addNotification]);
+  }, []);
 
   const updateArgument = useCallback(async (
     argumentId: string,
@@ -219,19 +211,17 @@ export function useArguments() {
 
       // Refresh arguments after update
       await fetchArguments();
-      addNotification("success", "Success", "Argument updated successfully");
       return true;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unknown error occurred";
       setError(errorMessage);
-      addNotification("error", "Error", errorMessage);
       console.error("Failed to update argument:", err);
       return false;
     } finally {
       setIsUpdating(false);
     }
-  }, [addNotification, fetchArguments]);
+  }, [fetchArguments]);
 
   return {
     toulminArguments,

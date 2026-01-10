@@ -8,7 +8,7 @@ import {
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/20/solid";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type {
   Notification,
   NotificationType,
@@ -19,8 +19,24 @@ interface ToastProps {
   onClose: () => void;
 }
 
+const AUTO_DISMISS_DURATIONS: Record<NotificationType, number> = {
+  success: 4000,
+  info: 4000,
+  warning: 6000,
+  error: 8000,
+};
+
 export default function Toast({ notification, onClose }: Readonly<ToastProps>) {
   const [show, setShow] = useState(true);
+
+  useEffect(() => {
+    const duration = AUTO_DISMISS_DURATIONS[notification.type];
+    const timer = setTimeout(() => {
+      handleClose();
+    }, duration);
+
+    return () => clearTimeout(timer);
+  }, [notification.type]);
 
   const handleClose = () => {
     setShow(false);
@@ -64,6 +80,10 @@ export default function Toast({ notification, onClose }: Readonly<ToastProps>) {
     }
   };
 
+  const getRole = (type: NotificationType): "status" | "alert" => {
+    return type === "error" || type === "warning" ? "alert" : "status";
+  };
+
   return (
     <Transition
       show={show}
@@ -74,7 +94,11 @@ export default function Toast({ notification, onClose }: Readonly<ToastProps>) {
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-      <div className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5">
+      <div 
+        role={getRole(notification.type)}
+        aria-live="off"
+        className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5"
+      >
         <div className="p-4">
           <div className="flex items-start">
             <div className="flex-shrink-0">{getIcon(notification.type)}</div>
