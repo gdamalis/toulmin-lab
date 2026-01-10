@@ -1,3 +1,10 @@
+## [0.38.0](https://github.com/gdamalis/toulmin-lab/compare/v0.37.0...v0.38.0) (2026-01-10)
+
+
+### Features
+
+* **password-reset:** implement password reset feature with UI and translations ([222927f](https://github.com/gdamalis/toulmin-lab/commit/222927fc2423d94a7d6f238ae89e7053ba51d2d7))
+
 ## [0.37.0](https://github.com/gdamalis/toulmin-lab/compare/v0.36.0...v0.37.0) (2026-01-10)
 
 
@@ -25,11 +32,4 @@
 ### Features
 
 * **coach:** enhance coaching experience with session status and rewrite features ([ca5f46d](https://github.com/gdamalis/toulmin-lab/commit/ca5f46d02beb7ce5143939eb645a02f5a35fd76f))
-
-## [0.33.0](https://github.com/gdamalis/toulmin-lab/compare/v0.32.0...v0.33.0) (2026-01-10)
-
-
-### Features
-
-* **coach:** enhance AI coaching logic and user experience ([29b20a7](https://github.com/gdamalis/toulmin-lab/commit/29b20a75f3c87a075c0f3bd84915caf86dc7f6d8))
 
