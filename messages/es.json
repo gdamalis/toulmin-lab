@@ -64,7 +64,9 @@
       "nameMissing": "El nombre es obligatorio",
       "passwordMismatch": "Las contraseñas no coinciden",
       "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
-      "googleFailed": "La autenticación con Google falló. Por favor, inténtalo de nuevo."
+      "googleFailed": "La autenticación con Google falló. Por favor, inténtalo de nuevo.",
+      "resetFailed": "Error al enviar el correo de restablecimiento. Por favor, inténtalo de nuevo.",
+      "tooManyRequests": "Demasiados intentos de restablecimiento de contraseña. Por favor, espera un momento e inténtalo de nuevo."
     }
   },
   "pages": {
@@ -233,6 +235,13 @@
       "confirmPasswordPlaceholder": "Confirmar Contraseña",
       "rememberMe": "Recordarme",
       "forgotPassword": "¿Olvidaste tu contraseña?",
+      "resetPassword": "Restablecer contraseña",
+      "resetPasswordHeading": "Restablece tu contraseña",
+      "resetPasswordDescription": "Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
+      "sendResetLink": "Enviar enlace de restablecimiento",
+      "sendingResetLink": "Enviando...",
+      "resetLinkSent": "Si existe una cuenta para este correo, recibirás un enlace de restablecimiento en breve.",
+      "backToSignIn": "Volver a iniciar sesión",
       "orContinueWith": "O continuar con",
       "noAccount": "¿No tienes una cuenta?",
       "haveAccount": "¿Ya tienes una cuenta?",

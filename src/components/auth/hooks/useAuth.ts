@@ -6,6 +6,7 @@ import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   getRedirectResult,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
@@ -62,10 +63,12 @@ export function useAuth(redirectPath = "/dashboard") {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [resetSuccessMessage, setResetSuccessMessage] = useState<string>("");
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? redirectPath;
   const t = useTranslations("errors.auth");
+  const authT = useTranslations("pages.auth");
 
   useEffect(() => {
     let isMounted = true;
@@ -217,13 +220,48 @@ export function useAuth(redirectPath = "/dashboard") {
     }
   };
 
+  const handlePasswordReset = async (email: string) => {
+    setError("");
+    setResetSuccessMessage("");
+    setIsLoading(true);
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      
+      // Show success message (generic for security)
+      setResetSuccessMessage(authT("resetLinkSent"));
+    } catch (err: unknown) {
+      if (err instanceof FirebaseError) {
+        if (err.code === "auth/invalid-email") {
+          setError(t("invalidEmail"));
+        } else if (err.code === "auth/too-many-requests") {
+          setError(t("tooManyRequests"));
+        } else if (err.code === "auth/user-not-found") {
+          // Don't reveal that user doesn't exist (security best practice)
+          setResetSuccessMessage(authT("resetLinkSent"));
+        } else {
+          setError(t("resetFailed"));
+          console.error(err);
+        }
+      } else {
+        setError(t("resetFailed"));
+        console.error(err);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     error,
     setError,
     isLoading,
     isGoogleLoading,
     isAuthenticating,
+    resetSuccessMessage,
+    setResetSuccessMessage,
     handleGoogleAuth,
     handleEmailAuth,
+    handlePasswordReset,
   };
 }

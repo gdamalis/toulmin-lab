@@ -2,6 +2,7 @@
 export { AuthForm } from './AuthForm';
 export { SignInForm } from './SignInForm';
 export { SignUpForm } from './SignUpForm';
+export { ForgotPasswordForm } from './ForgotPasswordForm';
 
 // UI components
 export { GoogleAuthButton } from './ui/GoogleAuthButton';

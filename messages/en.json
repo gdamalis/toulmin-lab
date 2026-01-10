@@ -64,7 +64,9 @@
       "nameMissing": "Name is required",
       "passwordMismatch": "Passwords do not match",
       "passwordTooShort": "Password should be at least 6 characters",
-      "googleFailed": "Authentication with Google failed. Please try again."
+      "googleFailed": "Authentication with Google failed. Please try again.",
+      "resetFailed": "Failed to send reset email. Please try again.",
+      "tooManyRequests": "Too many password reset attempts. Please wait a moment and try again."
     }
   },
   "pages": {
@@ -233,6 +235,13 @@
       "confirmPasswordPlaceholder": "Confirm Password",
       "rememberMe": "Remember me",
       "forgotPassword": "Forgot password?",
+      "resetPassword": "Reset password",
+      "resetPasswordHeading": "Reset your password",
+      "resetPasswordDescription": "Enter your email address and we'll send you a link to reset your password.",
+      "sendResetLink": "Send reset link",
+      "sendingResetLink": "Sending...",
+      "resetLinkSent": "If an account exists for this email, you will receive a reset link shortly.",
+      "backToSignIn": "Back to sign in",
       "orContinueWith": "Or continue with",
       "noAccount": "Don't have an account?",
       "haveAccount": "Already have an account?",

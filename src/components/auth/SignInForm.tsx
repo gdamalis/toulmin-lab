@@ -9,12 +9,14 @@ interface SignInFormProps {
   readonly error: string;
   readonly isLoading: boolean;
   readonly onSubmit: (formData: FormState) => void;
+  readonly onForgotPassword: () => void;
 }
 
 export function SignInForm({
   error,
   isLoading,
   onSubmit,
+  onForgotPassword,
 }: Readonly<SignInFormProps>) {
   const t = useTranslations("pages.auth");
   const [email, setEmail] = useState("");
@@ -57,21 +59,17 @@ export function SignInForm({
         placeholder={t("passwordPlaceholder")}
       />
 
-      {/* <div className="flex items-center justify-between">
-        <Checkbox
-          id="remember-me"
-          name="remember-me"
-          label={t('rememberMe')}
-          checked={rememberMe}
-          onChange={setRememberMe}
-        />
-
+      <div className="flex items-center justify-end">
         <div className="text-sm/6">
-          <a href="#" className="font-semibold text-primary-600 hover:text-primary-500">
-            {t('forgotPassword')}
-          </a>
+          <button
+            type="button"
+            onClick={onForgotPassword}
+            className="font-semibold text-primary-600 hover:text-primary-500 cursor-pointer"
+          >
+            {t("forgotPassword")}
+          </button>
         </div>
-      </div> */}
+      </div>
 
       {error && <div className="text-red-500 text-sm text-center">{error}</div>}
 

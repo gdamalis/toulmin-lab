@@ -1,4 +1,4 @@
-export type AuthMode = 'signin' | 'signup';
+export type AuthMode = 'signin' | 'signup' | 'forgot-password';
 
 export interface AuthFormProps {
   readonly onSuccess?: () => void;
