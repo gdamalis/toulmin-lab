@@ -1,3 +1,10 @@
+## [0.34.0](https://github.com/gdamalis/toulmin-lab/compare/v0.33.0...v0.34.0) (2026-01-10)
+
+
+### Features
+
+* **coach:** enhance coaching experience with session status and rewrite features ([ca5f46d](https://github.com/gdamalis/toulmin-lab/commit/ca5f46d02beb7ce5143939eb645a02f5a35fd76f))
+
 ## [0.33.0](https://github.com/gdamalis/toulmin-lab/compare/v0.32.0...v0.33.0) (2026-01-10)
 
 
@@ -30,6 +37,4 @@
 ### Bug Fixes
 
 * solved release issue ([1c245a7](https://github.com/gdamalis/toulmin-lab/commit/1c245a7fbb964e7cedfefa3e6e78a175e12fc91c))
-
-## [0.29.2](https://github.com/gdamalis/toulmin-lab/compare/v0.29.1...v0.29.2) (2025-07-04)
 
