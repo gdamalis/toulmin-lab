@@ -7,9 +7,11 @@ import { Typography } from "@/components/ui/Typography";
 import { ToulminArgument } from "@/types/client";
 import { ClientArgumentDraft } from "@/types/coach";
 import { getCurrentUserToken } from "@/lib/auth/utils";
+import { useCoachQuota } from "@/hooks/useCoachQuota";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
-import { use, useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useMemo, useState } from "react";
+import { SparklesIcon } from "@heroicons/react/24/outline";
 interface ResolvedData {
   kind: "argument" | "draft";
   argument?: ToulminArgument;
@@ -23,6 +25,7 @@ export default function ToulminArgumentViewPage({
 }) {
   const t = useTranslations("pages.argument");
   const commonT = useTranslations("common");
+  const coachT = useTranslations("pages.coach");
   
   const [resolvedData, setResolvedData] = useState<ResolvedData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +36,22 @@ export default function ToulminArgumentViewPage({
 
   const unwrappedParams = use(params);
   const id = unwrappedParams.id;
+
+  const { canUseAI, quotaStatus } = useCoachQuota();
+
+  // Generate tooltip text for disabled AI button
+  const aiButtonTooltip = useMemo(() => {
+    if (canUseAI || !quotaStatus) return undefined;
+    
+    const resetDate = new Date(quotaStatus.resetAt);
+    const resetDateStr = resetDate.toLocaleDateString(undefined, {
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC',
+    });
+    
+    return coachT('error.monthlyQuotaExceeded', { resetDate: resetDateStr });
+  }, [canUseAI, quotaStatus, coachT]);
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -162,10 +181,18 @@ export default function ToulminArgumentViewPage({
   const isDraft = resolvedData?.kind === "draft" || isDraftQuery;
 
   const headerButtons = [
+    ...(isDraft ? [{
+      text: t("finishWithAI"),
+      href: `/argument/coach/${id}`,
+      variant: "primary" as const,
+      icon: SparklesIcon,
+      disabled: !canUseAI,
+      tooltip: aiButtonTooltip,
+    }] : []),
     {
       text: t("editDiagram"),
       onClick: handleEdit,
-      variant: "primary" as const,
+      variant: "secondary" as const,
     },
   ];
 
