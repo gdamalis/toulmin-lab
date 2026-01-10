@@ -14,6 +14,7 @@
  */
 
 import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { MessageBubble } from './MessageBubble';
 import { ChatInput } from './ChatInput';
 import { StepIndicator } from './StepIndicator';
@@ -28,7 +29,7 @@ import {
   ProposalStatus,
   getNextStep,
   TOULMIN_STEPS,
-  TOULMIN_STEP_ORDER,
+  ClientEvent,
 } from '@/types/coach';
 import { getStepCompletionStatus, findFirstIncompleteStep, ValidationLocale } from '@/lib/services/coach/stepCriteria';
 import { getCurrentUserToken } from '@/lib/auth/utils';
@@ -87,9 +88,20 @@ export function ChatPanel({
   const t = useTranslations('pages.coach');
   const rawLocale = useLocale();
   const locale: ValidationLocale = rawLocale === 'es' ? 'es' : 'en';
+  const router = useRouter();
   
-  // Get draft, abort controller, and quota state from context
-  const { draft, updateDraft, createAbortController, abortControllerRef, updateQuotaState } = useCoach();
+  // Get draft, abort controller, quota state, and UI state from context
+  const { 
+    draft, 
+    updateDraft, 
+    createAbortController, 
+    abortControllerRef, 
+    updateQuotaState,
+    pendingRewrite,
+    setPendingRewrite,
+    editingContext,
+    setEditingContext,
+  } = useCoach();
   
   const [messages, setMessages] = useState<ClientChatMessage[]>(initialMessages);
   const [currentStep, setCurrentStep] = useState<ToulminStep>(initialStep);
@@ -103,9 +115,10 @@ export function ChatPanel({
   const [isRetrying, setIsRetrying] = useState(false);
   const [saveError, setSaveError] = useState<string | undefined>();
   const [streamError, setStreamError] = useState<string | null>(null);
-  const [editingStepFrom, setEditingStepFrom] = useState<ToulminStep | null>(null);
+  const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const draftRef = useRef(draft);
   
   // Cleanup: abort any in-flight request on unmount
   useEffect(() => {
@@ -114,6 +127,29 @@ export function ChatPanel({
       controller?.abort();
     };
   }, [abortControllerRef]);
+
+  // Keep draftRef in sync with draft
+  useEffect(() => {
+    draftRef.current = draft;
+  }, [draft]);
+
+  // Countdown timer for redirect after completion
+  useEffect(() => {
+    if (redirectCountdown === null || redirectCountdown <= 0) return;
+    
+    const timer = setTimeout(() => {
+      setRedirectCountdown(redirectCountdown - 1);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, [redirectCountdown]);
+  
+  // Navigate when countdown reaches 0
+  useEffect(() => {
+    if (redirectCountdown === 0 && argumentId) {
+      router.push(`/argument/view/${argumentId}`);
+    }
+  }, [redirectCountdown, argumentId, router]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -137,6 +173,9 @@ export function ChatPanel({
       if (result.success && result.data) {
         setIsComplete(true);
         setArgumentId(result.data.argumentId);
+        
+        // Start countdown (5 seconds)
+        setRedirectCountdown(5);
       } else {
         setFinalizationError(result.error ?? t('error.saveFailed'));
       }
@@ -303,7 +342,7 @@ export function ChatPanel({
       const nextStep = getNextStep(currentStep);
       if (nextStep) {
         // Clear editing state since we're advancing forward
-        setEditingStepFrom(null);
+        setEditingContext(null);
         setCurrentStep(nextStep);
         await updateSessionStep(sessionId, nextStep);
       }
@@ -312,19 +351,31 @@ export function ChatPanel({
     if (result.isComplete) {
       await handleFinalization();
     }
-  }, [sessionId, currentStep, draft, handleFinalization]);
+  }, [sessionId, currentStep, draft, handleFinalization, setEditingContext]);
 
   /**
    * Request a coach response from the API
-   * @param message - The message to send
+   * @param message - The message to send (optional if clientEvent is provided)
    * @param options.emitUserMessage - Whether to add user message to chat (default: true)
    * @param options.stepOverride - Override the current step for this request
+   * @param options.clientEvent - Client event to send instead of or alongside message
+   * @param options.persistUserMessage - Whether to persist the user message on the server
    */
   const requestCoachResponse = useCallback(async (
-    message: string,
-    options: { emitUserMessage?: boolean; stepOverride?: ToulminStep } = {}
+    message: string | null,
+    options: { 
+      emitUserMessage?: boolean; 
+      stepOverride?: ToulminStep;
+      clientEvent?: ClientEvent;
+      persistUserMessage?: boolean;
+    } = {}
   ): Promise<void> => {
-    const { emitUserMessage = true, stepOverride } = options;
+    const { 
+      emitUserMessage = true, 
+      stepOverride, 
+      clientEvent,
+      persistUserMessage = true,
+    } = options;
     const activeStep = stepOverride ?? currentStep;
 
     const token = await getCurrentUserToken();
@@ -339,7 +390,7 @@ export function ChatPanel({
     setProposedUpdate(null);
     setStreamError(null);
 
-    if (emitUserMessage) {
+    if (emitUserMessage && message) {
       const userMessage = createMessage('user', message, activeStep);
       setMessages((prev) => [...prev, userMessage]);
     }
@@ -354,7 +405,13 @@ export function ChatPanel({
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ sessionId, message }),
+        body: JSON.stringify({ 
+          sessionId, 
+          message: message ?? undefined,
+          clientEvent,
+          persistUserMessage,
+          stepOverride,
+        }),
         signal: abortController.signal,
       });
 
@@ -434,8 +491,25 @@ export function ChatPanel({
 
   const handleSendMessage = useCallback(async (content: string) => {
     if (isLoading || isComplete) return;
+    
+    if (pendingRewrite) {
+      // User is providing their rewrite
+      await requestCoachResponse(content, {
+        emitUserMessage: true,
+        clientEvent: {
+          type: 'user_rewrite_attempt',
+          step: pendingRewrite.step,
+          originalValue: pendingRewrite.originalValue,
+          rewrittenValue: content,
+        },
+        persistUserMessage: true,
+      });
+      setPendingRewrite(null);
+      return;
+    }
+    
     await requestCoachResponse(content, { emitUserMessage: true });
-  }, [isLoading, isComplete, requestCoachResponse]);
+  }, [isLoading, isComplete, pendingRewrite, requestCoachResponse, setPendingRewrite]);
 
   const handleRetryFinalization = useCallback(async () => {
     if (isRetrying) return;
@@ -456,45 +530,78 @@ export function ChatPanel({
         sessionId,
         proposedUpdate.field,
         proposedUpdate.value,
-        draft.version
+        draftRef.current.version
       );
 
       if (result.success && result.data) {
         const updatedDraft = {
-          ...draft,
+          ...draftRef.current,
           [proposedUpdate.field]: proposedUpdate.value,
           version: result.data.version,
           // Update name if a title was generated
           ...(result.data.name && { name: result.data.name }),
         };
+
         // Update draft via context - this will sync the diagram automatically
         updateDraft(updatedDraft);
+        
+        // Add acceptance message to chat
+        const stepName = t(`steps.${proposedUpdate.field}`);
+        const acceptanceMessage = createMessage('user', t('acceptedProposal', { step: stepName }), currentStep);
+        setMessages((prev) => [...prev, acceptanceMessage]);
+        
         setProposedUpdate(null);
 
-        // Determine if we should advance to the next step
-        const isRebuttal = currentStep === TOULMIN_STEPS.REBUTTAL;
-        const nextStep = isRebuttal ? null : getNextStep(currentStep);
-
-        if (nextStep) {
-          // Advance to next step - clear editing state since we're moving forward
-          setEditingStepFrom(null);
-          setCurrentStep(nextStep);
-          await updateSessionStep(sessionId, nextStep);
-        }
-
-        // Release loading before triggering next coach turn
-        setIsLoading(false);
-
-        if (isRebuttal) {
-          // Rebuttal is the last step - finalize the argument
-          await handleFinalization();
-        } else {
-          // Trigger next coach turn to continue the flow
-          // Use a hidden continuation message that won't appear in chat
-          await requestCoachResponse(t('autoContinue'), { 
+        // Determine next step logic based on editing context
+        if (editingContext) {
+          // Return to resume step after editing
+          const { resumeStep } = editingContext;
+          setEditingContext(null);
+          setCurrentStep(resumeStep);
+          await updateSessionStep(sessionId, resumeStep);
+          
+          // Release loading before triggering next coach turn
+          setIsLoading(false);
+          
+          await requestCoachResponse(null, {
             emitUserMessage: false,
-            stepOverride: nextStep ?? currentStep,
+            clientEvent: { 
+              type: 'step_navigated', 
+              step: resumeStep,
+              fromStep: currentStep, 
+              toStep: resumeStep, 
+              resumeStep 
+            },
+            persistUserMessage: false,
+            stepOverride: resumeStep,
           });
+        } else {
+          // Normal flow: advance to next step
+          const isRebuttal = currentStep === TOULMIN_STEPS.REBUTTAL;
+          const nextStep = isRebuttal ? null : getNextStep(currentStep);
+
+          if (nextStep) {
+            setCurrentStep(nextStep);
+            await updateSessionStep(sessionId, nextStep);
+            
+            // Release loading before triggering next coach turn
+            setIsLoading(false);
+            
+            await requestCoachResponse(null, {
+              emitUserMessage: false,
+              clientEvent: { 
+                type: 'proposal_accepted', 
+                step: currentStep, 
+                value: proposedUpdate.value 
+              },
+              persistUserMessage: false,
+              stepOverride: nextStep,
+            });
+          } else {
+            // Last step (rebuttal) - finalize the argument
+            setIsLoading(false);
+            await handleFinalization();
+          }
         }
       } else {
         const errorMsg = result.error ?? t('error.saveFailedRetry');
@@ -507,64 +614,56 @@ export function ChatPanel({
       console.error('Error saving draft:', error);
       setIsLoading(false);
     }
-  }, [sessionId, proposedUpdate, draft, isLoading, currentStep, updateDraft, requestCoachResponse, handleFinalization, t]);
+  }, [sessionId, proposedUpdate, isLoading, currentStep, editingContext, updateDraft, requestCoachResponse, handleFinalization, setEditingContext, createMessage, setMessages, t]);
 
-  const handleRejectProposal = useCallback(async () => {
-    if (isLoading) return;
+  const handleRejectProposal = useCallback(() => {
+    if (isLoading || !proposedUpdate) return;
+    
+    // Enter "awaiting user rewrite" mode
+    setPendingRewrite({
+      step: proposedUpdate.field,
+      originalValue: proposedUpdate.value,
+    });
     
     // Clear the current proposal
     setProposedUpdate(null);
-    
-    // Trigger a hidden rewrite request to get an improved version
-    await requestCoachResponse(t('requestRewrite'), { 
-      emitUserMessage: false,
-      stepOverride: currentStep,
-    });
-  }, [isLoading, currentStep, requestCoachResponse, t]);
+  }, [isLoading, proposedUpdate, setPendingRewrite]);
 
   /**
    * Handle clicking on a completed step to edit it
    * Only completed non-current steps are clickable (enforced by StepIndicator)
-   * If there are incomplete steps ahead of the clicked step, reroute to the first one
+   * Captures the resume step (current working step) to return to after editing
    */
   const handleStepClick = useCallback(async (step: ToulminStep) => {
-    // Clear any pending proposal when switching steps
+    // Clear any pending proposal and rewrite mode when switching steps
     setProposedUpdate(null);
+    setPendingRewrite(null);
     setSaveError(undefined);
     
-    // Check if there are incomplete steps ahead of the clicked step
-    const clickedIndex = TOULMIN_STEP_ORDER.indexOf(step);
-    const firstIncomplete = findFirstIncompleteStep(draft, locale);
+    // Capture resume step (first incomplete step or current step)
+    const resumeStep = findFirstIncompleteStep(draft, locale) ?? currentStep;
     
-    // If there's an incomplete step ahead, reroute to it instead
-    if (firstIncomplete) {
-      const incompleteIndex = TOULMIN_STEP_ORDER.indexOf(firstIncomplete);
-      if (incompleteIndex > clickedIndex) {
-        // Reroute to the first incomplete step
-        setEditingStepFrom(null); // Clear editing state since we're moving to an incomplete step
-        setCurrentStep(firstIncomplete);
-        await updateSessionStep(sessionId, firstIncomplete);
-        await requestCoachResponse(t('autoContinue'), { 
-          emitUserMessage: false,
-          stepOverride: firstIncomplete,
-        });
-        return;
-      }
-    }
-    
-    // Track that we're editing from a previous step
-    setEditingStepFrom(step);
+    // Set editing context
+    setEditingContext({ editingStep: step, resumeStep });
     
     // Update current step
     setCurrentStep(step);
     await updateSessionStep(sessionId, step);
     
     // Request coach to guide on this step again
-    await requestCoachResponse(t('editStep'), { 
+    await requestCoachResponse(null, { 
       emitUserMessage: false,
+      clientEvent: {
+        type: 'step_navigated',
+        step: step,
+        fromStep: currentStep,
+        toStep: step,
+        resumeStep,
+      },
+      persistUserMessage: false,
       stepOverride: step,
     });
-  }, [sessionId, draft, locale, requestCoachResponse, t]);
+  }, [sessionId, draft, locale, currentStep, requestCoachResponse, setEditingContext, setPendingRewrite]);
 
   if (isComplete || argumentId) {
     return (
@@ -574,6 +673,7 @@ export function ChatPanel({
           error={finalizationError}
           onRetry={handleRetryFinalization}
           isRetrying={isRetrying}
+          redirectCountdown={redirectCountdown}
         />
       </div>
     );
@@ -589,13 +689,16 @@ export function ChatPanel({
           onStepClick={handleStepClick}
         />
         {/* Editing chip - shows when editing a previous step */}
-        {editingStepFrom && (
+        {editingContext && (
           <div className="mt-2 flex justify-center">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">
               <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
               </svg>
-              {t('editingStep', { step: t(`steps.${editingStepFrom}`) })}
+              {t('editingPreviousStep', { 
+                step: t(`steps.${editingContext.editingStep}`),
+                resumeStep: t(`steps.${editingContext.resumeStep}`)
+              })}
             </span>
           </div>
         )}
@@ -674,6 +777,8 @@ export function ChatPanel({
         onSend={handleSendMessage}
         isLoading={isLoading}
         placeholder={t('describeStep', { step: t(`steps.${currentStep}`) })}
+        isAwaitingRewrite={!!pendingRewrite}
+        rewriteStep={pendingRewrite ? t(`steps.${pendingRewrite.step}`) : undefined}
       />
     </div>
   );

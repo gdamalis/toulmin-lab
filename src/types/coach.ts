@@ -193,3 +193,42 @@ export interface CoachSessionData {
   messages: ClientChatMessage[];
   draft: ClientArgumentDraft;
 }
+
+/**
+ * UI state for the coach interface
+ */
+export type CoachUIState = 
+  | 'normal'
+  | 'proposal_pending'
+  | 'awaiting_user_rewrite'
+  | 'editing_previous_step';
+
+/**
+ * Pending rewrite context - when user clicks "Rewrite myself"
+ */
+export interface PendingRewrite {
+  step: ToulminStep;
+  originalValue: string;
+}
+
+/**
+ * Editing context - when navigating to a previous step
+ */
+export interface EditingContext {
+  editingStep: ToulminStep;
+  resumeStep: ToulminStep;
+}
+
+/**
+ * Client event - user actions sent to the API
+ */
+export interface ClientEvent {
+  type: 'proposal_accepted' | 'proposal_rewrite_requested' | 'step_navigated' | 'user_rewrite_attempt';
+  step: ToulminStep;
+  value?: string;
+  originalValue?: string;
+  rewrittenValue?: string;
+  fromStep?: ToulminStep;
+  toStep?: ToulminStep;
+  resumeStep?: ToulminStep;
+}

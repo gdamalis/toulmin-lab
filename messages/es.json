@@ -409,12 +409,18 @@
       "suggestedText": "{step} sugerido",
       "useThis": "Usar esto",
       "rewrite": "Lo reescribiré",
+      "rewriteButton": "Lo reescribiré yo mismo",
+      "rewritePrompt": "Reescribe el {step} sugerido con tus propias palabras:",
+      "acceptedProposal": "Usaré el {step} sugerido.",
+      "usedBadge": "Usado",
+      "editingPreviousStep": "Editando {step} - volverá a {resumeStep} después",
       "sendMessage": "Enviar mensaje",
       "typeResponse": "Escribe tu respuesta...",
       "completion": {
         "title": "¡Argumento Completo!",
         "message": "Tu argumento Toulmin ha sido guardado exitosamente. Ahora puedes ver, editar y exportar tu diagrama de argumento.",
-        "viewArgument": "Ver Tu Argumento"
+        "viewArgument": "Ver Tu Argumento",
+        "redirecting": "Redirigiendo en {seconds} segundos..."
       },
       "error": {
         "saveFailed": "Error al Guardar el Argumento",
@@ -435,11 +441,8 @@
       "untitledArgument": "Argumento sin título",
       "describeStep": "Describe tu {step}...",
       "exampleLabel": "Ejemplo:",
-      "autoContinue": "He confirmado esto. Por favor continúa al siguiente paso.",
-      "editStep": "Me gustaría revisar este paso. Por favor guíame.",
       "editingStep": "Editando: {step}",
       "continueEditing": "Continuar editando sin IA",
-      "requestRewrite": "Por favor reescribe tu sugerencia de manera más concisa, mantén mi voz, y pídeme confirmación.",
       "quota": {
         "usage": "Mensajes IA usados",
         "resets": "Se reinicia",

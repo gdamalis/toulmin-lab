@@ -23,6 +23,7 @@ import {
   TOULMIN_STEPS,
   SESSION_STATUS,
   ToulminStep,
+  SessionStatus,
 } from '@/types/coach';
 import { ToulminArgumentPart } from '@/types/toulmin';
 import { updateDraftFromEditor as updateDraftService } from '@/lib/services/coach';
@@ -108,6 +109,46 @@ function toClientDraft(draft: ArgumentDraft): ClientArgumentDraft {
 async function getAuthenticatedUserId(): Promise<string | null> {
   const session = await getServerSession(authOptions);
   return session?.user?.id ?? null;
+}
+
+/**
+ * Get session status (lightweight check before loading full data)
+ * Used to redirect completed sessions before loading draft/messages
+ */
+export async function getSessionStatus(
+  sessionId: string
+): Promise<ApiResponse<{ status: SessionStatus; argumentId?: string }>> {
+  try {
+    const userId = await getAuthenticatedUserId();
+    if (!userId) {
+      return { success: false, error: 'Authentication required' };
+    }
+
+    if (!ObjectId.isValid(sessionId)) {
+      return { success: false, error: 'Invalid session ID' };
+    }
+
+    const sessionsCol = await getCoachSessionsCollection();
+    const session = await sessionsCol.findOne({ 
+      _id: new ObjectId(sessionId), 
+      userId 
+    });
+
+    if (!session) {
+      return { success: false, error: 'Session not found' };
+    }
+
+    return {
+      success: true,
+      data: { 
+        status: session.status, 
+        argumentId: session.argumentId 
+      },
+    };
+  } catch (error) {
+    console.error('Error getting session status:', error);
+    return { success: false, error: 'Failed to load session' };
+  }
 }
 
 /**

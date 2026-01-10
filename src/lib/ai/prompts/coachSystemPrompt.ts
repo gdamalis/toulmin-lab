@@ -1,4 +1,4 @@
-import { ToulminStep, TOULMIN_STEPS, ArgumentDraft, getNextStep } from '@/types/coach';
+import { ToulminStep, TOULMIN_STEPS, ArgumentDraft, getNextStep, ClientEvent } from '@/types/coach';
 
 /**
  * Supported locales for AI responses
@@ -258,4 +258,34 @@ function buildDraftContext(draft: ArgumentDraft): string {
   });
   
   return lines.join('\n');
+}
+
+/**
+ * Build event-specific context for the AI prompt
+ * This provides context about user actions without polluting chat history
+ */
+export function buildEventContext(
+  event: ClientEvent | undefined,
+  locale: SupportedLocale
+): string {
+  if (!event) return '';
+  
+  const languageName = LANGUAGE_NAMES[locale];
+  
+  switch (event.type) {
+    case 'proposal_accepted':
+      return `\n\n[EVENT: User accepted the proposed ${event.step}. Continue to the next step with encouragement. Write your response in ${languageName}.]`;
+    
+    case 'user_rewrite_attempt':
+      return `\n\n[EVENT: User rewrote their ${event.step}. Original suggestion: "${event.originalValue}". Their rewrite: "${event.rewrittenValue}". Evaluate if their rewrite meets the ${event.step} criteria. If it's good, propose it with high confidence. If it needs work, coach them with specific feedback. Write your response in ${languageName}.]`;
+    
+    case 'step_navigated':
+      return `\n\n[EVENT: User navigated back to ${event.toStep} to revise it. After they confirm a change, they want to return to ${event.resumeStep} to continue their work. Ask what they'd like to adjust about their ${event.toStep}. Write your response in ${languageName}.]`;
+    
+    case 'proposal_rewrite_requested':
+      return `\n\n[EVENT: User rejected the proposed ${event.step} and wants to rewrite it themselves. The user will provide their own rewrite in their next message. Acknowledge this and wait for their input. Write your response in ${languageName}.]`;
+    
+    default:
+      return '';
+  }
 }

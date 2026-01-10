@@ -7,7 +7,7 @@ import { parseRequestBody } from '@/lib/api/middleware';
 import { checkRateLimit, COACH_RATE_LIMIT, createRateLimitHeaders } from '@/lib/api/rateLimit';
 import { validateChatRequest, CoachAIResultSchema, CoachAIResultStreamSchema } from '@/lib/validation/coach';
 import { getCoachProvider } from '@/lib/ai/providers';
-import { getCoachSystemPrompt, SupportedLocale, StepInfo } from '@/lib/ai/prompts/coachSystemPrompt';
+import { getCoachSystemPrompt, SupportedLocale, StepInfo, buildEventContext } from '@/lib/ai/prompts/coachSystemPrompt';
 import { 
   getCoachSessionsCollection, 
   getCoachMessagesCollection,
@@ -17,6 +17,7 @@ import {
   ChatMessage, 
   ArgumentDraft,
   ToulminStep,
+  ClientEvent,
 } from '@/types/coach';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { 
@@ -238,14 +239,20 @@ export async function POST(request: NextRequest) {
 
     try {
       // Parse and validate request
-      const body = await parseRequestBody<{ sessionId: string; message: string }>(request);
+      const body = await parseRequestBody<{ 
+        sessionId: string; 
+        message?: string; 
+        clientEvent?: unknown;
+        persistUserMessage?: boolean;
+        stepOverride?: string;
+      }>(request);
       const validation = validateChatRequest(body);
       
       if (!validation.success) {
         return createErrorResponse('Invalid request data', 400);
       }
 
-      const { sessionId, message } = validation.data;
+      const { sessionId, message, clientEvent, persistUserMessage = true, stepOverride } = validation.data;
 
       // Validate session ID
       if (!ObjectId.isValid(sessionId)) {
@@ -279,15 +286,17 @@ export async function POST(request: NextRequest) {
         return createErrorResponse('Draft not found', 404);
       }
 
-      // Save user message
-      const userMessage: Omit<ChatMessage, '_id'> = {
-        sessionId: objectId,
-        role: 'user',
-        content: message,
-        createdAt: new Date(),
-        step: session.currentStep,
-      };
-      await messagesCol.insertOne(userMessage as ChatMessage);
+      // Save user message (only if persistUserMessage is true and message is provided)
+      if (persistUserMessage && message) {
+        const userMessage: Omit<ChatMessage, '_id'> = {
+          sessionId: objectId,
+          role: 'user',
+          content: message,
+          createdAt: new Date(),
+          step: stepOverride ?? session.currentStep,
+        };
+        await messagesCol.insertOne(userMessage as ChatMessage);
+      }
 
       // Build conversation history, filtering out invalid messages and applying sanitization
       const reversedMessages = [...recentMessages].reverse();
@@ -305,11 +314,14 @@ export async function POST(request: NextRequest) {
       // Sanitize all messages and apply character budget
       const conversationHistory = sanitizeConversationHistory(rawHistory);
 
-      // Sanitize user input
-      const sanitizedMessage = sanitizeUserInput(message);
+      // Determine the current step (use stepOverride if provided, otherwise use session.currentStep)
+      const currentStep = (stepOverride as ToulminStep | undefined) ?? session.currentStep;
+
+      // Sanitize user input (if message provided)
+      const sanitizedMessage = message ? sanitizeUserInput(message) : '';
 
       // Detect if user is requesting a rewrite/improvement
-      const isRewriteRequest = detectRewriteIntent(message);
+      const isRewriteRequest = message ? detectRewriteIntent(message) : false;
 
       // Get locale for AI response language
       const rawLocale = await getLocale();
@@ -318,7 +330,6 @@ export async function POST(request: NextRequest) {
 
       // Get localized step info from translations
       const t = await getTranslations('pages.coach');
-      const currentStep = session.currentStep;
       const stepInfo: StepInfo = {
         definition: t(`stepInfo.${currentStep}.definition`),
         example: t(`stepInfo.${currentStep}.example`),
@@ -343,10 +354,16 @@ export async function POST(request: NextRequest) {
       );
       const isFirstAttemptForStep = priorUserMessagesForStep.length === 0;
 
+      // Build event context if clientEvent is provided
+      const eventContext = buildEventContext(clientEvent as ClientEvent | undefined, locale);
+      
       // Build messages for AI, including context hints based on situation
       let userContent = sanitizedMessage;
       
-      if (isRewriteRequest) {
+      // If we have an event, prioritize event context
+      if (eventContext) {
+        userContent = eventContext + (sanitizedMessage ? `\n\nUser message: ${sanitizedMessage}` : '');
+      } else if (isRewriteRequest) {
         // User explicitly requested rewrite - allow proposedUpdate
         userContent = `[CONTEXT: User is requesting a rewrite/improvement of their text. If the current step field has content, propose an improved version in proposedUpdate.]\n\n${sanitizedMessage}`;
       } else if (isFirstAttemptForStep) {

@@ -24,6 +24,34 @@ export const ProposedUpdateSchema = z.object({
 });
 
 /**
+ * Zod schema for ClientEvent - events sent from client to indicate user actions
+ */
+export const ClientEventSchema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('proposal_accepted'),
+    step: ToulminStepSchema,
+    value: z.string().min(1).max(2000),
+  }),
+  z.object({
+    type: z.literal('proposal_rewrite_requested'),
+    step: ToulminStepSchema,
+    originalValue: z.string().max(2000),
+  }),
+  z.object({
+    type: z.literal('step_navigated'),
+    fromStep: ToulminStepSchema,
+    toStep: ToulminStepSchema,
+    resumeStep: ToulminStepSchema,
+  }),
+  z.object({
+    type: z.literal('user_rewrite_attempt'),
+    step: ToulminStepSchema,
+    originalValue: z.string().max(2000),
+    rewrittenValue: z.string().min(1).max(2000),
+  }),
+]);
+
+/**
  * Zod schema for CoachAIResult - the structured output from AI
  */
 export const CoachAIResultSchema = z.object({
@@ -89,11 +117,18 @@ export const CoachAIResultStreamSchema = z.object({
 
 /**
  * Zod schema for chat API request
+ * Supports either a text message or a client event (or both)
  */
 export const CoachChatRequestSchema = z.object({
   sessionId: z.string().min(1),
-  message: z.string().min(1).max(5000),
-});
+  message: z.string().min(1).max(5000).optional(),
+  clientEvent: ClientEventSchema.optional(),
+  persistUserMessage: z.boolean().optional().default(true),
+  stepOverride: ToulminStepSchema.optional(),
+}).refine(
+  (data) => data.message || data.clientEvent,
+  { message: 'Either message or clientEvent is required' }
+);
 
 /**
  * Zod schema for draft update request

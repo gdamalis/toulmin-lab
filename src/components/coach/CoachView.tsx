@@ -90,6 +90,7 @@ function CoachViewContent({ session, messages }: CoachViewContentProps) {
           </div>
           <div className="flex-1">
             <ToulminDiagram
+              key={draft.version}
               data={argumentData}
               showExportButtons={false}
               showControls={true}

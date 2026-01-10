@@ -10,6 +10,7 @@ interface CompletionCardProps {
   error?: string;
   onRetry?: () => void;
   isRetrying?: boolean;
+  redirectCountdown?: number | null;
 }
 
 export function CompletionCard({
@@ -17,6 +18,7 @@ export function CompletionCard({
   error,
   onRetry,
   isRetrying = false,
+  redirectCountdown = null,
 }: CompletionCardProps) {
   const t = useTranslations('pages.coach');
 
@@ -54,6 +56,12 @@ export function CompletionCard({
       <p className="mt-2 text-sm text-green-700">
         {t('completion.message')}
       </p>
+      
+      {redirectCountdown !== null && redirectCountdown > 0 && (
+        <p className="mt-3 text-sm text-green-600">
+          {t('completion.redirecting', { seconds: redirectCountdown })}
+        </p>
+      )}
       
       {argumentId && (
         <Link href={`/argument/view/${argumentId}`}>

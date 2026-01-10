@@ -409,12 +409,18 @@
       "suggestedText": "Suggested {step}",
       "useThis": "Use this",
       "rewrite": "I'll rewrite",
+      "rewriteButton": "Rewrite myself",
+      "rewritePrompt": "Rewrite the suggested {step} in your own words:",
+      "acceptedProposal": "I'll use the suggested {step}.",
+      "usedBadge": "Used",
+      "editingPreviousStep": "Editing {step} - will return to {resumeStep} after",
       "sendMessage": "Send message",
       "typeResponse": "Type your response...",
       "completion": {
         "title": "Argument Complete!",
         "message": "Your Toulmin argument has been saved successfully. You can now view, edit, and export your argument diagram.",
-        "viewArgument": "View Your Argument"
+        "viewArgument": "View Your Argument",
+        "redirecting": "Redirecting in {seconds} seconds..."
       },
       "error": {
         "saveFailed": "Failed to Save Argument",
@@ -435,11 +441,8 @@
       "untitledArgument": "Untitled Argument",
       "describeStep": "Describe your {step}...",
       "exampleLabel": "Example:",
-      "autoContinue": "I've confirmed this. Please continue to the next step.",
-      "editStep": "I'd like to revise this step. Please guide me.",
       "editingStep": "Editing: {step}",
       "continueEditing": "Continue editing without AI",
-      "requestRewrite": "Please rewrite your suggested text more concisely, keep my voice, and ask me to confirm.",
       "quota": {
         "usage": "AI messages used",
         "resets": "Resets",

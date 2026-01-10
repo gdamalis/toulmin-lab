@@ -1,7 +1,12 @@
 'use client';
 
 import { createContext, useContext, useState, useMemo, useCallback, ReactNode, useRef } from 'react';
-import { ClientArgumentDraft } from '@/types/coach';
+import { 
+  ClientArgumentDraft, 
+  CoachUIState, 
+  PendingRewrite, 
+  EditingContext 
+} from '@/types/coach';
 
 export interface CoachQuotaState {
   used: number;
@@ -24,6 +29,18 @@ interface CoachContextType {
   quotaState: CoachQuotaState | null;
   /** Update quota state from API response headers */
   updateQuotaState: (state: CoachQuotaState) => void;
+  /** UI State for state machine */
+  uiState: CoachUIState;
+  /** Set UI state */
+  setUIState: (state: CoachUIState) => void;
+  /** Pending rewrite context (when user clicks "Rewrite myself") */
+  pendingRewrite: PendingRewrite | null;
+  /** Set pending rewrite */
+  setPendingRewrite: (rewrite: PendingRewrite | null) => void;
+  /** Editing context (when navigating to previous step) */
+  editingContext: EditingContext | null;
+  /** Set editing context */
+  setEditingContext: (ctx: EditingContext | null) => void;
 }
 
 const CoachContext = createContext<CoachContextType | undefined>(undefined);
@@ -44,6 +61,9 @@ interface CoachProviderProps {
 export function CoachProvider({ children, initialDraft }: CoachProviderProps) {
   const [draft, setDraft] = useState<ClientArgumentDraft>(initialDraft);
   const [quotaState, setQuotaState] = useState<CoachQuotaState | null>(null);
+  const [uiState, setUIState] = useState<CoachUIState>('normal');
+  const [pendingRewrite, setPendingRewrite] = useState<PendingRewrite | null>(null);
+  const [editingContext, setEditingContext] = useState<EditingContext | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const updateDraft = useCallback((newDraft: ClientArgumentDraft) => {
@@ -70,7 +90,13 @@ export function CoachProvider({ children, initialDraft }: CoachProviderProps) {
     createAbortController,
     quotaState,
     updateQuotaState,
-  }), [draft, updateDraft, createAbortController, quotaState, updateQuotaState]);
+    uiState,
+    setUIState,
+    pendingRewrite,
+    setPendingRewrite,
+    editingContext,
+    setEditingContext,
+  }), [draft, updateDraft, createAbortController, quotaState, updateQuotaState, uiState, pendingRewrite, editingContext]);
 
   return <CoachContext.Provider value={value}>{children}</CoachContext.Provider>;
 }

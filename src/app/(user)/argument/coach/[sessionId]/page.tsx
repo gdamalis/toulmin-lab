@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { notFound, redirect } from 'next/navigation';
 import { CoachView } from '@/components/coach';
-import { loadSession } from '../actions';
+import { loadSession, getSessionStatus } from '../actions';
 import { Loader } from '@/components/ui/Loader';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { getTranslations } from 'next-intl/server';
@@ -12,6 +12,23 @@ interface CoachSessionPageProps {
 }
 
 async function CoachSessionContent({ sessionId }: { sessionId: string }) {
+  // First, check session status to redirect completed sessions
+  // This prevents 404 when draft/messages are deleted after finalization
+  const statusResult = await getSessionStatus(sessionId);
+  
+  if (!statusResult.success || !statusResult.data) {
+    notFound();
+  }
+  
+  // Redirect to finalized argument if session is completed
+  if (
+    statusResult.data.status === SESSION_STATUS.COMPLETED &&
+    statusResult.data.argumentId
+  ) {
+    redirect(`/argument/view/${statusResult.data.argumentId}`);
+  }
+  
+  // Load full session data for active sessions
   const result = await loadSession(sessionId);
   
   if (!result.success || !result.data) {
@@ -19,11 +36,6 @@ async function CoachSessionContent({ sessionId }: { sessionId: string }) {
   }
   
   const { session, messages, draft } = result.data;
-  
-  // Redirect to finalized argument if session is completed
-  if (session.status === SESSION_STATUS.COMPLETED && session.argumentId) {
-    redirect(`/argument/view/${session.argumentId}`);
-  }
   
   return (
     <CoachView
