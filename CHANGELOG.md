@@ -1,3 +1,10 @@
+## [0.36.0](https://github.com/gdamalis/toulmin-lab/compare/v0.35.0...v0.36.0) (2026-01-10)
+
+
+### Features
+
+* **notifications:** add comprehensive notification messages for success and error states ([fa8f492](https://github.com/gdamalis/toulmin-lab/commit/fa8f492f96a5f90b8e8c062512c5b2c4bd89b40c))
+
 ## [0.35.0](https://github.com/gdamalis/toulmin-lab/compare/v0.34.0...v0.35.0) (2026-01-10)
 
 
@@ -25,11 +32,4 @@
 ### Features
 
 * **TL-33:** revamp home landing page ([#7](https://github.com/gdamalis/toulmin-lab/issues/7)) ([8f8f584](https://github.com/gdamalis/toulmin-lab/commit/8f8f5843b8827a6d29917d0868358bba0b36826d))
-
-## [0.31.0](https://github.com/gdamalis/toulmin-lab/compare/v0.30.0...v0.31.0) (2026-01-06)
-
-
-### Features
-
-* **TL-29:** implement AI Coach ([#6](https://github.com/gdamalis/toulmin-lab/issues/6)) ([c29fb4d](https://github.com/gdamalis/toulmin-lab/commit/c29fb4d96b7779d116433f548c31b4f8c6283938))
 
