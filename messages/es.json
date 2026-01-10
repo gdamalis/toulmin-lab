@@ -654,5 +654,35 @@
       "terms": "Términos de Servicio",
       "privacy": "Política de Privacidad"
     }
+  },
+  "notifications": {
+    "success": {
+      "argumentCreated": "Argumento creado exitosamente",
+      "argumentUpdated": "Argumento actualizado exitosamente",
+      "argumentDeleted": "Argumento eliminado exitosamente",
+      "draftDeleted": "Borrador eliminado exitosamente",
+      "userAdded": "Usuario agregado exitosamente",
+      "userUpdated": "Usuario actualizado exitosamente",
+      "userDeleted": "Usuario eliminado exitosamente",
+      "emailSent": "Email de invitación enviado exitosamente",
+      "subscribed": "Suscrito exitosamente a la lista de espera",
+      "passwordCopied": "¡Contraseña copiada al portapapeles!"
+    },
+    "error": {
+      "authRequired": "Se requiere autenticación",
+      "unknownError": "Ocurrió un error desconocido",
+      "fetchFailed": "Error al cargar {resource}",
+      "createFailed": "Error al crear {resource}",
+      "updateFailed": "Error al actualizar {resource}",
+      "deleteFailed": "Error al eliminar {resource}",
+      "saveFailed": "Error al guardar {resource}",
+      "emailFailed": "Error al enviar email de invitación"
+    },
+    "titles": {
+      "success": "Éxito",
+      "error": "Error",
+      "warning": "Advertencia",
+      "info": "Información"
+    }
   }
 }

@@ -5,6 +5,7 @@ import { getCurrentUserToken } from "@/lib/auth/utils";
 import { useState } from "react";
 import { useSendEmail } from "./useSendEmail";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 interface AddUserData {
   name: string;
@@ -33,6 +34,7 @@ export function useAddUser() {
   const { addNotification } = useNotification();
   const { sendUserInvitation } = useSendEmail();
   const { data: session } = useSession();
+  const t = useTranslations("notifications");
 
   const addUser = async (userData: AddUserData): Promise<{success: boolean; temporaryPassword: string | null}> => {
     setIsAdding(true);
@@ -79,15 +81,15 @@ export function useAddUser() {
           generatedPassword
         );
         
-        addNotification("success", "Success", "User added successfully");
+        addNotification("success", t("titles.success"), t("success.userAdded"));
         return { success: true, temporaryPassword: generatedPassword };
       } else {
-        throw new Error(result.error ?? "Failed to add user");
+        throw new Error(result.error ?? t("error.createFailed", { resource: "user" }));
       }
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "An unknown error occurred";
-      addNotification("error", "Error", errorMessage);
+        err instanceof Error ? err.message : t("error.unknownError");
+      addNotification("error", t("titles.error"), errorMessage);
       console.error("Failed to add user:", err);
       return { success: false, temporaryPassword: null };
     } finally {

@@ -2,6 +2,7 @@
 
 import { useNotification } from "@/contexts/NotificationContext";
 import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 export type SubscribeStatus = "idle" | "loading" | "success" | "error";
 
@@ -9,6 +10,7 @@ export function useSubscribe() {
   const [status, setStatus] = useState<SubscribeStatus>("idle");
   const [error, setError] = useState<string | null>(null);
   const { addNotification } = useNotification();
+  const t = useTranslations("notifications");
 
   const subscribe = useCallback(
     async (email: string): Promise<boolean> => {
@@ -26,24 +28,24 @@ export function useSubscribe() {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to subscribe");
+          throw new Error(errorData.error || t("error.createFailed", { resource: "subscription" }));
         }
 
         // Success response handling
         setStatus("success");
-        addNotification("success", "Success", "Successfully subscribed to the waitlist");
+        addNotification("success", t("titles.success"), t("success.subscribed"));
         return true;
       } catch (err) {
         const errorMessage =
-          err instanceof Error ? err.message : "An unknown error occurred";
+          err instanceof Error ? err.message : t("error.unknownError");
         setError(errorMessage);
         setStatus("error");
-        addNotification("error", "Error", errorMessage);
+        addNotification("error", t("titles.error"), errorMessage);
         console.error("Failed to subscribe:", err);
         return false;
       }
     },
-    [addNotification]
+    [addNotification, t]
   );
 
   const reset = useCallback(() => {

@@ -654,5 +654,35 @@
       "terms": "Terms of Service",
       "privacy": "Privacy Policy"
     }
+  },
+  "notifications": {
+    "success": {
+      "argumentCreated": "Argument created successfully",
+      "argumentUpdated": "Argument updated successfully",
+      "argumentDeleted": "Argument deleted successfully",
+      "draftDeleted": "Draft deleted successfully",
+      "userAdded": "User added successfully",
+      "userUpdated": "User updated successfully",
+      "userDeleted": "User deleted successfully",
+      "emailSent": "Invitation email sent successfully",
+      "subscribed": "Successfully subscribed to the waitlist",
+      "passwordCopied": "Password copied to clipboard!"
+    },
+    "error": {
+      "authRequired": "Authentication required",
+      "unknownError": "An unknown error occurred",
+      "fetchFailed": "Failed to load {resource}",
+      "createFailed": "Failed to create {resource}",
+      "updateFailed": "Failed to update {resource}",
+      "deleteFailed": "Failed to delete {resource}",
+      "saveFailed": "Failed to save {resource}",
+      "emailFailed": "Failed to send invitation email"
+    },
+    "titles": {
+      "success": "Success",
+      "error": "Error",
+      "warning": "Warning",
+      "info": "Information"
+    }
   }
 }

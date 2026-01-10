@@ -6,6 +6,7 @@ import { DraftOverview } from "@/lib/services/coach";
 import { useNotification } from "@/contexts/NotificationContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { getCurrentUserToken } from "@/lib/auth/utils";
+import { useTranslations } from "next-intl";
 
 interface ArgumentOverviewData {
   arguments: ToulminArgument[];
@@ -21,6 +22,7 @@ export function useArgumentOverview() {
   const [isDeletingDraft, setIsDeletingDraft] = useState(false);
   const { addNotification } = useNotification();
   const { user, isLoading: isAuthLoading } = useAuth();
+  const t = useTranslations("notifications");
 
   const fetchOverview = useCallback(async () => {
     setIsLoading(true);
@@ -30,7 +32,7 @@ export function useArgumentOverview() {
       const token = await getCurrentUserToken();
 
       if (!token) {
-        throw new Error("Authentication required");
+        throw new Error(t("error.authRequired"));
       }
 
       const response = await fetch("/api/argument/overview", {
@@ -41,7 +43,7 @@ export function useArgumentOverview() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error ?? "Failed to fetch data");
+        throw new Error(errorData.error ?? t("error.fetchFailed", { resource: "data" }));
       }
 
       const { data } = await response.json() as { data: ArgumentOverviewData };
@@ -49,14 +51,14 @@ export function useArgumentOverview() {
       setDrafts(data.drafts ?? []);
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "An unknown error occurred";
+        err instanceof Error ? err.message : t("error.unknownError");
       setError(errorMessage);
-      addNotification("error", "Error", errorMessage);
+      addNotification("error", t("titles.error"), errorMessage);
       console.error("Failed to load overview:", err);
     } finally {
       setIsLoading(false);
     }
-  }, [addNotification]);
+  }, [addNotification, t]);
 
   // Fetch when auth is ready and user is logged in
   useEffect(() => {
@@ -64,9 +66,9 @@ export function useArgumentOverview() {
       fetchOverview();
     } else if (!isAuthLoading && !user) {
       setIsLoading(false);
-      setError("Authentication required");
+      setError(t("error.authRequired"));
     }
-  }, [fetchOverview, isAuthLoading, user]);
+  }, [fetchOverview, isAuthLoading, user, t]);
 
   const deleteArgument = useCallback(async (argumentId: string): Promise<boolean> => {
     setIsDeletingArgument(true);
@@ -75,7 +77,7 @@ export function useArgumentOverview() {
       const token = await getCurrentUserToken();
 
       if (!token) {
-        throw new Error("Authentication required");
+        throw new Error(t("error.authRequired"));
       }
 
       const response = await fetch(`/api/argument/${argumentId}`, {
@@ -87,26 +89,26 @@ export function useArgumentOverview() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error ?? "Failed to delete argument");
+        throw new Error(errorData.error ?? t("error.deleteFailed", { resource: "argument" }));
       }
 
       // Update local state
       setToulminArguments((prev) =>
         prev.filter((arg) => arg._id?.toString() !== argumentId)
       );
-      addNotification("success", "Success", "Argument deleted successfully");
+      addNotification("success", t("titles.success"), t("success.argumentDeleted"));
       return true;
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "An unknown error occurred";
+        err instanceof Error ? err.message : t("error.unknownError");
       setError(errorMessage);
-      addNotification("error", "Error", errorMessage);
+      addNotification("error", t("titles.error"), errorMessage);
       console.error("Failed to delete argument:", err);
       return false;
     } finally {
       setIsDeletingArgument(false);
     }
-  }, [addNotification]);
+  }, [addNotification, t]);
 
   const deleteDraft = useCallback(async (sessionId: string): Promise<boolean> => {
     setIsDeletingDraft(true);
@@ -115,7 +117,7 @@ export function useArgumentOverview() {
       const token = await getCurrentUserToken();
 
       if (!token) {
-        throw new Error("Authentication required");
+        throw new Error(t("error.authRequired"));
       }
 
       const response = await fetch(`/api/coach/session/${sessionId}`, {
@@ -127,26 +129,26 @@ export function useArgumentOverview() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error ?? "Failed to delete draft");
+        throw new Error(errorData.error ?? t("error.deleteFailed", { resource: "draft" }));
       }
 
       // Update local state
       setDrafts((prev) =>
         prev.filter((d) => d.sessionId !== sessionId)
       );
-      addNotification("success", "Success", "Draft deleted successfully");
+      addNotification("success", t("titles.success"), t("success.draftDeleted"));
       return true;
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "An unknown error occurred";
+        err instanceof Error ? err.message : t("error.unknownError");
       setError(errorMessage);
-      addNotification("error", "Error", errorMessage);
+      addNotification("error", t("titles.error"), errorMessage);
       console.error("Failed to delete draft:", err);
       return false;
     } finally {
       setIsDeletingDraft(false);
     }
-  }, [addNotification]);
+  }, [addNotification, t]);
 
   return {
     toulminArguments,

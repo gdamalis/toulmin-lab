@@ -26,6 +26,7 @@ export function useSendEmail() {
   const [isSending, setIsSending] = useState(false);
   const { addNotification } = useNotification();
   const t = useTranslations("admin.users");
+  const notifT = useTranslations("notifications");
 
   const sendEmail = async (emailData: SendEmailData): Promise<boolean> => {
     setIsSending(true);
@@ -55,15 +56,15 @@ export function useSendEmail() {
       const result: SendEmailResponse = await response.json();
 
       if (result.success) {
-        addNotification("success", t("emailSent"), result.data?.message ?? "");
+        addNotification("success", notifT("titles.success"), t("emailSent"));
         return true;
       } else {
-        throw new Error(result.error ?? "Failed to send email");
+        throw new Error(result.error ?? notifT("error.emailFailed"));
       }
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "An unknown error occurred";
-      addNotification("error", t("emailFailed"), errorMessage);
+        err instanceof Error ? err.message : notifT("error.unknownError");
+      addNotification("error", notifT("titles.error"), errorMessage);
       console.error("Failed to send email:", err);
       return false;
     } finally {

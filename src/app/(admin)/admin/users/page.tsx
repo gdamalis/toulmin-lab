@@ -13,6 +13,7 @@ import { Card } from "@/components/ui/Card";
 import { Typography } from "@/components/ui/Typography";
 import { useUsers } from "@/hooks/useUsers";
 import { User, UserFormData } from "@/types/client";
+import { useNotification } from "@/contexts/NotificationContext";
 import {
   ArrowPathIcon,
   ClipboardDocumentIcon,
@@ -23,6 +24,8 @@ import { useState } from "react";
 
 export default function UsersManagement() {
   const t = useTranslations("admin.users");
+  const notifT = useTranslations("notifications");
+  const { addNotification } = useNotification();
 
   const {
     users,
@@ -104,8 +107,7 @@ export default function UsersManagement() {
   const handleCopyPassword = () => {
     if (tempPassword) {
       navigator.clipboard.writeText(tempPassword);
-      // Show a notification that password was copied
-      alert("Password copied to clipboard!");
+      addNotification("success", notifT("titles.success"), notifT("success.passwordCopied"));
     }
   };
 

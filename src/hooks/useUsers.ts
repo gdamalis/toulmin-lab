@@ -6,6 +6,7 @@ import { auth } from "@/lib/firebase/config";
 import { User } from "@/types/client";
 import { onAuthStateChanged } from "firebase/auth";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export function useUsers() {
   const [users, setUsers] = useState<User[]>([]);
@@ -15,6 +16,7 @@ export function useUsers() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [authReady, setAuthReady] = useState(false);
   const { addNotification } = useNotification();
+  const t = useTranslations("notifications");
 
   // Set up auth state listener
   useEffect(() => {
@@ -34,7 +36,7 @@ export function useUsers() {
       const token = await getCurrentUserToken();
 
       if (!token) {
-        throw new Error("Authentication required");
+        throw new Error(t("error.authRequired"));
       }
 
       const response = await fetch("/api/users", {
@@ -45,7 +47,7 @@ export function useUsers() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error ?? "Failed to fetch users");
+        throw new Error(errorData.error ?? t("error.fetchFailed", { resource: "users" }));
       }
 
       const data = await response.json();
@@ -58,14 +60,14 @@ export function useUsers() {
       }
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "An unknown error occurred";
+        err instanceof Error ? err.message : t("error.unknownError");
       setError(errorMessage);
-      addNotification("error", "Error", errorMessage);
+      addNotification("error", t("titles.error"), errorMessage);
       console.error("Failed to load users:", err);
     } finally {
       setIsLoading(false);
     }
-  }, [addNotification]);
+  }, [addNotification, t]);
 
   useEffect(() => {
     // Only fetch users when auth is ready
@@ -82,7 +84,7 @@ export function useUsers() {
       const token = await getCurrentUserToken();
 
       if (!token) {
-        throw new Error("Authentication required");
+        throw new Error(t("error.authRequired"));
       }
 
       const response = await fetch(`/api/users/${userId}`, {
@@ -94,20 +96,20 @@ export function useUsers() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error ?? "Failed to delete user");
+        throw new Error(errorData.error ?? t("error.deleteFailed", { resource: "user" }));
       }
 
       // Update local state
       setUsers((prevUsers) =>
         prevUsers.filter((user) => user.userId !== userId)
       );
-      addNotification("success", "Success", "User deleted successfully");
+      addNotification("success", t("titles.success"), t("success.userDeleted"));
       return true;
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "An unknown error occurred";
+        err instanceof Error ? err.message : t("error.unknownError");
       setError(errorMessage);
-      addNotification("error", "Error", errorMessage);
+      addNotification("error", t("titles.error"), errorMessage);
       console.error("Failed to delete user:", err);
       return false;
     } finally {
@@ -123,7 +125,7 @@ export function useUsers() {
       const token = await getCurrentUserToken();
 
       if (!token) {
-        throw new Error("Authentication required");
+        throw new Error(t("error.authRequired"));
       }
 
       const response = await fetch(`/api/users/${userId}`, {
@@ -137,7 +139,7 @@ export function useUsers() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error ?? "Failed to update user");
+        throw new Error(errorData.error ?? t("error.updateFailed", { resource: "user" }));
       }
 
       const result = await response.json();
@@ -150,16 +152,16 @@ export function useUsers() {
           )
         );
 
-        addNotification("success", "Success", "User updated successfully");
+        addNotification("success", t("titles.success"), t("success.userUpdated"));
         return true;
       } else {
-        throw new Error(result.error ?? "Failed to update user");
+        throw new Error(result.error ?? t("error.updateFailed", { resource: "user" }));
       }
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "An unknown error occurred";
+        err instanceof Error ? err.message : t("error.unknownError");
       setError(errorMessage);
-      addNotification("error", "Error", errorMessage);
+      addNotification("error", t("titles.error"), errorMessage);
       console.error("Failed to update user:", err);
       return false;
     } finally {
