@@ -17,24 +17,35 @@ const CLEANUP_INTERVAL_MS = 5 * 60 * 1000;
 
 /**
  * Clean up old entries from the rate limit store
+ * Removes entries that haven't been accessed recently to prevent memory leaks
  */
 function cleanupStore(): void {
   const now = Date.now();
   const keysToDelete: string[] = [];
 
   rateLimitStore.forEach((entry, key) => {
-    // Remove entries that haven't been accessed in the window period
-    if (now - entry.lastCleanup > CLEANUP_INTERVAL_MS) {
+    // Remove entries that haven't been accessed in 2x the cleanup interval
+    // This provides a buffer while still cleaning up stale entries
+    if (now - entry.lastCleanup > CLEANUP_INTERVAL_MS * 2) {
       keysToDelete.push(key);
     }
   });
 
+  // Delete stale entries
   keysToDelete.forEach((key) => rateLimitStore.delete(key));
+  
+  // Log cleanup in development for debugging
+  if (process.env.NODE_ENV === 'development' && keysToDelete.length > 0) {
+    console.debug(`[RateLimit] Cleaned up ${keysToDelete.length} stale entries`);
+  }
 }
 
 // Run cleanup periodically
+// Note: unref() ensures the interval doesn't prevent Node.js process from exiting
 if (typeof setInterval !== 'undefined') {
-  setInterval(cleanupStore, CLEANUP_INTERVAL_MS);
+  const cleanupInterval = setInterval(cleanupStore, CLEANUP_INTERVAL_MS);
+  // Allow the process to exit if this is the only active timer
+  cleanupInterval.unref?.();
 }
 
 export interface RateLimitConfig {

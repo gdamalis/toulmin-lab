@@ -128,11 +128,19 @@ export function useArguments() {
       }
 
       const { data } = await response.json();
+      const newId = data.id ?? data._id;
 
-      // Refresh arguments to include the new one
-      await fetchArguments();
+      // Optimistic update: add the new argument to the list immediately
+      const newArgument: ToulminArgument = {
+        ...argumentData,
+        _id: newId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
-      return data.id ?? data._id;
+      setToulminArguments((prev) => [newArgument, ...prev]);
+
+      return newId;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unknown error occurred";
@@ -142,7 +150,7 @@ export function useArguments() {
     } finally {
       setIsCreating(false);
     }
-  }, [fetchArguments]);
+  }, []);
 
   const deleteArgument = useCallback(async (argumentId: string) => {
     setIsDeleting(true);
@@ -188,7 +196,19 @@ export function useArguments() {
   ) => {
     setIsUpdating(true);
 
+    // Store previous state for rollback on error
+    const previousArguments = toulminArguments;
+
     try {
+      // Optimistic update: update the argument in the list immediately
+      setToulminArguments((prev) =>
+        prev.map((arg) =>
+          arg._id?.toString() === argumentId
+            ? { ...argumentData, _id: argumentId, updatedAt: new Date().toISOString() }
+            : arg
+        )
+      );
+
       const token = await getCurrentUserToken();
 
       if (!token) {
@@ -205,14 +225,16 @@ export function useArguments() {
       });
 
       if (!response.ok) {
+        // Rollback on error
+        setToulminArguments(previousArguments);
         const errorData = await response.json();
         throw new Error(errorData.error ?? "Failed to update argument");
       }
 
-      // Refresh arguments after update
-      await fetchArguments();
       return true;
     } catch (err) {
+      // Rollback on error
+      setToulminArguments(previousArguments);
       const errorMessage =
         err instanceof Error ? err.message : "An unknown error occurred";
       setError(errorMessage);
@@ -221,7 +243,7 @@ export function useArguments() {
     } finally {
       setIsUpdating(false);
     }
-  }, [fetchArguments]);
+  }, [toulminArguments]);
 
   return {
     toulminArguments,

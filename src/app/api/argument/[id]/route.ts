@@ -3,6 +3,7 @@ import { ToulminArgument } from "@/types/client";
 import { withAuth } from "@/lib/api/auth";
 import { createSuccessResponse, createErrorResponse } from "@/lib/api/responses";
 import { getArgumentById, updateArgument, deleteArgument } from "@/lib/services/arguments";
+import { validateUpdateArgument } from "@/lib/validation/argument";
 
 // GET /api/argument/:id - Get a specific diagram by ID
 export async function GET(
@@ -39,9 +40,18 @@ export async function PUT(
       const argumentId = id as string; // Assert that id is a string
 
       // Parse the request body
-      const data = (await request.json()) as ToulminArgument;
+      const data = await request.json();
 
-      const result = await updateArgument(argumentId, data, auth.userId);
+      // Validate request body
+      const validation = validateUpdateArgument(data);
+      if (!validation.success) {
+        return createErrorResponse(
+          `Invalid request data: ${validation.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`,
+          400
+        );
+      }
+
+      const result = await updateArgument(argumentId, validation.data as ToulminArgument, auth.userId);
 
       if (!result.success) {
         return createErrorResponse(result.error || "Failed to update argument", 400);

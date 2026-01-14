@@ -46,14 +46,17 @@ export async function verifyAuth(
 
   const decodedToken = result.token;
   
-  if (!decodedToken.uid || !decodedToken.role) {
+  if (!decodedToken.uid) {
     return null;
   }
 
+  // Default to USER role if role claim is missing (e.g., new users)
+  const role = decodedToken.role ?? Role.USER;
+
   return {
     userId: decodedToken.uid,
-    role: decodedToken.role,
-    isAdmin: isAdmin(decodedToken.role),
+    role,
+    isAdmin: isAdmin(role),
   };
 }
 

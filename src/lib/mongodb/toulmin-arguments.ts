@@ -1,15 +1,15 @@
 import { COLLECTIONS } from "@/constants/database.constants";
 import { ToulminArgument } from "@/types/client";
+import { ToulminArgumentInput } from "@/types/toulmin";
 import { ToulminArgumentCollection } from "@/types/mongodb";
-import { toClientToulminArgument, toCollectionToulminArgument } from "@/utils/typeConverters";
+import { toClientToulminArgument, toCollectionToulminArgument, toCollectionToulminArgumentInput } from "@/utils/typeConverters";
 import { getCollection, toObjectId } from "./client";
 import { findUserById } from "./users";
 import { ObjectId, WithId } from "mongodb";
-import clientPromise from "@/lib/mongodb/config";
 
 // Create a new Toulmin argument
 export async function createToulminArgument(
-  argument: ToulminArgument,
+  argument: ToulminArgumentInput,
   userId: string
 ): Promise<string> {
   const collection = await getCollection<ToulminArgumentCollection>(COLLECTIONS.ARGUMENTS);
@@ -21,11 +21,13 @@ export async function createToulminArgument(
   }
 
   // Convert and prepare the argument
-  const dbArg = toCollectionToulminArgument(argument);
-  dbArg.author = {
-    _id: user._id,
-    userId: user.userId,
-    name: user.name,
+  const dbArg: Omit<ToulminArgumentCollection, "_id"> = {
+    ...toCollectionToulminArgumentInput(argument),
+    author: {
+      _id: user._id,
+      userId: user.userId,
+      name: user.name,
+    },
   };
 
   const result = await collection.insertOne(dbArg);
@@ -50,15 +52,12 @@ export async function findToulminArgumentByIdForUser(
     return null;
   }
 
-  const client = await clientPromise;
-  const db = client.db("toulmin_lab");
+  const collection = await getCollection<ToulminArgumentCollection>(COLLECTIONS.ARGUMENTS);
 
-  const result = await db
-    .collection<ToulminArgumentCollection>(COLLECTIONS.ARGUMENTS)
-    .findOne({
-      _id: new ObjectId(id),
-      "author.userId": userId,
-    });
+  const result = await collection.findOne({
+    _id: new ObjectId(id),
+    "author.userId": userId,
+  });
   
   return result ? toClientToulminArgument(result) : null;
 }
@@ -80,11 +79,9 @@ export async function findToulminArgumentsByUserId(
 export async function findRawToulminArgumentsByUserId(
   userId: string
 ): Promise<WithId<ToulminArgumentCollection>[]> {
-  const client = await clientPromise;
-  const db = client.db("toulmin_lab");
+  const collection = await getCollection<ToulminArgumentCollection>(COLLECTIONS.ARGUMENTS);
 
-  return db
-    .collection<ToulminArgumentCollection>(COLLECTIONS.ARGUMENTS)
+  return collection
     .find({ "author.userId": userId })
     .sort({ createdAt: -1 })
     .toArray();
@@ -130,16 +127,13 @@ export async function deleteToulminArgument(
     return false;
   }
   
-  const client = await clientPromise;
-  const db = client.db("toulmin_lab");
+  const collection = await getCollection<ToulminArgumentCollection>(COLLECTIONS.ARGUMENTS);
   
   // Delete the argument if it belongs to the authenticated user
-  const result = await db
-    .collection(COLLECTIONS.ARGUMENTS)
-    .deleteOne({
-      _id: new ObjectId(id),
-      'author.userId': userId // Only delete if the argument belongs to this user
-    });
+  const result = await collection.deleteOne({
+    _id: new ObjectId(id),
+    'author.userId': userId // Only delete if the argument belongs to this user
+  });
   
   return result.deletedCount === 1;
 }

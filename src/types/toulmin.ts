@@ -31,4 +31,12 @@ export interface ToulminDiagramEdge {
 export interface ToulminDiagramData {
   nodes: ToulminDiagramNode[];
   edges: ToulminDiagramEdge[];
+}
+
+export interface ToulminArgumentInput {
+  _id?: string;
+  name: string;
+  parts: ToulminArgumentPart;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
 } 

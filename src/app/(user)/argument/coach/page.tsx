@@ -1,6 +1,9 @@
 import { redirect } from 'next/navigation';
 import { createSession } from './actions';
 
+// Force dynamic rendering since we create a session on every visit
+export const dynamic = 'force-dynamic';
+
 /**
  * Coach landing page - creates a new session and redirects
  * This is a Server Component that handles session creation

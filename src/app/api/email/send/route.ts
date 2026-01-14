@@ -4,6 +4,8 @@ import { parseRequestBody } from "@/lib/api/middleware";
 import { withAuth } from "@/lib/api/auth";
 import { sendUserInvitation } from "@/lib/services/email";
 import { getLocale } from "next-intl/server";
+import { validateSendEmail } from "@/lib/validation/email";
+import { logger } from "@/lib/logger";
 
 interface SendEmailRequestBody {
   type: 'user_invitation';
@@ -22,46 +24,39 @@ export async function POST(
     try {
       const body = await parseRequestBody<SendEmailRequestBody>(request);
       
-      if (!body.type || !body.to) {
-        return createErrorResponse("Missing required fields: type and to", 400);
+      // Check email type first
+      if (!body.type || body.type !== 'user_invitation') {
+        return createErrorResponse("Invalid or missing email type", 400);
       }
 
-      // Validate email type
-      if (body.type !== 'user_invitation') {
-        return createErrorResponse("Invalid email type", 400);
+      // Validate request body with Zod
+      const validation = validateSendEmail({
+        to: body.to,
+        inviterName: body.inviterName,
+        userRole: body.userRole,
+        temporaryPassword: body.temporaryPassword,
+      });
+
+      if (!validation.success) {
+        return createErrorResponse(
+          `Invalid request data: ${validation.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`,
+          400
+        );
       }
 
-      // Validate required fields for user invitation
-      if (!body.inviterName || !body.userRole) {
-        return createErrorResponse("Missing required fields for user invitation", 400);
-      }
-
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(body.to)) {
-        return createErrorResponse("Invalid email address", 400);
-      }
-
+      const validatedData = validation.data;
       const locale = await getLocale();
 
-      let result;
-
-      switch (body.type) {
-        case 'user_invitation':
-          result = await sendUserInvitation(
-            body.to,
-            body.inviterName,
-            body.userRole,
-            body.temporaryPassword ?? null,
-            locale
-          );
-          break;
-        default:
-          return createErrorResponse("Unsupported email type", 400);
-      }
+      const result = await sendUserInvitation(
+        validatedData.to as string, // Single email address for user invitations
+        validatedData.inviterName,
+        validatedData.userRole,
+        validatedData.temporaryPassword ?? null,
+        validatedData.locale ?? locale
+      );
 
       if (!result.success) {
-        console.error('Email sending failed:', result.error);
+        logger.error('Email sending failed', new Error(result.error));
         return createErrorResponse(
           result.error ?? "Failed to send email",
           500
@@ -73,7 +68,7 @@ export async function POST(
         emailId: result.data?.id,
       });
     } catch (error) {
-      console.error("Error in POST /api/email/send:", error);
+      logger.error("Error in POST /api/email/send", error);
       return createErrorResponse("Invalid request", 400);
     }
   })(request, context);

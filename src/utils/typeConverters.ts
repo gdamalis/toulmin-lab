@@ -1,4 +1,5 @@
 import { Author, ToulminArgument, User } from "@/types/client";
+import { ToulminArgumentInput } from "@/types/toulmin";
 import { AuthorCollection, ToulminArgumentCollection, UserCollection } from "@/types/mongodb";
 import { ObjectId } from "mongodb";
 
@@ -38,6 +39,21 @@ export function toCollectionToulminArgument(
     parts: clientArg.parts,
     createdAt: clientArg.createdAt instanceof Date ? clientArg.createdAt : new Date(clientArg.createdAt),
     updatedAt: clientArg.updatedAt instanceof Date ? clientArg.updatedAt : new Date(clientArg.updatedAt),
+  };
+}
+
+/**
+ * Converts a ToulminArgumentInput (without author) to a partial MongoDB ToulminArgumentCollection
+ * The author must be set separately after calling this function
+ */
+export function toCollectionToulminArgumentInput(
+  input: ToulminArgumentInput
+): Omit<ToulminArgumentCollection, "_id" | "author"> {
+  return {
+    name: input.name,
+    parts: input.parts,
+    createdAt: input.createdAt instanceof Date ? input.createdAt : (input.createdAt ? new Date(input.createdAt) : new Date()),
+    updatedAt: input.updatedAt instanceof Date ? input.updatedAt : (input.updatedAt ? new Date(input.updatedAt) : new Date()),
   };
 }
 

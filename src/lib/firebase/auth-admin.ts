@@ -1,45 +1,45 @@
-import { getAuth } from 'firebase-admin/auth';
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
+import { randomBytes } from 'crypto';
 import { Role } from "@/types/roles";
-
-// Initialize Firebase Admin SDK if it hasn't been initialized
-if (!getApps().length) {
-  initializeApp({
-    credential: cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
-  });
-}
+import { logger } from '@/lib/logger';
+import { adminAuth } from './admin';
 
 // Verify Firebase ID token
 export async function getToken(token: string) {
   try {
-    return await getAuth().verifyIdToken(token);
+    return await adminAuth.verifyIdToken(token);
   } catch (error) {
-    console.error("Error verifying token:", error);
+    logger.error("Error verifying token", error);
     return null;
   }
 }
 
 export async function setUserRole(uid: string, role: Role): Promise<void> {
   try {
-    await getAuth().setCustomUserClaims(uid, { role });
+    await adminAuth.setCustomUserClaims(uid, { role });
   } catch (error) {
-    console.error("Error setting user role:", error);
+    logger.error("Error setting user role", error, { userId: uid });
     throw error;
   }
 }
 
 export async function getUserRole(uid: string): Promise<Role | null> {
   try {
-    const user = await getAuth().getUser(uid);
+    const user = await adminAuth.getUser(uid);
     return user.customClaims?.role as Role || null;
   } catch (error) {
-    console.error("Error getting user role:", error);
+    logger.error("Error getting user role", error, { userId: uid });
     return null;
   }
+}
+
+/**
+ * Generates a cryptographically secure random password
+ * @param length Length of the password (default: 16)
+ * @returns A secure random password
+ */
+function generateSecurePassword(length: number = 16): string {
+  // Generate random bytes and convert to base64url format (safe for URLs and passwords)
+  return randomBytes(length).toString('base64url').slice(0, length);
 }
 
 /**
@@ -51,10 +51,10 @@ export async function getUserRole(uid: string): Promise<Role | null> {
  */
 export async function createFirebaseUser(email: string, password?: string, displayName?: string) {
   try {
-    // If no password is provided, generate a random one (user will need to reset password)
-    const userPassword = password || Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase();
+    // If no password is provided, generate a cryptographically secure random one
+    const userPassword = password ?? generateSecurePassword(16);
     
-    const userRecord = await getAuth().createUser({
+    const userRecord = await adminAuth.createUser({
       email,
       emailVerified: false,
       password: userPassword,
@@ -68,7 +68,7 @@ export async function createFirebaseUser(email: string, password?: string, displ
       temporaryPassword: password ? undefined : userPassword
     };
   } catch (error) {
-    console.error("Error creating new Firebase user:", error);
+    logger.error("Error creating new Firebase user", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error creating user'
@@ -83,23 +83,23 @@ export async function createFirebaseUser(email: string, password?: string, displ
  */
 export async function deleteFirebaseUser(uid: string) {
   try {
-    await getAuth().deleteUser(uid);
+    await adminAuth.deleteUser(uid);
     
     return {
       success: true
     };
   } catch (error) {
-    console.error("Error deleting Firebase user:", error);
-    
     // Handle "user-not-found" specially - we consider it a success 
     // if we're trying to delete a user that doesn't exist in Firebase
     if (error instanceof Error && error.message.includes("user-not-found")) {
+      logger.warn("User not found in Firebase during deletion", { userId: uid });
       return {
         success: true,
         warning: "User not found in Firebase, but operation marked as successful"
       };
     }
     
+    logger.error("Error deleting Firebase user", error, { userId: uid });
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error deleting user'

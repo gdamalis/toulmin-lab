@@ -6,6 +6,8 @@ import { NextRequest } from "next/server";
 import { withAdminAuth } from "@/lib/api/auth";
 import { Role } from "@/types/roles";
 import { createFirebaseUser, setUserRole } from "@/lib/firebase/auth-admin";
+import { validateCreateUser } from "@/lib/validation/users-zod";
+import { logger } from "@/lib/logger";
 
 // User create request body interface
 interface UserCreateRequestBody extends UserInput {
@@ -22,15 +24,22 @@ export async function POST(
     try {
       const body = await parseRequestBody<UserCreateRequestBody>(request);
       
-      if (!body.name || !body.email) {
-        return createErrorResponse("Missing required fields", 400);
+      // Validate request body
+      const validation = validateCreateUser(body);
+      if (!validation.success) {
+        return createErrorResponse(
+          `Invalid request data: ${validation.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`,
+          400
+        );
       }
+
+      const validatedData = validation.data;
 
       // 1. Create the user in Firebase first
       const firebaseResult = await createFirebaseUser(
-        body.email,
-        body.password,
-        body.name
+        validatedData.email,
+        validatedData.password,
+        validatedData.name
       );
 
       if (!firebaseResult.success || !firebaseResult.user) {
@@ -43,14 +52,17 @@ export async function POST(
       const userId = firebaseResult.user.uid;
       
       // 2. Set the user's role in Firebase
-      if (body.role) {
-        await setUserRole(userId, body.role);
+      if (validatedData.role) {
+        await setUserRole(userId, validatedData.role);
       }
       
       // 3. Create or update the user in MongoDB
       const result = await createOrUpdateUser({
-        ...body,
+        name: validatedData.name,
+        email: validatedData.email,
+        picture: validatedData.picture,
         userId: userId,
+        role: validatedData.role,
       });
 
       if (!result.success) {
@@ -66,7 +78,7 @@ export async function POST(
         temporaryPassword: firebaseResult.temporaryPassword
       });
     } catch (error) {
-      console.error("Error in POST /api/users/create:", error);
+      logger.error("Error in POST /api/users/create", error);
       return createErrorResponse("Invalid request", 400);
     }
   })(request, context);

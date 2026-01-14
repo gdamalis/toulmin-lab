@@ -4,6 +4,7 @@ import { NextRequest } from "next/server";
 import { ToulminArgument } from "@/types/client";
 import { withAuth } from "@/lib/api/auth";
 import { getUserArguments, createArgument } from "@/lib/services/arguments";
+import { validateCreateArgument } from "@/lib/validation/argument";
 
 // Interface for argument creation request
 interface CreateArgumentRequest {
@@ -40,11 +41,16 @@ export async function POST(
     try {
       const data = await parseRequestBody<CreateArgumentRequest>(request);
 
-      if (!data.diagram) {
-        return createErrorResponse("Diagram data is required", 400);
+      // Validate request body
+      const validation = validateCreateArgument(data);
+      if (!validation.success) {
+        return createErrorResponse(
+          `Invalid request data: ${validation.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`,
+          400
+        );
       }
 
-      const result = await createArgument(data.diagram, auth.userId);
+      const result = await createArgument(validation.data.diagram, auth.userId);
 
       if (!result.success || !result.data) {
         return createErrorResponse(result.error ?? "Failed to create argument", 500);
@@ -52,7 +58,7 @@ export async function POST(
 
       return createSuccessResponse({
         id: result.data.id,
-        diagram: data.diagram,
+        diagram: validation.data.diagram,
         userId: auth.userId,
         createdAt: new Date(),
         updatedAt: new Date(),

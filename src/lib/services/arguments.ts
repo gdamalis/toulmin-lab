@@ -1,4 +1,5 @@
 import { ToulminArgument } from "@/types/client";
+import { ToulminArgumentInput } from "@/types/toulmin";
 import { 
   findRawToulminArgumentsByUserId,
   findToulminArgumentByIdForUser,
@@ -52,7 +53,7 @@ export async function getArgumentById(
  * Create a new argument for a user
  */
 export async function createArgument(
-  diagram: ToulminArgument,
+  diagram: ToulminArgumentInput,
   userId: string
 ): Promise<ApiResponse<{ id: string }>> {
   try {
