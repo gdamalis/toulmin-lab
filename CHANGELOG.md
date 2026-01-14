@@ -1,3 +1,10 @@
+## [0.39.0](https://github.com/gdamalis/toulmin-lab/compare/v0.38.0...v0.39.0) (2026-01-14)
+
+
+### Features
+
+* **TL-34:** integrate Sentry for error tracking and logging ([e90e5d7](https://github.com/gdamalis/toulmin-lab/commit/e90e5d7682158a63f093158cb7f66fbe72b3cf0a))
+
 ## [0.38.0](https://github.com/gdamalis/toulmin-lab/compare/v0.37.0...v0.38.0) (2026-01-10)
 
 
@@ -25,11 +32,4 @@
 ### Features
 
 * **toast:** implement auto-dismiss functionality and deduplication for notifications ([9c2fffe](https://github.com/gdamalis/toulmin-lab/commit/9c2fffe08d89c7b0d9facec8dea27f312c8ca08c))
-
-## [0.34.0](https://github.com/gdamalis/toulmin-lab/compare/v0.33.0...v0.34.0) (2026-01-10)
-
-
-### Features
-
-* **coach:** enhance coaching experience with session status and rewrite features ([ca5f46d](https://github.com/gdamalis/toulmin-lab/commit/ca5f46d02beb7ce5143939eb645a02f5a35fd76f))
 
