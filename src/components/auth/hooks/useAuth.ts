@@ -143,12 +143,12 @@ export function useAuthFlow(redirectPath = "/dashboard") {
       }
 
       if (nextAuthResult?.url) {
-        trackEvent("auth.success", { method: "google" });
+        trackEvent("auth_success", { method: "google" });
         router.push(nextAuthResult.url);
       }
     } catch (err) {
       console.error("Google authentication error:", err);
-      trackEvent("auth.error", { method: "google", error_type: "google_failed" });
+      trackEvent("auth_error", { method: "google", error_type: "google_failed" });
       setError(t("googleFailed"));
       setIsAuthenticating(false);
     } finally {
@@ -196,12 +196,12 @@ export function useAuthFlow(redirectPath = "/dashboard") {
       }
 
       if (nextAuthResult?.url) {
-        trackEvent("auth.success", { method: "email", mode });
+        trackEvent("auth_success", { method: "email", mode });
         router.push(nextAuthResult.url);
       }
     } catch (err: unknown) {
       if (err instanceof FirebaseError) {
-        trackEvent("auth.error", { method: "email", mode, error_type: err.code });
+        trackEvent("auth_error", { method: "email", mode, error_type: err.code });
         if (err.code === "auth/email-already-in-use") {
           setError(t("emailInUse"));
         } else if (err.code === "auth/invalid-email") {
@@ -233,11 +233,11 @@ export function useAuthFlow(redirectPath = "/dashboard") {
     try {
       await sendPasswordResetEmail(auth, email);
       
-      trackEvent("auth.password_reset_requested", { result: "success" });
+      trackEvent("auth_password_reset_requested", { result: "success" });
       // Show success message (generic for security)
       setResetSuccessMessage(authT("resetLinkSent"));
     } catch (err: unknown) {
-      trackEvent("auth.password_reset_requested", { result: "error" });
+      trackEvent("auth_password_reset_requested", { result: "error" });
       if (err instanceof FirebaseError) {
         if (err.code === "auth/invalid-email") {
           setError(t("invalidEmail"));

@@ -65,7 +65,7 @@ export default function ToulminArgumentViewPage({
         setResolvedData(result.data);
         
         // Track page view after successful load
-        trackEvent("argument.view_view", { 
+        trackEvent("argument_view_view", { 
           source: result.data.kind === "draft" ? "coach" : "manual" 
         });
       } else {

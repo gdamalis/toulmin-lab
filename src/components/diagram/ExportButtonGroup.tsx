@@ -47,7 +47,7 @@ function ExportButton({ onClick, label, icon }: Readonly<ExportButtonProps>) {
   const t = useTranslations("pages.argument");
 
   const handleClick = async () => {
-    trackEvent("argument.export", { format: label.toLowerCase() });
+    trackEvent("argument_export", { format: label.toLowerCase() });
     await onClick();
   };
 

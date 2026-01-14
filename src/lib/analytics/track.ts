@@ -100,13 +100,13 @@ function sanitizeParams(params: TrackEventParams): Record<string, unknown> {
 /**
  * Track an event to GTM/GA4 dataLayer
  * 
- * @param eventName - The event name (use dot-notation: "page.view", "auth.started")
+ * @param eventName - The event name (use underscore notation: "page_view", "auth_started")
  * @param params - Event parameters (will be sanitized)
  * 
  * @example
  * ```ts
- * trackEvent('argument.save_success', { format: 'manual' });
- * trackEvent('coach.message_sent', { step: 'claim' });
+ * trackEvent('argument_save_success', { format: 'manual' });
+ * trackEvent('coach_message_sent', { step: 'claim' });
  * ```
  */
 export function trackEvent(eventName: string, params?: TrackEventParams): void {
@@ -142,7 +142,7 @@ export function trackEvent(eventName: string, params?: TrackEventParams): void {
  * @param params - Additional parameters
  */
 export function trackPageView(path: string, params?: TrackEventParams): void {
-  trackEvent('page.view', {
+  trackEvent('page_view', {
     ...params,
     location: path,
   });

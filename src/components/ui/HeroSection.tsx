@@ -23,7 +23,7 @@ export function HeroSection({
   ctaHref = "/auth",
 }: HeroSectionProps) {
   const handleCtaClick = () => {
-    trackEvent("cta.clicked", { location: "hero" });
+    trackEvent("cta_clicked", { location: "hero" });
   };
 
   return (

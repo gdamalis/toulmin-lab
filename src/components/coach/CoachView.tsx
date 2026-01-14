@@ -39,7 +39,7 @@ function CoachViewContent({ session, messages }: CoachViewContentProps) {
 
   // Track coach view on mount
   useEffect(() => {
-    trackEvent("coach.open_view", { step: session.currentStep });
+    trackEvent("coach_open_view", { step: session.currentStep });
   }, [session.currentStep]);
 
   /**

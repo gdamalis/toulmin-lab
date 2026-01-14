@@ -23,7 +23,7 @@ export default function ToulminArgumentBuilder() {
 
   // Track page view on mount
   useEffect(() => {
-    trackEvent("argument.create_view", { source: "manual" });
+    trackEvent("argument_create_view", { source: "manual" });
   }, []);
 
   const handleFormChange = (data: ToulminArgument) => {
@@ -32,21 +32,21 @@ export default function ToulminArgumentBuilder() {
 
   const handleSave = async () => {
     try {
-      trackEvent("argument.save_attempt", { source: "manual" });
+      trackEvent("argument_save_attempt", { source: "manual" });
       const argumentId = await createArgument(toulminArgument);
       
       if (argumentId) {
-        trackEvent("argument.save_success", { source: "manual" });
+        trackEvent("argument_save_success", { source: "manual" });
         showSuccess(commonT("success"), t("saveSuccess"));
         // Redirect to the view page using the returned ID
         router.push(`/argument/view/${argumentId}`);
       } else {
-        trackEvent("argument.save_error", { source: "manual", error_type: "no_id_returned" });
+        trackEvent("argument_save_error", { source: "manual", error_type: "no_id_returned" });
         showError(commonT("error"), t("saveFailed"));
       }
     } catch (error) {
       console.error("Error saving diagram:", error);
-      trackEvent("argument.save_error", { source: "manual", error_type: "exception" });
+      trackEvent("argument_save_error", { source: "manual", error_type: "exception" });
       showError(
         t("saveFailed"),
         error instanceof Error ? error.message : "Failed to save diagram"

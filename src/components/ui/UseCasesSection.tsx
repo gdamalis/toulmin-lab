@@ -36,7 +36,7 @@ export function UseCasesSection({
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    trackEvent("use_case.tab_clicked", { tab: value });
+    trackEvent("use_case_tab_clicked", { tab: value });
   };
 
   return (

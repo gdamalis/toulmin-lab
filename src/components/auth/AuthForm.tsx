@@ -72,12 +72,12 @@ export function AuthForm({
       }
     }
 
-    trackEvent("auth.started", { method: "email", mode });
+    trackEvent("auth_started", { method: "email", mode });
     handleEmailAuth(mode, formData);
   };
 
   const handleGoogleClick = () => {
-    trackEvent("auth.started", { method: "google", mode });
+    trackEvent("auth_started", { method: "google", mode });
     handleGoogleAuth();
   };
 

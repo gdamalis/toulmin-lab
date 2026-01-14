@@ -78,7 +78,7 @@ export default function ToulminArgumentEditor({
         }
         
         // Track page view after successful load
-        trackEvent("argument.edit_view", { 
+        trackEvent("argument_edit_view", { 
           source: data.kind === "draft" ? "coach" : "manual" 
         });
       } else {
@@ -114,7 +114,7 @@ export default function ToulminArgumentEditor({
         const success = await updateArgument(id, toulminArgument);
         
         if (success) {
-          trackEvent("argument.update_success", { source: "manual" });
+          trackEvent("argument_update_success", { source: "manual" });
           showSuccess(commonT("success"), t("saveSuccess"));
           router.push(`/argument/view/${id}`);
         } else {
@@ -132,12 +132,12 @@ export default function ToulminArgumentEditor({
           throw new Error(result.error ?? "Failed to save draft");
         }
 
-        trackEvent("argument.update_success", { source: "coach" });
+        trackEvent("argument_update_success", { source: "coach" });
         showSuccess(commonT("success"), t("saveSuccess"));
         router.push(`/argument/view/${id}?draft=true`);
       }
     } catch (err) {
-      trackEvent("argument.update_error", { 
+      trackEvent("argument_update_error", { 
         source: resolvedData.kind === "draft" ? "coach" : "manual",
         error_type: "exception"
       });

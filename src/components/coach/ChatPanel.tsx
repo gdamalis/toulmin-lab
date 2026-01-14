@@ -494,7 +494,7 @@ export function ChatPanel({
     if (isLoading || isComplete) return;
     
     // Track message send
-    trackEvent("coach.message_sent", { step: currentStep });
+    trackEvent("coach_message_sent", { step: currentStep });
     
     if (pendingRewrite) {
       // User is providing their rewrite
