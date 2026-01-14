@@ -1,3 +1,10 @@
+## [0.41.1](https://github.com/gdamalis/toulmin-lab/compare/v0.41.0...v0.41.1) (2026-01-14)
+
+
+### Bug Fixes
+
+* **analytics:** update event names to use underscore notation ([0ecc7fb](https://github.com/gdamalis/toulmin-lab/commit/0ecc7fb8b907aeb4c3458fc30434b325b8dab39c))
+
 ## [0.41.0](https://github.com/gdamalis/toulmin-lab/compare/v0.40.0...v0.41.0) (2026-01-14)
 
 
@@ -25,11 +32,4 @@
 ### Features
 
 * **password-reset:** implement password reset feature with UI and translations ([222927f](https://github.com/gdamalis/toulmin-lab/commit/222927fc2423d94a7d6f238ae89e7053ba51d2d7))
-
-## [0.37.0](https://github.com/gdamalis/toulmin-lab/compare/v0.36.0...v0.37.0) (2026-01-10)
-
-
-### Features
-
-* **argument:** integrate AI button with quota management and tooltip ([e311ba6](https://github.com/gdamalis/toulmin-lab/commit/e311ba67ce9033181874477f90f9edb69fbeb52f))
 
