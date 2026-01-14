@@ -1,3 +1,10 @@
+## [0.40.0](https://github.com/gdamalis/toulmin-lab/compare/v0.39.0...v0.40.0) (2026-01-14)
+
+
+### Features
+
+* consolidate hook imports and enhance utility functions ([1e2c5f9](https://github.com/gdamalis/toulmin-lab/commit/1e2c5f97ca01adee30f03fd9310be55fd222dd29))
+
 ## [0.39.0](https://github.com/gdamalis/toulmin-lab/compare/v0.38.0...v0.39.0) (2026-01-14)
 
 
@@ -25,11 +32,4 @@
 ### Features
 
 * **notifications:** add comprehensive notification messages for success and error states ([fa8f492](https://github.com/gdamalis/toulmin-lab/commit/fa8f492f96a5f90b8e8c062512c5b2c4bd89b40c))
-
-## [0.35.0](https://github.com/gdamalis/toulmin-lab/compare/v0.34.0...v0.35.0) (2026-01-10)
-
-
-### Features
-
-* **toast:** implement auto-dismiss functionality and deduplication for notifications ([9c2fffe](https://github.com/gdamalis/toulmin-lab/commit/9c2fffe08d89c7b0d9facec8dea27f312c8ca08c))
 
