@@ -1,6 +1,6 @@
 "use client";
 
-import { useUserRole } from "@/hooks/useUserRole";
+import { useUserRole } from "@/hooks";
 import { Role } from "@/types/roles";
 import { useTranslations } from "next-intl";
 import Image from "next/image";

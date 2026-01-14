@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { useSubscribe } from "@/hooks/useSubscribe";
+import { useSubscribe } from "@/hooks";
 
 interface SubscribeFormProps {
   className?: string;

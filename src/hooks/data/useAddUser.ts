@@ -1,7 +1,7 @@
 "use client";
 
 import { useNotification } from "@/contexts/NotificationContext";
-import { getCurrentUserToken } from "@/lib/auth/utils";
+import { apiClient } from "@/lib/api/client";
 import { useState } from "react";
 import { useSendEmail } from "./useSendEmail";
 import { useSession } from "next-auth/react";
@@ -11,21 +11,17 @@ interface AddUserData {
   name: string;
   email: string;
   role: string;
-  password?: string; // Optional password
+  password?: string;
 }
 
 interface AddUserResponse {
-  success: boolean;
-  data?: {
-    user: {
-      userId: string;
-      name: string;
-      email: string;
-      role: string;
-    };
-    temporaryPassword?: string;
+  user: {
+    userId: string;
+    name: string;
+    email: string;
+    role: string;
   };
-  error?: string;
+  temporaryPassword?: string;
 }
 
 export function useAddUser() {
@@ -42,32 +38,11 @@ export function useAddUser() {
     let generatedPassword: string | null = null;
 
     try {
-      // Get the authentication token
-      const token = await getCurrentUserToken();
+      const result = await apiClient.post<AddUserResponse>('/api/users/create', userData);
 
-      if (!token) {
-        throw new Error("Authentication required");
-      }
-
-      const response = await fetch(`/api/users/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(userData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error ?? "Failed to add user");
-      }
-
-      const result: AddUserResponse = await response.json();
-
-      if (result.success) {
+      if (result.success && result.data) {
         // If a temporary password was generated, store it for display
-        if (result.data?.temporaryPassword) {
+        if (result.data.temporaryPassword) {
           generatedPassword = result.data.temporaryPassword;
           setTempPassword(generatedPassword);
         }
@@ -83,9 +58,10 @@ export function useAddUser() {
         
         addNotification("success", t("titles.success"), t("success.userAdded"));
         return { success: true, temporaryPassword: generatedPassword };
-      } else {
-        throw new Error(result.error ?? t("error.createFailed", { resource: "user" }));
       }
+      
+      const errorMessage = result.error ?? t("error.createFailed", { resource: "user" });
+      throw new Error(errorMessage);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : t("error.unknownError");
@@ -98,4 +74,4 @@ export function useAddUser() {
   };
 
   return { addUser, isAdding, tempPassword };
-} 
+}

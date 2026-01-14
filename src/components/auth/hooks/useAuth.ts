@@ -58,7 +58,7 @@ async function processAuth(idToken: string, callbackUrl: string) {
   }
 }
 
-export function useAuth(redirectPath = "/dashboard") {
+export function useAuthFlow(redirectPath = "/dashboard") {
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);

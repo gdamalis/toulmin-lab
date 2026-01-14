@@ -1,7 +1,7 @@
 "use client";
 
 import { useNotification } from "@/contexts/NotificationContext";
-import { getCurrentUserToken } from "@/lib/auth/utils";
+import { apiClient } from "@/lib/api/client";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
@@ -11,15 +11,6 @@ interface SendEmailData {
   inviterName: string;
   userRole: string;
   temporaryPassword?: string | null;
-}
-
-interface SendEmailResponse {
-  success: boolean;
-  data?: {
-    message: string;
-    emailId?: string;
-  };
-  error?: string;
 }
 
 export function useSendEmail() {
@@ -32,35 +23,15 @@ export function useSendEmail() {
     setIsSending(true);
 
     try {
-      // Get the authentication token
-      const token = await getCurrentUserToken();
-
-      if (!token) {
-        throw new Error("Authentication required");
-      }
-
-      const response = await fetch(`/api/email/send`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(emailData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error ?? "Failed to send email");
-      }
-
-      const result: SendEmailResponse = await response.json();
+      const result = await apiClient.post<{ message: string; emailId?: string }>('/api/email/send', emailData);
 
       if (result.success) {
         addNotification("success", notifT("titles.success"), t("emailSent"));
         return true;
-      } else {
-        throw new Error(result.error ?? notifT("error.emailFailed"));
       }
+      
+      const errorMessage = result.error ?? notifT("error.emailFailed");
+      throw new Error(errorMessage);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : notifT("error.unknownError");
@@ -92,4 +63,4 @@ export function useSendEmail() {
     sendUserInvitation, 
     isSending 
   };
-} 
+}

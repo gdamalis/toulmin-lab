@@ -4,11 +4,11 @@ import { ToulminDiagram } from "@/components/diagram";
 import { ToulminForm } from "@/components/form";
 import { Badge } from "@/components/ui";
 import { Typography } from "@/components/ui/Typography";
-import { useArguments } from "@/hooks/useArguments";
-import useNotification from "@/hooks/useNotification";
+import { useArguments, useNotification } from "@/hooks";
+import { getToulminDiagramKey } from "@/lib/utils";
 import { ToulminArgument } from "@/types/client";
 import { ClientArgumentDraft } from "@/types/coach";
-import { getCurrentUserToken } from "@/lib/auth/utils";
+import { apiClient } from "@/lib/api/client";
 import { updateDraftFromEditorAction } from "@/app/(user)/argument/coach/actions";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -47,46 +47,36 @@ export default function ToulminArgumentEditor({
     setError(null);
     
     try {
-      const token = await getCurrentUserToken();
-      if (!token) {
-        throw new Error("Authentication required");
-      }
+      const result = await apiClient.get<ResolvedData>(`/api/argument/resolve/${id}`);
 
-      const response = await fetch(`/api/argument/resolve/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error ?? "Failed to fetch data");
-      }
-
-      const { data } = await response.json();
-      setResolvedData(data);
-      
-      // Convert to ToulminArgument format for the form
-      if (data.kind === "argument" && data.argument) {
-        setToulminArgument(data.argument);
-      } else if (data.kind === "draft" && data.draft) {
-        const draft = data.draft as ClientArgumentDraft;
-        setToulminArgument({
-          _id: draft.id,
-          name: draft.name,
-          parts: {
-            claim: draft.claim ?? "",
-            grounds: draft.grounds ?? "",
-            warrant: draft.warrant ?? "",
-            groundsBacking: draft.groundsBacking ?? "",
-            warrantBacking: draft.warrantBacking ?? "",
-            qualifier: draft.qualifier ?? "",
-            rebuttal: draft.rebuttal ?? "",
-          },
-          author: { _id: "", userId: "", name: "" },
-          createdAt: new Date(draft.createdAt),
-          updatedAt: new Date(draft.updatedAt),
-        });
+      if (result.success && result.data) {
+        const data = result.data;
+        setResolvedData(data);
+        
+        // Convert to ToulminArgument format for the form
+        if (data.kind === "argument" && data.argument) {
+          setToulminArgument(data.argument);
+        } else if (data.kind === "draft" && data.draft) {
+          const draft = data.draft as ClientArgumentDraft;
+          setToulminArgument({
+            _id: draft.id,
+            name: draft.name,
+            parts: {
+              claim: draft.claim ?? "",
+              grounds: draft.grounds ?? "",
+              warrant: draft.warrant ?? "",
+              groundsBacking: draft.groundsBacking ?? "",
+              warrantBacking: draft.warrantBacking ?? "",
+              qualifier: draft.qualifier ?? "",
+              rebuttal: draft.rebuttal ?? "",
+            },
+            author: { _id: "", userId: "", name: "" },
+            createdAt: new Date(draft.createdAt),
+            updatedAt: new Date(draft.updatedAt),
+          });
+        }
+      } else {
+        throw new Error(result.error ?? "Failed to fetch data");
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
@@ -190,7 +180,11 @@ export default function ToulminArgumentEditor({
         />
       </div>
       <div>
-        <ToulminDiagram data={toulminArgument} showExportButtons={false} />
+        <ToulminDiagram 
+          key={getToulminDiagramKey(toulminArgument)}
+          data={toulminArgument} 
+          showExportButtons={false} 
+        />
       </div>
     </div>
   );

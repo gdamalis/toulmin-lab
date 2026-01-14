@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth } from "./hooks/useAuth";
+import { useAuthFlow } from "./hooks/useAuth";
 import { SignInForm } from "./SignInForm";
 import { SignUpForm } from "./SignUpForm";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
@@ -30,7 +30,7 @@ export function AuthForm({
     handleGoogleAuth,
     handleEmailAuth,
     handlePasswordReset,
-  } = useAuth(redirectPath);
+  } = useAuthFlow(redirectPath);
 
   const toggleMode = () => {
     setMode((prevMode) => (prevMode === "signin" ? "signup" : "signin"));

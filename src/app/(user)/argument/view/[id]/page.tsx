@@ -6,8 +6,8 @@ import { Badge } from "@/components/ui";
 import { Typography } from "@/components/ui/Typography";
 import { ToulminArgument } from "@/types/client";
 import { ClientArgumentDraft } from "@/types/coach";
-import { getCurrentUserToken } from "@/lib/auth/utils";
-import { useCoachQuota } from "@/hooks/useCoachQuota";
+import { apiClient } from "@/lib/api/client";
+import { useCoachQuota } from "@/hooks";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
@@ -58,24 +58,13 @@ export default function ToulminArgumentViewPage({
     setError(null);
     
     try {
-      const token = await getCurrentUserToken();
-      if (!token) {
-        throw new Error("Authentication required");
+      const result = await apiClient.get<ResolvedData>(`/api/argument/resolve/${id}`);
+
+      if (result.success && result.data) {
+        setResolvedData(result.data);
+      } else {
+        throw new Error(result.error ?? "Failed to fetch data");
       }
-
-      const response = await fetch(`/api/argument/resolve/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error ?? "Failed to fetch data");
-      }
-
-      const { data } = await response.json();
-      setResolvedData(data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
       setError(errorMessage);

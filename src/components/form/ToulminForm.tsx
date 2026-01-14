@@ -8,7 +8,7 @@ import {
   LimitationsSection,
   ReasoningSection 
 } from "@/components/form/sections";
-import { useIsOnline } from "@/hooks/useIsOnline";
+import { useIsOnline } from "@/hooks";
 import { 
   useDebounce,
   useFormPersistence,

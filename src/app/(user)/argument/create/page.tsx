@@ -3,8 +3,8 @@
 import { ToulminDiagram } from "@/components/diagram";
 import { ToulminForm } from "@/components/form";
 import { emptyToulminArgument } from "@/data/toulminTemplates";
-import { useArguments } from "@/hooks/useArguments";
-import useNotification from "@/hooks/useNotification";
+import { useArguments, useNotification } from "@/hooks";
+import { getToulminDiagramKey } from "@/lib/utils";
 import { ToulminArgument } from "@/types/client";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -55,7 +55,11 @@ export default function ToulminArgumentBuilder() {
           />
         </div>
         <div className="h-full flex flex-col">
-          <ToulminDiagram data={toulminArgument} showExportButtons={false} />
+          <ToulminDiagram 
+            key={getToulminDiagramKey(toulminArgument)}
+            data={toulminArgument} 
+            showExportButtons={false} 
+          />
         </div>
       </div>
     </div>

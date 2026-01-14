@@ -12,7 +12,7 @@ interface UseNotificationReturn {
   removeNotification: (id: string) => void;
 }
 
-export default function useNotification(): UseNotificationReturn {
+export function useNotification(): UseNotificationReturn {
   const { addNotification, removeNotification } = useNotificationContext();
 
   const showNotification = (type: NotificationType, title: string, message: string) => {

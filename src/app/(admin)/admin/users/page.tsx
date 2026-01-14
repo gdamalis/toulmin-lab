@@ -11,7 +11,7 @@ import { Button } from "@/components/ui";
 import { Alert } from "@/components/ui/Alert";
 import { Card } from "@/components/ui/Card";
 import { Typography } from "@/components/ui/Typography";
-import { useUsers } from "@/hooks/useUsers";
+import { useUsers } from "@/hooks";
 import { User, UserFormData } from "@/types/client";
 import { useNotification } from "@/contexts/NotificationContext";
 import {

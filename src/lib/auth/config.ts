@@ -114,4 +114,4 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth",
     error: "/auth?error=true"
   }
-}; 
+};

@@ -106,6 +106,7 @@ function buildQueryString(filters: AiAnalyticsFilters): string {
 
 /**
  * Hook for fetching AI analytics data
+ * Note: This hook still uses fetch directly due to parallel fetching of multiple endpoints
  */
 export function useAiAnalytics(
   initialFilters: AiAnalyticsFilters = {}

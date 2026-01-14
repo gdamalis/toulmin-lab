@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useCoach } from '@/contexts/CoachContext';
-import { useCoachQuota } from '@/hooks/useCoachQuota';
+import { useCoachQuota } from '@/hooks';
 
 interface CoachUsageMeterProps {
   className?: string;

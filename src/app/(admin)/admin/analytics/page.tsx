@@ -2,7 +2,7 @@
 
 import { AnalyticsOverview, AiAnalyticsOverview } from "@/components/admin";
 import { useTranslations } from "next-intl";
-import { useAnalytics } from "@/hooks/useAnalytics";
+import { useAnalytics } from "@/hooks";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 

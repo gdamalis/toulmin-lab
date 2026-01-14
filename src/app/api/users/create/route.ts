@@ -6,7 +6,7 @@ import { NextRequest } from "next/server";
 import { withAdminAuth } from "@/lib/api/auth";
 import { Role } from "@/types/roles";
 import { createFirebaseUser, setUserRole } from "@/lib/firebase/auth-admin";
-import { validateCreateUser } from "@/lib/validation/users-zod";
+import { validateCreateUser } from "@/lib/validation/users";
 import { logger } from "@/lib/logger";
 
 // User create request body interface

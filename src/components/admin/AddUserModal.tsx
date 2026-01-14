@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/Button";
 import { Typography } from "@/components/ui/Typography";
-import { useAddUser } from "@/hooks/useAddUser";
+import { useAddUser } from "@/hooks";
 import { UserFormData } from "@/types/client";
 import { Role, getAllRoles } from "@/types/roles";
 import {

@@ -1,4 +1,4 @@
-import { getToken } from "@/lib/firebase/auth";
+import { getCurrentUserToken } from "@/lib/auth/utils";
 import { ApiResponse } from "./responses";
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -87,7 +87,7 @@ export const apiClient = {
 
       // Add authentication if needed
       if (mergedOptions.authenticated) {
-        const token = await getToken();
+        const token = await getCurrentUserToken();
         if (token) {
           headers.set('Authorization', `Bearer ${token}`);
         } else {

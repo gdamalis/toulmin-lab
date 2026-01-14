@@ -8,6 +8,7 @@ import {
   ClientArgumentDraft,
 } from '@/types/coach';
 import { ToulminArgument } from '@/types/client';
+import { getToulminDiagramKey } from '@/lib/utils';
 import { useMemo, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { CoachProvider, useCoach } from '@/contexts/CoachContext';
@@ -90,7 +91,7 @@ function CoachViewContent({ session, messages }: CoachViewContentProps) {
           </div>
           <div className="flex-1">
             <ToulminDiagram
-              key={draft.version}
+              key={getToulminDiagramKey(draft)}
               data={argumentData}
               showExportButtons={false}
               showControls={true}

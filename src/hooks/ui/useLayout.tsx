@@ -207,7 +207,7 @@ const updateNodesPositions = (nodes: Node[]): Node[] => {
 /**
  * Custom hook for managing Toulmin argument layout
  */
-export default function useLayout() {
+export function useLayout() {
   const { getNodes } = useReactFlow();
   const nodesInitialized = useNodesInitialized(FLOW_OPTIONS);
 

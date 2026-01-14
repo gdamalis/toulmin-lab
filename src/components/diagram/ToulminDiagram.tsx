@@ -3,9 +3,9 @@
 import { ExportButtonGroup } from "@/components/diagram/ExportButtonGroup";
 import { TitlePanel } from "@/components/diagram/TitlePanel";
 import { EXPORT_CONFIG } from "@/constants/toulmin-styles";
-import { useImageExport } from "@/hooks/useImageExport";
-import useLayout from "@/hooks/useLayout";
-import { useToulminGraph } from "@/hooks/useToulminGraph";
+import { useImageExport } from "@/hooks";
+import { useLayout } from "@/hooks";
+import { useToulminGraph } from "@/hooks";
 import { ToulminArgument } from "@/types/client";
 import {
   Background,

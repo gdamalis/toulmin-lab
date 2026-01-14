@@ -2,8 +2,8 @@
 
 import { ArgumentList, DeleteArgumentModal } from "@/components/dashboard";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { useArgumentOverview } from "@/hooks/useArgumentOverview";
-import { useCoachQuota } from "@/hooks/useCoachQuota";
+import { useArgumentOverview } from "@/hooks";
+import { useCoachQuota } from "@/hooks";
 import { ToulminArgument } from "@/types/client";
 import { DraftOverview } from "@/lib/services/coach";
 import { useTranslations } from "next-intl";

@@ -5,21 +5,9 @@ const auth = getAuth(firebaseApp);
 
 /**
  * Get the current user's ID token
+ * Re-exported from @/lib/auth/utils for convenience
  */
-export async function getToken(): Promise<string | null> {
-  const user = auth.currentUser;
-  
-  if (!user) {
-    return null;
-  }
-  
-  try {
-    return await user.getIdToken();
-  } catch (error) {
-    console.error("Error getting auth token:", error);
-    return null;
-  }
-}
+export { getCurrentUserToken as getToken } from "@/lib/auth/utils";
 
 /**
  * Get the current authenticated user

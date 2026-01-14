@@ -13,7 +13,7 @@ import {
   BarChart, 
   DonutChart,
 } from '@tremor/react';
-import { useAiAnalytics, type AiAnalyticsFilters } from '@/hooks/useAiAnalytics';
+import { useAiAnalytics, type AiAnalyticsFilters } from '@/hooks';
 import { StatCard, StatCardGrid } from '@/components/ui';
 import { Typography } from '@/components/ui/Typography';
 import {

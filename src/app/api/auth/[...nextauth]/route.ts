@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { authOptions } from "@/lib/auth/config";
 
-// Use the shared authOptions from lib/auth.ts
+// Use the shared authOptions from lib/auth/config.ts
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST }; 

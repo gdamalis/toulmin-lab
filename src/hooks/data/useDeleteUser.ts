@@ -1,14 +1,9 @@
 "use client";
 
 import { useNotification } from "@/contexts/NotificationContext";
-import { getCurrentUserToken } from "@/lib/auth/utils";
+import { apiClient } from "@/lib/api/client";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-
-interface DeleteUserResponse {
-  success: boolean;
-  error?: string;
-}
 
 export function useDeleteUser() {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -19,33 +14,15 @@ export function useDeleteUser() {
     setIsDeleting(true);
 
     try {
-      // Get the authentication token
-      const token = await getCurrentUserToken();
-
-      if (!token) {
-        throw new Error(t("error.authRequired"));
-      }
-
-      const response = await fetch(`/api/users/${userId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error ?? t("error.deleteFailed", { resource: "user" }));
-      }
-
-      const result: DeleteUserResponse = await response.json();
+      const result = await apiClient.delete(`/api/users/${userId}`);
 
       if (result.success) {
         addNotification("success", t("titles.success"), t("success.userDeleted"));
         return true;
-      } else {
-        throw new Error(result.error ?? t("error.deleteFailed", { resource: "user" }));
       }
+      
+      const errorMessage = result.error ?? t("error.deleteFailed", { resource: "user" });
+      throw new Error(errorMessage);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : t("error.unknownError");
@@ -58,4 +35,4 @@ export function useDeleteUser() {
   };
 
   return { deleteUser, isDeleting };
-} 
+}

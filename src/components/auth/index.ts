@@ -11,7 +11,7 @@ export { Checkbox } from './ui/Checkbox';
 export { FormDivider } from './ui/FormDivider';
 
 // Hooks
-export { useAuth } from './hooks/useAuth';
+export { useAuthFlow } from './hooks/useAuth';
 
 // Types
 export * from './types'; 

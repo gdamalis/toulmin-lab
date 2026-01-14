@@ -1,15 +1,5 @@
 import { auth } from "@/lib/firebase/config";
 
-/**
- * Extracts token from Authorization header
- */
-export function extractAuthToken(authHeader: string | null): string | null {
-  if (!authHeader?.startsWith("Bearer ")) {
-    return null;
-  }
-  
-  return authHeader.split("Bearer ")[1];
-}
 
 /**
  * Get the current user's authentication token
