@@ -44,7 +44,8 @@ export default async function RootLayout({
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               
-              // Set default consent to denied (GDPR compliant)
+              // Set region-specific consent defaults
+              // EEA + UK: denied (GDPR compliance)
               gtag('consent', 'default', {
                 'analytics_storage': 'denied',
                 'ad_storage': 'denied',
@@ -53,10 +54,22 @@ export default async function RootLayout({
                 'functionality_storage': 'denied',
                 'personalization_storage': 'denied',
                 'security_storage': 'granted',
-                'wait_for_update': 500
+                'wait_for_update': 500,
+                'region': ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'GB', 'IS', 'LI', 'NO']
               });
               
-              // Check if user has already consented
+              // Rest of world: granted by default (no legal requirement)
+              gtag('consent', 'default', {
+                'analytics_storage': 'granted',
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'functionality_storage': 'denied',
+                'personalization_storage': 'denied',
+                'security_storage': 'granted'
+              });
+              
+              // Check if user has already made a choice and update accordingly
               try {
                 const consentCookie = document.cookie
                   .split('; ')
@@ -66,6 +79,10 @@ export default async function RootLayout({
                   if (consent.analytics === 'granted') {
                     gtag('consent', 'update', {
                       'analytics_storage': 'granted'
+                    });
+                  } else if (consent.analytics === 'denied') {
+                    gtag('consent', 'update', {
+                      'analytics_storage': 'denied'
                     });
                   }
                 }
