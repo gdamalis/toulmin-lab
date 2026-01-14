@@ -1,3 +1,10 @@
+## [0.41.0](https://github.com/gdamalis/toulmin-lab/compare/v0.40.0...v0.41.0) (2026-01-14)
+
+
+### Features
+
+* **TL-11:** implement cookie consent management and analytics tracking ([c9659e6](https://github.com/gdamalis/toulmin-lab/commit/c9659e67f025220797b56cd4406bb9ca93240d8b))
+
 ## [0.40.0](https://github.com/gdamalis/toulmin-lab/compare/v0.39.0...v0.40.0) (2026-01-14)
 
 
@@ -25,11 +32,4 @@
 ### Features
 
 * **argument:** integrate AI button with quota management and tooltip ([e311ba6](https://github.com/gdamalis/toulmin-lab/commit/e311ba67ce9033181874477f90f9edb69fbeb52f))
-
-## [0.36.0](https://github.com/gdamalis/toulmin-lab/compare/v0.35.0...v0.36.0) (2026-01-10)
-
-
-### Features
-
-* **notifications:** add comprehensive notification messages for success and error states ([fa8f492](https://github.com/gdamalis/toulmin-lab/commit/fa8f492f96a5f90b8e8c062512c5b2c4bd89b40c))
 
