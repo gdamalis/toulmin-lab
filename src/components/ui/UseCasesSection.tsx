@@ -5,7 +5,7 @@ import {
   BeakerIcon,
   BookOpenIcon,
 } from "@heroicons/react/24/outline";
-import { track } from "@vercel/analytics";
+import { trackEvent } from "@/lib/analytics/track";
 import { motion } from "framer-motion";
 import { ReactNode, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./Tabs";
@@ -36,7 +36,7 @@ export function UseCasesSection({
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    track("use_case_tab_clicked", { tab: value });
+    trackEvent("use_case.tab_clicked", { tab: value });
   };
 
   return (

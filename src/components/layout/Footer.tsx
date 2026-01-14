@@ -1,4 +1,5 @@
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { CookieSettingsButton } from "@/components/privacy/CookieConsentBanner";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -131,7 +132,9 @@ export function Footer({ sections, copyright, tagline }: FooterProps) {
         {/* Bottom section */}
         <div className="mt-16 border-t border-white/10 pt-8 sm:mt-20 lg:mt-24 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs leading-5 text-gray-400">{copyright}</p>
-          <div className="flex items-center gap-4"></div>
+          <div className="flex items-center gap-4">
+            <CookieSettingsButton />
+          </div>
         </div>
       </div>
     </footer>

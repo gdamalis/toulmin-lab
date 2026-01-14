@@ -15,6 +15,7 @@ import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AuthMode, FormState } from "../types";
+import { trackEvent } from "@/lib/analytics/track";
 
 // Process Firebase authentication and handle role setting, user creation, and NextAuth
 async function processAuth(idToken: string, callbackUrl: string) {
@@ -142,10 +143,12 @@ export function useAuthFlow(redirectPath = "/dashboard") {
       }
 
       if (nextAuthResult?.url) {
+        trackEvent("auth.success", { method: "google" });
         router.push(nextAuthResult.url);
       }
     } catch (err) {
       console.error("Google authentication error:", err);
+      trackEvent("auth.error", { method: "google", error_type: "google_failed" });
       setError(t("googleFailed"));
       setIsAuthenticating(false);
     } finally {
@@ -193,10 +196,12 @@ export function useAuthFlow(redirectPath = "/dashboard") {
       }
 
       if (nextAuthResult?.url) {
+        trackEvent("auth.success", { method: "email", mode });
         router.push(nextAuthResult.url);
       }
     } catch (err: unknown) {
       if (err instanceof FirebaseError) {
+        trackEvent("auth.error", { method: "email", mode, error_type: err.code });
         if (err.code === "auth/email-already-in-use") {
           setError(t("emailInUse"));
         } else if (err.code === "auth/invalid-email") {
@@ -228,9 +233,11 @@ export function useAuthFlow(redirectPath = "/dashboard") {
     try {
       await sendPasswordResetEmail(auth, email);
       
+      trackEvent("auth.password_reset_requested", { result: "success" });
       // Show success message (generic for security)
       setResetSuccessMessage(authT("resetLinkSent"));
     } catch (err: unknown) {
+      trackEvent("auth.password_reset_requested", { result: "error" });
       if (err instanceof FirebaseError) {
         if (err.code === "auth/invalid-email") {
           setError(t("invalidEmail"));

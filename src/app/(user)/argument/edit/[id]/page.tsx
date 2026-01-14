@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui";
 import { Typography } from "@/components/ui/Typography";
 import { useArguments, useNotification } from "@/hooks";
 import { getToulminDiagramKey } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics/track";
 import { ToulminArgument } from "@/types/client";
 import { ClientArgumentDraft } from "@/types/coach";
 import { apiClient } from "@/lib/api/client";
@@ -75,6 +76,11 @@ export default function ToulminArgumentEditor({
             updatedAt: new Date(draft.updatedAt),
           });
         }
+        
+        // Track page view after successful load
+        trackEvent("argument.edit_view", { 
+          source: data.kind === "draft" ? "coach" : "manual" 
+        });
       } else {
         throw new Error(result.error ?? "Failed to fetch data");
       }
@@ -108,8 +114,11 @@ export default function ToulminArgumentEditor({
         const success = await updateArgument(id, toulminArgument);
         
         if (success) {
+          trackEvent("argument.update_success", { source: "manual" });
           showSuccess(commonT("success"), t("saveSuccess"));
           router.push(`/argument/view/${id}`);
+        } else {
+          throw new Error("Update failed");
         }
       } else {
         // Save draft via server action (consolidated mutation path)
@@ -123,10 +132,15 @@ export default function ToulminArgumentEditor({
           throw new Error(result.error ?? "Failed to save draft");
         }
 
+        trackEvent("argument.update_success", { source: "coach" });
         showSuccess(commonT("success"), t("saveSuccess"));
         router.push(`/argument/view/${id}?draft=true`);
       }
     } catch (err) {
+      trackEvent("argument.update_error", { 
+        source: resolvedData.kind === "draft" ? "coach" : "manual",
+        error_type: "exception"
+      });
       const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
       showError(commonT("error"), errorMessage);
     } finally {

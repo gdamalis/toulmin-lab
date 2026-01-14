@@ -5,6 +5,7 @@ import { ToulminArgument } from "@/types/client";
 import { withAuth } from "@/lib/api/auth";
 import { getUserArguments, createArgument } from "@/lib/services/arguments";
 import { validateCreateArgument } from "@/lib/validation/argument";
+import { logAppServerEvent, APP_SERVER_EVENT } from "@/lib/mongodb/collections/app-server-events";
 
 // Interface for argument creation request
 interface CreateArgumentRequest {
@@ -53,8 +54,24 @@ export async function POST(
       const result = await createArgument(validation.data.diagram, auth.userId);
 
       if (!result.success || !result.data) {
+        logAppServerEvent({
+          event: APP_SERVER_EVENT.ARGUMENT_CREATE_ERROR,
+          path: '/api/argument',
+          method: 'POST',
+          statusCode: 500,
+          result: 'error',
+          errorType: result.error ?? 'create_failed',
+        });
         return createErrorResponse(result.error ?? "Failed to create argument", 500);
       }
+
+      logAppServerEvent({
+        event: APP_SERVER_EVENT.ARGUMENT_CREATE_SUCCESS,
+        path: '/api/argument',
+        method: 'POST',
+        statusCode: 200,
+        result: 'success',
+      });
 
       return createSuccessResponse({
         id: result.data.id,
@@ -65,6 +82,14 @@ export async function POST(
       });
     } catch (error) {
       console.error("Error creating argument:", error);
+      logAppServerEvent({
+        event: APP_SERVER_EVENT.ARGUMENT_CREATE_ERROR,
+        path: '/api/argument',
+        method: 'POST',
+        statusCode: 500,
+        result: 'error',
+        errorType: 'exception',
+      });
       return createErrorResponse("Internal Server Error", 500);
     }
   })(request, context);

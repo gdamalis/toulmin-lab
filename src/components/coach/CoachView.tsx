@@ -9,7 +9,8 @@ import {
 } from '@/types/coach';
 import { ToulminArgument } from '@/types/client';
 import { getToulminDiagramKey } from '@/lib/utils';
-import { useMemo, useCallback } from 'react';
+import { trackEvent } from '@/lib/analytics/track';
+import { useMemo, useCallback, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { CoachProvider, useCoach } from '@/contexts/CoachContext';
 
@@ -35,6 +36,11 @@ interface CoachViewContentProps {
 function CoachViewContent({ session, messages }: CoachViewContentProps) {
   const t = useTranslations('pages.coach');
   const { draft } = useCoach();
+
+  // Track coach view on mount
+  useEffect(() => {
+    trackEvent("coach.open_view", { step: session.currentStep });
+  }, [session.currentStep]);
 
   /**
    * Convert ArgumentDraft to ToulminArgument format for diagram preview

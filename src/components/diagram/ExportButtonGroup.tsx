@@ -2,6 +2,7 @@
 
 import { DocumentArrowDownIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
+import { trackEvent } from "@/lib/analytics/track";
 import { Button } from "../ui";
 
 interface ExportButtonGroupProps {
@@ -45,9 +46,14 @@ interface ExportButtonProps {
 function ExportButton({ onClick, label, icon }: Readonly<ExportButtonProps>) {
   const t = useTranslations("pages.argument");
 
+  const handleClick = async () => {
+    trackEvent("argument.export", { format: label.toLowerCase() });
+    await onClick();
+  };
+
   return (
     <Button
-      onClick={onClick}
+      onClick={handleClick}
       variant="outline"
       className="inline-flex items-center gap-1.5"
       title={t("exportAsFormat", { format: label })}

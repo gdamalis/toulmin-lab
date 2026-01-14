@@ -4,6 +4,7 @@ import { withAuth } from "@/lib/api/auth";
 import { createSuccessResponse, createErrorResponse } from "@/lib/api/responses";
 import { getArgumentById, updateArgument, deleteArgument } from "@/lib/services/arguments";
 import { validateUpdateArgument } from "@/lib/validation/argument";
+import { logAppServerEvent, APP_SERVER_EVENT } from "@/lib/mongodb/collections/app-server-events";
 
 // GET /api/argument/:id - Get a specific diagram by ID
 export async function GET(
@@ -35,10 +36,10 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   return withAuth(async (request, context, auth) => {
+    const { id } = await context.params;
+    const argumentId = id as string; // Assert that id is a string
+    
     try {
-      const { id } = await context.params;
-      const argumentId = id as string; // Assert that id is a string
-
       // Parse the request body
       const data = await request.json();
 
@@ -54,12 +55,36 @@ export async function PUT(
       const result = await updateArgument(argumentId, validation.data as ToulminArgument, auth.userId);
 
       if (!result.success) {
+        logAppServerEvent({
+          event: APP_SERVER_EVENT.ARGUMENT_UPDATE_ERROR,
+          path: `/api/argument/${argumentId}`,
+          method: 'PUT',
+          statusCode: 400,
+          result: 'error',
+          errorType: result.error ?? 'update_failed',
+        });
         return createErrorResponse(result.error || "Failed to update argument", 400);
       }
+
+      logAppServerEvent({
+        event: APP_SERVER_EVENT.ARGUMENT_UPDATE_SUCCESS,
+        path: `/api/argument/${argumentId}`,
+        method: 'PUT',
+        statusCode: 200,
+        result: 'success',
+      });
 
       return createSuccessResponse({ success: true, toulminArgumentId: argumentId });
     } catch (error) {
       console.error("Error updating argument:", error);
+      logAppServerEvent({
+        event: APP_SERVER_EVENT.ARGUMENT_UPDATE_ERROR,
+        path: `/api/argument/${argumentId}`,
+        method: 'PUT',
+        statusCode: 500,
+        result: 'error',
+        errorType: 'exception',
+      });
       return createErrorResponse(
         error instanceof Error ? error.message : "Internal Server Error",
         500
@@ -73,19 +98,43 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   return withAuth(async (_request, context, auth) => {
+    const { id } = await context.params;
+    const argumentId = id as string; // Assert that id is a string
+    
     try {
-      const { id } = await context.params;
-      const argumentId = id as string; // Assert that id is a string
-      
       const result = await deleteArgument(argumentId, auth.userId);
       
       if (!result.success) {
+        logAppServerEvent({
+          event: APP_SERVER_EVENT.ARGUMENT_DELETE_ERROR,
+          path: `/api/argument/${argumentId}`,
+          method: 'DELETE',
+          statusCode: 404,
+          result: 'error',
+          errorType: result.error ?? 'delete_failed',
+        });
         return createErrorResponse(result.error || "Failed to delete argument", 404);
       }
+      
+      logAppServerEvent({
+        event: APP_SERVER_EVENT.ARGUMENT_DELETE_SUCCESS,
+        path: `/api/argument/${argumentId}`,
+        method: 'DELETE',
+        statusCode: 200,
+        result: 'success',
+      });
       
       return createSuccessResponse({ success: true });
     } catch (error) {
       console.error('Error deleting argument:', error);
+      logAppServerEvent({
+        event: APP_SERVER_EVENT.ARGUMENT_DELETE_ERROR,
+        path: `/api/argument/${argumentId}`,
+        method: 'DELETE',
+        statusCode: 500,
+        result: 'error',
+        errorType: 'exception',
+      });
       return createErrorResponse("Internal server error", 500);
     }
   })(request, { params });

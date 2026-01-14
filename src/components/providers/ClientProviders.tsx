@@ -6,6 +6,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { NavigationProvider } from '@/contexts/NavigationContext';
 import { NavigationLoader } from '@/components/navigation';
+import { CookieConsentBanner } from '@/components/privacy/CookieConsentBanner';
 
 interface ClientProvidersProps {
   children: ReactNode;
@@ -19,6 +20,7 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
           <NavigationProvider>
             <NavigationLoader />
             {children}
+            <CookieConsentBanner />
           </NavigationProvider>
         </NotificationProvider>
       </AuthProvider>

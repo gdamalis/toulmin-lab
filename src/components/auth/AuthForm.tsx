@@ -10,7 +10,7 @@ import { FormDivider } from "./ui/FormDivider";
 import { AuthMode, AuthFormProps, FormState } from "./types";
 import { useTranslations } from "next-intl";
 import { Loader } from "@/components/ui/Loader";
-import { track } from "@vercel/analytics";
+import { trackEvent } from "@/lib/analytics/track";
 
 export function AuthForm({
   redirectPath = "/dashboard",
@@ -72,12 +72,12 @@ export function AuthForm({
       }
     }
 
-    track("auth_started", { method: "email", mode });
+    trackEvent("auth.started", { method: "email", mode });
     handleEmailAuth(mode, formData);
   };
 
   const handleGoogleClick = () => {
-    track("auth_started", { method: "google", mode });
+    trackEvent("auth.started", { method: "google", mode });
     handleGoogleAuth();
   };
 

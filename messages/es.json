@@ -475,46 +475,62 @@
       "title": "Términos de Servicio",
       "description": "Términos y condiciones para usar Toulmin Lab",
       "lastUpdated": "Última actualización: Enero 2026",
+      "important": {
+        "title": "Aviso Importante",
+        "message": "Al usar Toulmin Lab, aceptas estos términos. Por favor léelos cuidadosamente. Si no estás de acuerdo, por favor no uses el servicio."
+      },
       "sections": {
         "acceptance": {
-          "title": "1. Aceptación de los Términos",
-          "content": "Al acceder y usar Toulmin Lab, aceptas y acuerdas estar sujeto a los términos y disposiciones de este acuerdo. Si no estás de acuerdo con estos términos, por favor no uses este servicio."
+          "title": "1. Aceptación de Términos",
+          "content": "Al acceder y usar Toulmin Lab (el \"Servicio\"), aceptas y acuerdas estar sujeto a estos Términos de Servicio. Estos términos constituyen un acuerdo legalmente vinculante entre tú y Toulmin Lab.\n\nSi estás usando el Servicio en nombre de una institución educativa u organización, declaras que tienes la autoridad para vincular a esa entidad con estos términos.\n\nSi no estás de acuerdo con estos términos, no debes acceder ni usar el Servicio."
         },
         "description": {
           "title": "2. Descripción del Servicio",
-          "content": "Toulmin Lab es una plataforma en línea que permite a los usuarios crear, analizar y compartir argumentos estructurados usando el modelo Toulmin de argumentación. El servicio incluye una función de coaching impulsada por IA para ayudar a los usuarios a construir argumentos bien razonados."
+          "content": "Toulmin Lab es una plataforma en línea que permite a los usuarios crear, analizar, visualizar y compartir argumentos estructurados usando el modelo Toulmin de argumentación.\n\nEl Servicio incluye:\n\n• Un constructor de argumentos basado en web con generación de diagramas visuales\n• Funcionalidad de exportación (formatos PNG, JPG, PDF)\n• Una función de coaching impulsada por IA para guiar el desarrollo de argumentos\n• Almacenamiento en la nube para tus argumentos y diagramas\n\nNos reservamos el derecho de modificar, suspender o descontinuar cualquier aspecto del Servicio en cualquier momento, con o sin aviso previo."
         },
         "accounts": {
-          "title": "3. Cuentas de Usuario",
-          "content": "Para usar ciertas funciones de Toulmin Lab, debes crear una cuenta usando la autenticación de Google. Eres responsable de mantener la confidencialidad de tu cuenta y de todas las actividades que ocurran bajo tu cuenta."
+          "title": "3. Cuentas de Usuario y Autenticación",
+          "content": "Para usar el Servicio, debes crear una cuenta usando autenticación de Google (a través de Firebase Auth). Al crear una cuenta, aceptas:\n\nProporcionar información precisa y completa durante el registro.\n\nMantener la seguridad y confidencialidad de las credenciales de tu cuenta.\n\nNotificarnos inmediatamente de cualquier uso no autorizado de tu cuenta.\n\nSer responsable de todas las actividades que ocurran bajo tu cuenta.\n\nNos reservamos el derecho de suspender o terminar cuentas que violen estos términos o participen en comportamiento abusivo."
         },
         "useLicense": {
-          "title": "4. Licencia de Uso",
-          "content": "Se concede permiso para usar temporalmente Toulmin Lab con fines personales, educativos y no comerciales. Esta licencia no incluye modificar o copiar los materiales, usar los materiales con fines comerciales, o intentar descompilar o realizar ingeniería inversa de cualquier software contenido en el servicio."
+          "title": "4. Licencia para Usar el Servicio",
+          "content": "Sujeto a tu cumplimiento con estos términos, te otorgamos una licencia limitada, no exclusiva, no transferible y revocable para acceder y usar Toulmin Lab con fines personales, educativos y no comerciales.\n\nEsta licencia NO incluye el derecho a:\n\n• Modificar, copiar o crear obras derivadas del Servicio\n• Usar el Servicio con fines comerciales sin autorización\n• Realizar ingeniería inversa, decompilar o desensamblar cualquier software\n• Eliminar o modificar avisos de propiedad\n• Usar sistemas automatizados (bots, scrapers) para acceder al Servicio\n\nNos reservamos todos los derechos no otorgados expresamente en estos términos."
         },
         "userContent": {
-          "title": "5. Contenido del Usuario",
-          "content": "Conservas la propiedad de cualquier argumento, diagrama u otro contenido que crees usando Toulmin Lab. Al usar el servicio, nos otorgas una licencia limitada para almacenar y mostrar tu contenido según sea necesario para proporcionar el servicio."
+          "title": "5. Contenido del Usuario y Propiedad Intelectual",
+          "content": "Conservas todos los derechos de propiedad sobre los argumentos, diagramas y contenido que creas usando Toulmin Lab (\"Contenido del Usuario\").\n\nLicencia para Nosotros: Al crear contenido en el Servicio, otorgas a Toulmin Lab una licencia limitada, mundial y no exclusiva para almacenar, mostrar, procesar y transmitir tu Contenido del Usuario únicamente según sea necesario para proporcionarte el Servicio. Esto incluye hacer copias de respaldo y procesar contenido a través de nuestras funciones de IA cuando elijas usarlas.\n\nTus Responsabilidades: Eres el único responsable de tu Contenido del Usuario. Declaras y garantizas que tienes todos los derechos necesarios sobre el contenido que envías y que tu contenido no viola derechos de terceros ni leyes aplicables.\n\nNuestro Contenido: Todo el demás contenido, funciones y funcionalidad del Servicio (incluyendo pero no limitado a software, texto, pantallas, imágenes y el nombre y logotipo de Toulmin Lab) son propiedad de Toulmin Lab y están protegidos por derechos de autor, marcas comerciales y otras leyes de propiedad intelectual."
+        },
+        "aiDisclaimer": {
+          "title": "6. Funciones Impulsadas por IA y Descargo de Responsabilidad",
+          "content": "La función de Coach de IA utiliza inteligencia artificial (modelos Gemini AI de Google) para proporcionar sugerencias y orientación para construir argumentos.\n\nSin Garantía de Precisión: Las sugerencias y respuestas generadas por IA pueden contener errores, inexactitudes o sesgos. No garantizamos la precisión, integridad o confiabilidad de ningún contenido generado por IA.\n\nNo es Asesoramiento Profesional: El Coach de IA no proporciona asesoramiento profesional, académico, legal ni ninguna otra forma de consejo experto. Es una herramienta para ayudarte a desarrollar tu propio pensamiento y no debe considerarse un sustituto del juicio profesional.\n\nTu Responsabilidad: Eres el único responsable de revisar, verificar y usar cualquier sugerencia generada por IA. Siempre debes aplicar pensamiento crítico y consultar fuentes expertas apropiadas para decisiones importantes.\n\nUso Educativo: El Coach de IA está diseñado como una herramienta educativa para ayudar a los usuarios a aprender y practicar el método Toulmin. Debe usarse como complemento, no como reemplazo, de la instrucción tradicional."
         },
         "prohibitedUses": {
-          "title": "6. Usos Prohibidos",
-          "content": "No puedes usar Toulmin Lab para ningún propósito ilegal, para acosar o dañar a otros, para hacerte pasar por cualquier persona o entidad, para interferir con la operación del servicio, o para intentar obtener acceso no autorizado a cualquier parte del servicio."
+          "title": "7. Conducta Prohibida",
+          "content": "Aceptas NO usar el Servicio para:\n\nViolar leyes, regulaciones o derechos de terceros aplicables.\n\nAcosar, abusar, amenazar o dañar a otros.\n\nHacerse pasar por cualquier persona o entidad, o representar falsamente tu afiliación.\n\nEnviar contenido ilegal, ofensivo, difamatorio o que infrinja derechos de propiedad intelectual.\n\nIntentar obtener acceso no autorizado al Servicio, cuentas de usuario o sistemas.\n\nInterferir o interrumpir la operación del Servicio o servidores.\n\nUsar sistemas automatizados (bots, scrapers) para acceder o recopilar datos del Servicio.\n\nExceder límites de uso razonables o intentar abusar de la función de coaching de IA.\n\nRealizar ingeniería inversa, decompilar o intentar extraer código fuente.\n\nRevender, redistribuir o comercializar el Servicio sin autorización.\n\nLa violación de estas prohibiciones puede resultar en suspensión o terminación inmediata de la cuenta."
+        },
+        "acceptableUse": {
+          "title": "8. Uso Aceptable y Uso Justo de IA",
+          "content": "La función de Coach de IA se proporciona para uso educativo legítimo. Aceptas:\n\nUsar el Coach de IA de buena fe para aprender y desarrollar habilidades de argumentación.\n\nRespetar las cuotas de uso y límites de tasa diseñados para garantizar acceso justo para todos los usuarios.\n\nNo intentar eludir limitaciones técnicas o abusar de las funciones de IA.\n\nNo usar el Servicio para generar contenido con fines prohibidos o en violación de leyes aplicables.\n\nNos reservamos el derecho de ajustar cuotas de uso, implementar límites de tasa o restringir el acceso a funciones de IA para prevenir abusos y garantizar la disponibilidad del servicio para todos los usuarios."
+        },
+        "analyticsPrivacy": {
+          "title": "9. Análisis, Cookies y Privacidad",
+          "content": "Nuestro uso de cookies, análisis y tus datos personales se rige por nuestra Política de Privacidad.\n\nAnálisis con Consentimiento: La recopilación de análisis requiere tu consentimiento explícito. Puedes aceptar o rechazar análisis cuando se te solicite y cambiar tu elección en cualquier momento a través de Configuración de Cookies en el pie de página.\n\nEsenciales vs. Opcionales: Algunas cookies (como las cookies de sesión de autenticación) son esenciales y requeridas para que el Servicio funcione. Las cookies de análisis son opcionales y solo se activan con tu consentimiento.\n\nPara información completa sobre la recopilación de datos, uso y tus derechos de privacidad, por favor revisa nuestra Política de Privacidad."
         },
         "disclaimer": {
-          "title": "7. Descargo de Responsabilidad",
-          "content": "Los materiales en Toulmin Lab se proporcionan 'tal cual'. No ofrecemos garantías, expresas o implícitas, y por la presente rechazamos y negamos todas las demás garantías, incluyendo, sin limitación, garantías implícitas o condiciones de comerciabilidad, idoneidad para un propósito particular, o no infracción de propiedad intelectual."
+          "title": "10. Descargo de Garantías",
+          "content": "EL SERVICIO SE PROPORCIONA \"TAL CUAL\" Y \"SEGÚN DISPONIBILIDAD\" SIN GARANTÍAS DE NINGÚN TIPO, YA SEAN EXPRESAS O IMPLÍCITAS.\n\nRenunciamos a todas las garantías, incluyendo pero no limitado a:\n\n• Garantías implícitas de comerciabilidad, idoneidad para un propósito particular y no infracción\n• Garantías de que el Servicio será ininterrumpido, sin errores o seguro\n• Garantías sobre la precisión o confiabilidad de cualquier contenido, incluido el contenido generado por IA\n• Garantías de que los defectos serán corregidos\n\nAlgunas jurisdicciones no permiten la exclusión de ciertas garantías, por lo que algunas de las exclusiones anteriores pueden no aplicarse a ti."
         },
         "limitations": {
-          "title": "8. Limitaciones",
-          "content": "En ningún caso Toulmin Lab o sus proveedores serán responsables de ningún daño (incluyendo, sin limitación, daños por pérdida de datos o ganancias, o debido a interrupción del negocio) que surja del uso o la incapacidad de usar Toulmin Lab."
+          "title": "11. Limitación de Responsabilidad",
+          "content": "EN LA MÁXIMA MEDIDA PERMITIDA POR LA LEY, TOULMIN LAB NO SERÁ RESPONSABLE DE NINGÚN DAÑO INDIRECTO, INCIDENTAL, ESPECIAL, CONSECUENTE O PUNITIVO, NI PÉRDIDA DE GANANCIAS, DATOS, USO O BUENA VOLUNTAD QUE SURJA DE:\n\n• Tu uso o incapacidad para usar el Servicio\n• Cualquier acceso no autorizado o alteración de tu contenido\n• Cualquier error, omisión o inexactitud en contenido generado por IA\n• Cualquier interrupción o cese del Servicio\n• Cualquier conducta o contenido de terceros en el Servicio\n\nNuestra responsabilidad total por cualquier reclamo relacionado con el Servicio se limita a la cantidad que pagaste para usar el Servicio en los últimos doce meses (o $100 si no has pagado nada).\n\nAlgunas jurisdicciones no permiten ciertas limitaciones de responsabilidad, por lo que algunas de las limitaciones anteriores pueden no aplicarse a ti."
         },
         "changes": {
-          "title": "9. Cambios en los Términos",
-          "content": "Nos reservamos el derecho de modificar estos términos en cualquier momento. Notificaremos a los usuarios de cualquier cambio material publicando los nuevos términos en esta página. Tu uso continuado del servicio después de tales modificaciones constituye tu aceptación de los nuevos términos."
+          "title": "12. Cambios en los Términos",
+          "content": "Nos reservamos el derecho de modificar estos Términos de Servicio en cualquier momento.\n\nNotificación: Notificaremos a los usuarios de cambios materiales publicando los términos actualizados en esta página y actualizando la fecha de 'Última actualización'. Para cambios significativos, también podemos enviar una notificación por correo electrónico.\n\nTu Aceptación: Tu uso continuado del Servicio después de que los cambios entren en vigencia constituye tu aceptación de los términos actualizados. Si no estás de acuerdo con los cambios, debes dejar de usar el Servicio."
         },
         "contact": {
-          "title": "10. Información de Contacto",
-          "content": "Si tienes alguna pregunta sobre estos Términos de Servicio, por favor contáctanos a través de nuestros canales de soporte."
+          "title": "13. Información de Contacto",
+          "content": "Si tienes alguna pregunta sobre estos Términos de Servicio, por favor contáctanos.\n\nEstamos comprometidos a atender tus inquietudes y resolver cualquier disputa de manera justa."
         }
       }
     },
@@ -522,52 +538,81 @@
       "title": "Política de Privacidad",
       "description": "Cómo recopilamos, usamos y protegemos tu información",
       "lastUpdated": "Última actualización: Enero 2026",
+      "summary": {
+        "title": "Resumen Rápido",
+        "point1": "Recopilamos tu nombre y correo cuando inicias sesión con Google, además de los argumentos y diagramas que creas.",
+        "point2": "Los análisis (Google Analytics) son opcionales. Puedes cambiar tu elección en cualquier momento mediante Configuración de Cookies en el pie de página.",
+        "point3": "Las conversaciones del Coach de IA y borradores se eliminan automáticamente después de 30 días.",
+        "point4": "Puedes solicitar acceso o eliminación de tus datos en cualquier momento.",
+        "contact": "¿Preguntas sobre privacidad?"
+      },
       "sections": {
         "introduction": {
           "title": "1. Introducción",
-          "content": "En Toulmin Lab, respetamos tu privacidad y estamos comprometidos a proteger tus datos personales. Esta política de privacidad explica cómo recopilamos, usamos y protegemos tu información cuando usas nuestro servicio."
+          "content": "En Toulmin Lab, respetamos tu privacidad y estamos comprometidos a proteger tus datos personales. Esta política de privacidad explica cómo recopilamos, usamos, almacenamos y protegemos tu información cuando usas nuestro servicio.\n\nEstamos comprometidos con la transparencia y el cumplimiento de las leyes de protección de datos, incluido el Reglamento General de Protección de Datos (RGPD) para usuarios en el Espacio Económico Europeo y el Reino Unido, y las leyes de privacidad aplicables en Estados Unidos y otras jurisdicciones."
         },
         "dataCollection": {
           "title": "2. Información que Recopilamos",
-          "content": "Recopilamos información que nos proporcionas directamente, incluyendo tu nombre y dirección de correo electrónico cuando inicias sesión con Google. También recopilamos información sobre tu uso del servicio, incluyendo los argumentos y diagramas que creas."
+          "content": "Recopilamos los siguientes tipos de información:\n\nInformación de Cuenta: Cuando inicias sesión con Google, recopilamos tu nombre y dirección de correo electrónico de tu cuenta de Google. Esta información se utiliza para crear y administrar tu cuenta.\n\nContenido del Usuario: Almacenamos los argumentos, diagramas y contenido relacionado que creas usando nuestro servicio. Estos son los datos fundamentales necesarios para proporcionarte el servicio.\n\nDatos del Coach de IA: Si usas la función de coaching de IA, almacenamos temporalmente tus mensajes de conversación y borradores de argumentos para proporcionar la experiencia de coaching. Estos datos se eliminan automáticamente después de 30 días.\n\nInformación Técnica y de Diagnóstico: Recopilamos informes de errores, datos de rendimiento e información de diagnóstico a través de Sentry para monitorear la salud del servicio, identificar errores y mejorar la confiabilidad. Esto puede incluir reproducciones de sesión (con todo el texto y medios enmascarados automáticamente por privacidad).\n\nAnálisis Opcionales: Con tu consentimiento, recopilamos análisis de uso anonimizados a través de Google Analytics (vía Google Tag Manager) y Vercel Analytics para comprender cómo se usan las funciones y mejorar la experiencia del usuario. Estos análisis requieren tu consentimiento explícito."
         },
         "dataUsage": {
           "title": "3. Cómo Usamos Tu Información",
-          "content": "Usamos tu información para proporcionar y mejorar nuestro servicio, para comunicarnos contigo sobre tu cuenta, para responder a tus solicitudes y para enviarte actualizaciones sobre el servicio. También podemos usar datos agregados y anonimizados con fines analíticos."
+          "content": "Usamos tu información para los siguientes propósitos:\n\nPrestación del Servicio: Para proporcionar, mantener y mejorar las funciones principales de Toulmin Lab, incluida la autenticación de usuarios, almacenamiento de datos y la función de coaching de IA.\n\nComunicación: Para enviarte actualizaciones importantes del servicio, responder a tus solicitudes y proporcionar soporte al cliente.\n\nProcesamiento de IA: Para procesar tus entradas a través de nuestra función de coaching de IA utilizando los modelos Gemini AI de Google (a través del SDK de IA de Vercel). Tus conversaciones de coaching se usan únicamente para generar respuestas útiles y no se utilizan para entrenar modelos de IA.\n\nMejora del Servicio: Para analizar (con tu consentimiento) cómo se usa el servicio, identificar áreas de mejora y desarrollar nuevas funciones. Todos los análisis son anonimizados y no pueden vincularse a usuarios individuales.\n\nSeguridad y Cumplimiento: Para detectar, prevenir y abordar problemas técnicos, amenazas de seguridad, fraude o violaciones de nuestros términos de servicio."
         },
         "dataStorage": {
           "title": "4. Almacenamiento y Seguridad de Datos",
-          "content": "Tus datos se almacenan de forma segura usando encriptación y prácticas de seguridad estándar de la industria. Usamos proveedores de servicios en la nube de confianza para alojar nuestro servicio y almacenar tus datos. Conservamos tus datos mientras tu cuenta esté activa o según sea necesario para proporcionarte nuestros servicios."
+          "content": "Tus datos se almacenan de forma segura utilizando cifrado y prácticas de seguridad estándar de la industria:\n\nBase de Datos: Las cuentas de usuario y argumentos guardados se almacenan en MongoDB con cifrado en reposo y en tránsito. Usamos proveedores de infraestructura en la nube de buena reputación para garantizar alta disponibilidad y seguridad.\n\nRespaldo y Redundancia: Tus datos se respaldan regularmente para evitar la pérdida de datos y garantizar la continuidad del servicio.\n\nControles de Acceso: El acceso a tus datos está estrictamente limitado al personal y sistemas autorizados necesarios para proporcionar y mantener el servicio.\n\nCifrado: Toda transmisión de datos ocurre a través de conexiones HTTPS seguras. Los datos sensibles se cifran tanto en tránsito como en reposo."
         },
         "cookies": {
-          "title": "5. Cookies y Seguimiento",
-          "content": "Usamos cookies y tecnologías similares para mantener tu sesión, recordar tus preferencias y analizar cómo se usa nuestro servicio. Puedes controlar la configuración de cookies a través de las preferencias de tu navegador."
+          "title": "5. Cookies y Tecnologías de Seguimiento",
+          "content": "Usamos cookies y tecnologías similares para los siguientes propósitos:\n\nCookies Esenciales: Las cookies de sesión son necesarias para mantener tu sesión iniciada y proporcionar funcionalidad básica. Estas no se pueden desactivar.\n\nCookie de Consentimiento: Almacenamos tu elección de consentimiento de análisis en una cookie llamada 'tl_analytics_consent'. Esta cookie recuerda si has aceptado o rechazado los análisis opcionales.\n\nCookies de Análisis (Opcional): Si consientes los análisis, se pueden establecer cookies de Google Analytics (como '_ga', '_gid') y cookies de Vercel Analytics para recopilar datos de uso anonimizados. Estas cookies solo se activan después de que las aceptes explícitamente.\n\nPuedes cambiar tu consentimiento de análisis en cualquier momento haciendo clic en 'Configuración de Cookies' en el pie de página del sitio web. También puedes controlar las cookies a través de la configuración de tu navegador, aunque desactivar las cookies esenciales puede afectar la funcionalidad del sitio."
+        },
+        "analytics": {
+          "title": "6. Análisis y Consentimiento",
+          "content": "La recopilación de análisis es estrictamente opcional y requiere tu consentimiento explícito:\n\nConsentimiento Requerido: Cuando visitas Toulmin Lab por primera vez, los análisis están deshabilitados de forma predeterminada. Verás un banner de consentimiento pidiéndote que aceptes o rechaces los análisis opcionales.\n\nQué Rastreamos (Si Consientes): Con tu consentimiento, recopilamos datos anonimizados sobre vistas de página, uso de funciones e interacciones del usuario. NO recopilamos el contenido de tus argumentos, mensajes o información de identificación personal en los análisis.\n\nGoogle Analytics (vía Google Tag Manager): Usamos Google Analytics para comprender patrones de uso agregados. Google puede usar estos datos de acuerdo con sus propias políticas de privacidad.\n\nVercel Analytics: Usamos análisis amigables con la privacidad de Vercel para monitorear el rendimiento y uso del sitio.\n\nRetirar Consentimiento: Puedes retirar tu consentimiento en cualquier momento haciendo clic en 'Configuración de Cookies' en el pie de página y eligiendo 'Rechazar'. Esto detendrá toda recopilación futura de análisis y eliminará las cookies de análisis."
         },
         "thirdParties": {
-          "title": "6. Servicios de Terceros",
-          "content": "Usamos servicios de terceros para autenticación (Google), análisis (Vercel Analytics) y funciones de IA (OpenAI). Estos servicios pueden recopilar información sobre ti de acuerdo con sus propias políticas de privacidad."
+          "title": "7. Servicios de Terceros y Procesadores de Datos",
+          "content": "Usamos los siguientes servicios de terceros confiables para proporcionar y mejorar Toulmin Lab:\n\nGoogle (Autenticación Firebase, Google Analytics, Google AI): Para inicio de sesión seguro, análisis opcionales (con consentimiento) y funciones de coaching impulsadas por IA. Google procesa datos de acuerdo con sus políticas de privacidad.\n\nVercel: Para alojamiento de aplicaciones y análisis opcionales (con consentimiento).\n\nMongoDB: Para almacenamiento seguro de bases de datos de tu cuenta y datos de contenido.\n\nSentry: Para monitoreo de errores y seguimiento de rendimiento para mantener la calidad del servicio.\n\nResend: Para enviar correos electrónicos transaccionales como restablecimientos de contraseña y notificaciones de cuenta.\n\nCada uno de estos proveedores de servicios ha sido seleccionado por sus sólidas prácticas de seguridad y cumplimiento con las regulaciones de protección de datos. Tenemos acuerdos apropiados de procesamiento de datos cuando se requiere."
+        },
+        "dataRetention": {
+          "title": "8. Retención de Datos",
+          "content": "Conservamos tus datos durante diferentes períodos según el tipo:\n\nDatos de Cuenta y Argumentos Guardados: Conservados mientras tu cuenta esté activa y durante un período razonable después de la eliminación de la cuenta para cumplir con obligaciones legales y prevenir la pérdida accidental de datos. Puedes solicitar eliminación inmediata.\n\nDatos del Coach de IA: Los mensajes de conversación y borradores de argumentos se eliminan automáticamente después de 30 días usando índices de tiempo de vida (TTL) de la base de datos. Esto garantiza que tus conversaciones de coaching no se retengan más tiempo del necesario.\n\nDatos de Análisis: Los eventos de análisis anonimizados se conservan durante 30 días, después de los cuales se eliminan automáticamente.\n\nDatos de Diagnóstico: Los registros de errores y datos de rendimiento recopilados a través de Sentry se conservan según las políticas de retención de Sentry, típicamente 30-90 días.\n\nDatos Eliminados: Cuando eliminas tu cuenta o eliminamos datos según nuestras políticas de retención, los datos se eliminan permanentemente de nuestros sistemas activos y copias de seguridad dentro de un plazo razonable."
+        },
+        "internationalTransfers": {
+          "title": "9. Transferencias Internacionales de Datos",
+          "content": "Toulmin Lab puede procesar y almacenar tus datos en países fuera del tuyo, incluidos Estados Unidos y otras ubicaciones donde operan nuestros proveedores de servicios.\n\nCuando transferimos datos internacionalmente, nos aseguramos de que existan salvaguardas apropiadas, como cláusulas contractuales estándar, decisiones de adecuación u otros mecanismos de transferencia aprobados bajo las leyes de protección de datos aplicables.\n\nAl usar Toulmin Lab, reconoces y consientes la transferencia, almacenamiento y procesamiento de tus datos en estas jurisdicciones. Tomamos medidas para garantizar que tus datos reciban un nivel adecuado de protección independientemente de dónde se procesen."
         },
         "userRights": {
-          "title": "7. Tus Derechos",
-          "content": "Tienes derecho a acceder, corregir o eliminar tus datos personales. También puedes solicitar una copia de tus datos o pedirnos que restrinjamos el procesamiento. Para ejercer estos derechos, por favor contáctanos a través de nuestros canales de soporte."
+          "title": "10. Tus Derechos de Privacidad",
+          "content": "Dependiendo de tu ubicación, puedes tener los siguientes derechos con respecto a tus datos personales:\n\nAcceso: Puedes solicitar una copia de los datos personales que tenemos sobre ti.\n\nCorrección: Puedes actualizar o corregir datos personales inexactos a través de la configuración de tu cuenta o contactándonos.\n\nEliminación: Puedes solicitar la eliminación de tus datos personales. Eliminaremos tus datos a menos que tengamos una obligación legal de retenerlos.\n\nPortabilidad de Datos: Puedes solicitar una copia de tus datos en un formato estructurado de uso común.\n\nRestricción del Procesamiento: Puedes solicitar que limitemos cómo usamos tus datos en ciertas circunstancias.\n\nObjección al Procesamiento: Puedes objetar nuestro procesamiento de tus datos para ciertos propósitos, incluidos los análisis (que puedes controlar a través de Configuración de Cookies).\n\nRetirar Consentimiento: Cuando el procesamiento se basa en el consentimiento (como los análisis), puedes retirar el consentimiento en cualquier momento a través de Configuración de Cookies.\n\nPara ejercer cualquiera de estos derechos, contáctanos usando la información de contacto proporcionada en esta política. Responderemos a tu solicitud dentro del plazo requerido por la ley aplicable, típicamente dentro de 30 días."
         },
         "security": {
-          "title": "8. Medidas de Seguridad",
-          "content": "Implementamos medidas técnicas y organizativas apropiadas para proteger tus datos personales contra acceso no autorizado, alteración, divulgación o destrucción."
+          "title": "11. Medidas de Seguridad",
+          "content": "Implementamos medidas técnicas y organizativas apropiadas para proteger tus datos personales:\n\nCifrado: Toda transmisión de datos utiliza cifrado HTTPS/TLS estándar de la industria. Los datos en reposo se cifran utilizando algoritmos de cifrado seguros.\n\nControles de Acceso: Usamos controles de acceso basados en roles y autenticación para garantizar que solo el personal autorizado pueda acceder a sistemas que contienen datos personales.\n\nMonitoreo: Monitoreamos activamente amenazas de seguridad, actividad inusual y vulnerabilidades potenciales.\n\nActualizaciones Regulares: Mantenemos nuestros sistemas y software actualizados con los últimos parches de seguridad.\n\nRespuesta a Incidentes: Tenemos procedimientos para detectar, responder y notificarte sobre cualquier violación de datos según lo requiera la ley.\n\nSi bien tomamos la seguridad en serio e implementamos las mejores prácticas de la industria, ningún método de transmisión o almacenamiento es 100% seguro. No podemos garantizar seguridad absoluta, pero trabajamos continuamente para proteger tus datos."
         },
         "children": {
-          "title": "9. Privacidad de los Niños",
-          "content": "Toulmin Lab está destinado para uso de estudiantes y educadores. Si eres menor de 13 años, por favor usa el servicio solo con supervisión de un padre o tutor. No recopilamos conscientemente información personal de niños menores de 13 años sin consentimiento de los padres."
+          "title": "12. Privacidad de los Niños",
+          "content": "Toulmin Lab está diseñado para uso de estudiantes y educadores, incluidos menores de 13 años.\n\nConsentimiento Parental: Si eres menor de 13 años (o la edad aplicable de consentimiento digital en tu jurisdicción), debes usar este servicio solo con el consentimiento y supervisión de un padre o tutor legal.\n\nMinimización de Datos: No recopilamos conscientemente más información personal de niños de la necesaria para proporcionar el servicio.\n\nUso Escolar: Cuando Toulmin Lab se usa en un entorno educativo, confiamos en que la escuela o institución educativa obtenga los consentimientos parentales necesarios y cumpla con las leyes aplicables como COPPA (en Estados Unidos) y RGPD (en la Unión Europea).\n\nSi crees que hemos recopilado información personal de un niño sin el consentimiento adecuado, contáctanos de inmediato para que podamos eliminar la información."
         },
         "changes": {
-          "title": "10. Cambios a Esta Política",
-          "content": "Podemos actualizar esta política de privacidad de vez en cuando. Te notificaremos de cualquier cambio publicando la nueva política en esta página y actualizando la fecha de 'Última actualización'."
+          "title": "13. Cambios a Esta Política",
+          "content": "Podemos actualizar esta política de privacidad de vez en cuando para reflejar cambios en nuestras prácticas, requisitos legales o características del servicio.\n\nNotificación: Te notificaremos de cualquier cambio material publicando la política actualizada en esta página y actualizando la fecha de 'Última actualización' en la parte superior.\n\nTu Uso Continuado: Tu uso continuado de Toulmin Lab después de que los cambios entren en vigencia constituye tu aceptación de la política actualizada.\n\nRevisar Regularmente: Te recomendamos revisar esta política periódicamente para mantenerte informado sobre cómo protegemos tu información."
         },
         "contact": {
-          "title": "11. Contáctanos",
-          "content": "Si tienes alguna pregunta sobre esta Política de Privacidad, por favor contáctanos a través de nuestros canales de soporte."
+          "title": "14. Contáctanos",
+          "content": "Si tienes alguna pregunta, inquietud o solicitud con respecto a esta Política de Privacidad o nuestras prácticas de datos, por favor contáctanos.\n\nEstamos comprometidos a trabajar contigo para resolver cualquier inquietud de privacidad de manera rápida y justa."
         }
       }
+    }
+  },
+  "privacy": {
+    "consent": {
+      "message": "Usamos cookies y análisis para mejorar tu experiencia",
+      "privacyPolicy": "Política de Privacidad",
+      "accept": "Aceptar Análisis",
+      "reject": "Rechazar",
+      "cookieSettings": "Configuración de Cookies"
     }
   },
   "admin": {

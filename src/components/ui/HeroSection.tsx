@@ -1,6 +1,6 @@
 "use client";
 
-import { track } from "@vercel/analytics";
+import { trackEvent } from "@/lib/analytics/track";
 import { motion } from "framer-motion";
 import { Button } from "./Button";
 import { DiagramPreview } from "./DiagramPreview";
@@ -23,7 +23,7 @@ export function HeroSection({
   ctaHref = "/auth",
 }: HeroSectionProps) {
   const handleCtaClick = () => {
-    track("cta_clicked", { location: "hero" });
+    trackEvent("cta.clicked", { location: "hero" });
   };
 
   return (

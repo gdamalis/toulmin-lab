@@ -11,6 +11,7 @@ export const COLLECTIONS = {
   COACH_USAGE: "coachUsage",
   // Analytics collections
   AI_REQUEST_EVENTS: "aiRequestEvents",
+  APP_SERVER_EVENTS: "appServerEvents",
 };
 
 // TTL for coach data retention (30 days in seconds)

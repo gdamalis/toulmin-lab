@@ -7,6 +7,7 @@ import { Typography } from "@/components/ui/Typography";
 import { ToulminArgument } from "@/types/client";
 import { ClientArgumentDraft } from "@/types/coach";
 import { apiClient } from "@/lib/api/client";
+import { trackEvent } from "@/lib/analytics/track";
 import { useCoachQuota } from "@/hooks";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -62,6 +63,11 @@ export default function ToulminArgumentViewPage({
 
       if (result.success && result.data) {
         setResolvedData(result.data);
+        
+        // Track page view after successful load
+        trackEvent("argument.view_view", { 
+          source: result.data.kind === "draft" ? "coach" : "manual" 
+        });
       } else {
         throw new Error(result.error ?? "Failed to fetch data");
       }

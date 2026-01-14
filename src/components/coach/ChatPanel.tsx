@@ -15,6 +15,7 @@
 
 import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { trackEvent } from '@/lib/analytics/track';
 import { MessageBubble } from './MessageBubble';
 import { ChatInput } from './ChatInput';
 import { StepIndicator } from './StepIndicator';
@@ -492,6 +493,9 @@ export function ChatPanel({
   const handleSendMessage = useCallback(async (content: string) => {
     if (isLoading || isComplete) return;
     
+    // Track message send
+    trackEvent("coach.message_sent", { step: currentStep });
+    
     if (pendingRewrite) {
       // User is providing their rewrite
       await requestCoachResponse(content, {
@@ -509,7 +513,7 @@ export function ChatPanel({
     }
     
     await requestCoachResponse(content, { emitUserMessage: true });
-  }, [isLoading, isComplete, pendingRewrite, requestCoachResponse, setPendingRewrite]);
+  }, [isLoading, isComplete, pendingRewrite, requestCoachResponse, setPendingRewrite, currentStep]);
 
   const handleRetryFinalization = useCallback(async () => {
     if (isRetrying) return;
