@@ -1,3 +1,10 @@
+## [0.41.2](https://github.com/gdamalis/toulmin-lab/compare/v0.41.1...v0.41.2) (2026-01-14)
+
+
+### Bug Fixes
+
+* **analytics:** enhance consent management for region-specific defaults ([2707fbc](https://github.com/gdamalis/toulmin-lab/commit/2707fbc51489bcb2a10289441656a99b6005e391))
+
 ## [0.41.1](https://github.com/gdamalis/toulmin-lab/compare/v0.41.0...v0.41.1) (2026-01-14)
 
 
@@ -25,11 +32,4 @@
 ### Features
 
 * **TL-34:** integrate Sentry for error tracking and logging ([e90e5d7](https://github.com/gdamalis/toulmin-lab/commit/e90e5d7682158a63f093158cb7f66fbe72b3cf0a))
-
-## [0.38.0](https://github.com/gdamalis/toulmin-lab/compare/v0.37.0...v0.38.0) (2026-01-10)
-
-
-### Features
-
-* **password-reset:** implement password reset feature with UI and translations ([222927f](https://github.com/gdamalis/toulmin-lab/commit/222927fc2423d94a7d6f238ae89e7053ba51d2d7))
 
